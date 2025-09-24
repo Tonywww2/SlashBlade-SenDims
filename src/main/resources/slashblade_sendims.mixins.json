@@ -1,3 +1,12 @@
 {
-
+  "package": "com.tonywww.slashblade_sendims.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "required": true,
+  "refmap": "slashblade_sendims.refmap.json",
+  "mixins": [
+    "MixinIgnitedBerserkerEntity"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
