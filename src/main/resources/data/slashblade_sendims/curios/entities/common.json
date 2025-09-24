@@ -1,0 +1,11 @@
+{
+    "replace": false,
+    "entities":
+    [
+        "player"
+    ],
+    "slots":
+    [
+        "drc"
+    ]
+}

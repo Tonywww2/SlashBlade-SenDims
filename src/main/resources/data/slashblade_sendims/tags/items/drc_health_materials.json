@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#slashblade_sendims:drc_health_material_0",
+    "#slashblade_sendims:drc_health_material_1",
+    "#slashblade_sendims:drc_health_material_2",
+    "#slashblade_sendims:drc_health_material_3",
+    "#slashblade_sendims:drc_health_material_4",
+    "#slashblade_sendims:drc_health_material_5"
+  ]
+}
