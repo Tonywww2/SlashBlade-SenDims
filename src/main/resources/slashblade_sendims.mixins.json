@@ -4,7 +4,7 @@
   "required": true,
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
-    "MixinIgnitedBerserkerEntity"
+    "IgnitedBerserkerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

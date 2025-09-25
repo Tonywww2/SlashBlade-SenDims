@@ -4,13 +4,16 @@
 	"creativetab.slashblade_sendims_tab": "千界万锻",
 
 	"ui.slashblade_sendims.deeprealm_certificate.rank": "阶级：",
-	"ui.slashblade_sendims.deeprealm_certificate.rank.0": "§7无",
-	"ui.slashblade_sendims.deeprealm_certificate.rank.1": "§6铜级",
-	"ui.slashblade_sendims.deeprealm_certificate.rank.2": "§f银级",
-	"ui.slashblade_sendims.deeprealm_certificate.rank.3": "§e金级",
-	"ui.slashblade_sendims.deeprealm_certificate.rank.4": "§b钻石级",
-	"ui.slashblade_sendims.deeprealm_certificate.rank.5": "§d合金级",
+	"ui.slashblade_sendims.deeprealm_certificate.rank.0": "无",
+	"ui.slashblade_sendims.deeprealm_certificate.rank.1": "铜级",
+	"ui.slashblade_sendims.deeprealm_certificate.rank.2": "银级",
+	"ui.slashblade_sendims.deeprealm_certificate.rank.3": "金级",
+	"ui.slashblade_sendims.deeprealm_certificate.rank.4": "钻石级",
+	"ui.slashblade_sendims.deeprealm_certificate.rank.5": "合金级",
 
 	"ui.slashblade_sendims.deeprealm_certificate.healthprogress": "生命强化进度：",
-	"ui.slashblade_sendims.deeprealm_certificate.damageprogress": "伤害强化进度："
+	"ui.slashblade_sendims.deeprealm_certificate.damageprogress": "伤害强化进度：",
+
+	"curios.identifier.drc": "深境证章",
+	"curios.modifiers.drc": "佩戴该深境证章时："
 }

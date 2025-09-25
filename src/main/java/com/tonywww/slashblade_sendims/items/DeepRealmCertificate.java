@@ -2,6 +2,8 @@ package com.tonywww.slashblade_sendims.items;
 
 import com.tonywww.slashblade_sendims.curios.DeepRealmCertificateCapProvider;
 import com.tonywww.slashblade_sendims.registeries.SBSDTags;
+import com.tonywww.slashblade_sendims.utils.NBTUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -30,6 +32,14 @@ public class DeepRealmCertificate extends Item {
     public static final String SLOT = "drc";
 
     public static final int MATERIAL_COUNT_PER_PROGRESS = 30;
+    public static final ChatFormatting[] COLOR_LIST = new ChatFormatting[]{
+            ChatFormatting.GRAY,
+            ChatFormatting.GOLD,
+            ChatFormatting.WHITE,
+            ChatFormatting.YELLOW,
+            ChatFormatting.AQUA,
+            ChatFormatting.LIGHT_PURPLE
+    };
 
     public DeepRealmCertificate(Properties properties) {
         super(properties);
@@ -37,49 +47,88 @@ public class DeepRealmCertificate extends Item {
 
     @Override
     public boolean overrideOtherStackedOnMe(@NotNull ItemStack self, @NotNull ItemStack other, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, SlotAccess access) {
-        if (action != ClickAction.SECONDARY)
+        if (action != ClickAction.SECONDARY) {
             return false;
-
+        }
         CompoundTag drTag = getDRTag(self);
         int currentRank = getRank(drTag);
 
         if (other.is(SBSDTags.Items.DRC_RANK_MATERIALS)) {
-            int targetRank = -1;
-            switch (currentRank) {
-                case 0:
-                    if (other.is(SBSDTags.Items.DRC_RANK_MATERIAL_1)) targetRank = 1;
-                    break;
-                case 1:
-                    if (other.is(SBSDTags.Items.DRC_RANK_MATERIAL_2)) targetRank = 2;
-                    break;
-                case 2:
-                    if (other.is(SBSDTags.Items.DRC_RANK_MATERIAL_3)) targetRank = 3;
-                    break;
-                case 3:
-                    if (other.is(SBSDTags.Items.DRC_RANK_MATERIAL_4)) targetRank = 4;
-                    break;
-                case 4:
-                    if (other.is(SBSDTags.Items.DRC_RANK_MATERIAL_5)) targetRank = 5;
-                    break;
-                default:
-                    player.playSound(SoundEvents.VILLAGER_NO);
-                    break;
-            }
-            if (targetRank != -1) {
-                drTag.putInt(RANK, targetRank);
-                player.playSound(SoundEvents.PLAYER_LEVELUP);
-                other.shrink(1);
-
-                return true;
-            }
-
+            return processRankUpgrade(drTag, other, player, currentRank);
         } else if (other.is(SBSDTags.Items.DRC_HEALTH_MATERIALS)) {
-
+            return processProgressUpgrade(drTag, other, player, currentRank,
+                    HEALTH_PROGRESS,
+                    SBSDTags.Items.DRC_HEALTH_MATERIAL_0,
+                    SBSDTags.Items.DRC_HEALTH_MATERIAL_1,
+                    SBSDTags.Items.DRC_HEALTH_MATERIAL_2,
+                    SBSDTags.Items.DRC_HEALTH_MATERIAL_3,
+                    SBSDTags.Items.DRC_HEALTH_MATERIAL_4
+            );
         } else if (other.is(SBSDTags.Items.DRC_DAMAGE_MATERIALS)) {
-
+            return processProgressUpgrade(drTag, other, player, currentRank,
+                    DAMAGE_RATE_PROGRESS,
+                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_0,
+                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_1,
+                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_2,
+                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_3,
+                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_4
+            );
         }
 
         return false;
+    }
+
+    private boolean processRankUpgrade(CompoundTag drTag, ItemStack other, Player player, int currentRank) {
+        int targetRank = getTargetRank(currentRank, other);
+        if (targetRank != -1) {
+            drTag.putInt(RANK, targetRank);
+            player.playSound(SoundEvents.PLAYER_LEVELUP);
+            other.shrink(1);
+            return true;
+        }
+        player.playSound(SoundEvents.VILLAGER_NO);
+        return false;
+    }
+
+    private int getTargetRank(int currentRank, ItemStack other) {
+        return switch (currentRank) {
+            case 0 -> other.is(SBSDTags.Items.DRC_RANK_MATERIAL_1) ? 1 : -1;
+            case 1 -> other.is(SBSDTags.Items.DRC_RANK_MATERIAL_2) ? 2 : -1;
+            case 2 -> other.is(SBSDTags.Items.DRC_RANK_MATERIAL_3) ? 3 : -1;
+            case 3 -> other.is(SBSDTags.Items.DRC_RANK_MATERIAL_4) ? 4 : -1;
+            case 4 -> other.is(SBSDTags.Items.DRC_RANK_MATERIAL_5) ? 5 : -1;
+            default -> -1;
+        };
+    }
+
+    @SafeVarargs
+    private boolean processProgressUpgrade(CompoundTag drTag, ItemStack other, Player player, int currentRank,
+                                           String progressType, net.minecraft.tags.TagKey<Item>... materialTags) {
+        int currentTotal = NBTUtils.getSpecificField(drTag, progressType);
+        int currentProgressRank = currentTotal / MATERIAL_COUNT_PER_PROGRESS;
+
+        if (currentProgressRank > currentRank) {
+            player.playSound(SoundEvents.VILLAGER_NO);
+            return true;
+        }
+
+        if (currentProgressRank >= materialTags.length || !other.is(materialTags[currentProgressRank])) {
+            player.playSound(SoundEvents.VILLAGER_NO);
+            return false;
+        }
+
+        int current = currentTotal - (MATERIAL_COUNT_PER_PROGRESS * currentProgressRank);
+        int toConsume = Math.min(MATERIAL_COUNT_PER_PROGRESS - current, other.getCount());
+
+        if (toConsume <= 0) {
+            player.playSound(SoundEvents.VILLAGER_NO);
+            return true;
+        }
+
+        drTag.putInt(progressType, currentTotal + toConsume);
+        player.playSound(SoundEvents.PLAYER_LEVELUP);
+        other.shrink(toConsume);
+        return true;
     }
 
     @Override
@@ -93,15 +142,8 @@ public class DeepRealmCertificate extends Item {
         return tag.getCompound(PATH);
     }
 
-    public static int getSpecificProgress(CompoundTag drTag, String type) {
-        if (!drTag.contains(type)) {
-            drTag.putInt(type, 0);
-        }
-        return drTag.getInt(type);
-    }
-
     public static int getRank(CompoundTag drTag) {
-        return getSpecificProgress(drTag, RANK);
+        return NBTUtils.getSpecificField(drTag, RANK);
     }
 
     public static double calcFinalValue(int x, int count, double give) {
@@ -117,41 +159,44 @@ public class DeepRealmCertificate extends Item {
 
         CompoundTag drTag = getDRTag(stack);
         int rank = getRank(drTag);
-        int healthProgress = getSpecificProgress(drTag, HEALTH_PROGRESS);
-        int damageProgress = getSpecificProgress(drTag, DAMAGE_RATE_PROGRESS);
+        int healthProgress = NBTUtils.getSpecificField(drTag, HEALTH_PROGRESS);
+        int damageProgress = NBTUtils.getSpecificField(drTag, DAMAGE_RATE_PROGRESS);
 
-        toolTips.add(Component.translatable("ui.slashblade_sendims.deeprealm_certificate.rank")
-                .append(Component.translatable("ui.slashblade_sendims.deeprealm_certificate.rank." + rank))
+        // 阶级
+        MutableComponent rankComponent = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.rank");
+        rankComponent.append(
+                Component.translatable("ui.slashblade_sendims.deeprealm_certificate.rank." + rank)
+                        .setStyle(rankComponent.getStyle().withColor(COLOR_LIST[rank]))
         );
+        toolTips.add(rankComponent);
 
+        // 生命
         int progressCap = (rank + 1) * MATERIAL_COUNT_PER_PROGRESS;
+        int healthProgressCount = healthProgress / MATERIAL_COUNT_PER_PROGRESS;
 
         MutableComponent health = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.healthprogress");
-        String healthText = "[" +
-                healthProgress / MATERIAL_COUNT_PER_PROGRESS +
-                "] ";
+        health.append(
+                Component.literal("[" + healthProgressCount + "] ")
+                        .setStyle(health.getStyle().withColor(COLOR_LIST[healthProgressCount]))
+        );
         if (healthProgress >= progressCap) {
             health.append(Component.literal("MAX"));
         } else {
-            healthText +=
-                    healthProgress % MATERIAL_COUNT_PER_PROGRESS +
-                            "/" +
-                            MATERIAL_COUNT_PER_PROGRESS;
-            health.append(Component.literal(healthText));
+            health.append(Component.literal(healthProgress % MATERIAL_COUNT_PER_PROGRESS + "/" + MATERIAL_COUNT_PER_PROGRESS));
         }
 
+        // 伤害
+        int damageProgressCount = damageProgress / MATERIAL_COUNT_PER_PROGRESS;
+
         MutableComponent damage = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.damageprogress");
-        String damageText = "[" +
-                damageProgress / MATERIAL_COUNT_PER_PROGRESS +
-                "] ";
+        damage.append(
+                Component.literal("[" + damageProgressCount + "] ")
+                        .setStyle(damage.getStyle().withColor(COLOR_LIST[damageProgressCount]))
+        );
         if (damageProgress >= progressCap) {
             damage.append(Component.literal("MAX"));
         } else {
-            damageText +=
-                    damageProgress % MATERIAL_COUNT_PER_PROGRESS +
-                            "/" +
-                            MATERIAL_COUNT_PER_PROGRESS;
-            damage.append(Component.literal(damageText));
+            damage.append(Component.literal(damageProgress % MATERIAL_COUNT_PER_PROGRESS + "/" + MATERIAL_COUNT_PER_PROGRESS));
         }
         toolTips.add(health);
         toolTips.add(damage);

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Ignited_Berserker_Entity.class)
-public class MixinIgnitedBerserkerEntity {
+public class IgnitedBerserkerEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "aiStep", remap = false, cancellable = true)
     public void slashBlade_SenDims$aiStep(CallbackInfo ci) {

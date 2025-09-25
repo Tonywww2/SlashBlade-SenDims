@@ -4,6 +4,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.tonywww.slashblade_sendims.registeries.SBSDItems;
 import com.tonywww.slashblade_sendims.utils.CuriosUtils;
+import com.tonywww.slashblade_sendims.utils.NBTUtils;
 import mods.flammpfeil.slashblade.registry.ModAttributes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -54,8 +55,8 @@ public class DeepRealmCertificateWrapper implements ICurio {
         if (!slotContext.identifier().equalsIgnoreCase(SLOT)) return atts;
 
         CompoundTag drTag = getDRTag(this.getStack());
-        int healthProgress = getSpecificProgress(drTag, HEALTH_PROGRESS);
-        int damageProgress = getSpecificProgress(drTag, DAMAGE_RATE_PROGRESS);
+        int healthProgress = NBTUtils.getSpecificField(drTag, HEALTH_PROGRESS);
+        int damageProgress = NBTUtils.getSpecificField(drTag, DAMAGE_RATE_PROGRESS);
 
         atts.put(Attributes.MAX_HEALTH,
                 new AttributeModifier(uuid, "drc_max_health",
