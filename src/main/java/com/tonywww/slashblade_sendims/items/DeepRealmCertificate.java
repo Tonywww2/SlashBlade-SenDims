@@ -62,7 +62,8 @@ public class DeepRealmCertificate extends Item {
                     SBSDTags.Items.DRC_HEALTH_MATERIAL_1,
                     SBSDTags.Items.DRC_HEALTH_MATERIAL_2,
                     SBSDTags.Items.DRC_HEALTH_MATERIAL_3,
-                    SBSDTags.Items.DRC_HEALTH_MATERIAL_4
+                    SBSDTags.Items.DRC_HEALTH_MATERIAL_4,
+                    SBSDTags.Items.DRC_HEALTH_MATERIAL_5
             );
         } else if (other.is(SBSDTags.Items.DRC_DAMAGE_MATERIALS)) {
             return processProgressUpgrade(drTag, other, player, currentRank,
@@ -71,7 +72,9 @@ public class DeepRealmCertificate extends Item {
                     SBSDTags.Items.DRC_DAMAGE_MATERIAL_1,
                     SBSDTags.Items.DRC_DAMAGE_MATERIAL_2,
                     SBSDTags.Items.DRC_DAMAGE_MATERIAL_3,
-                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_4
+                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_4,
+                    SBSDTags.Items.DRC_DAMAGE_MATERIAL_5
+
             );
         }
 
@@ -104,7 +107,7 @@ public class DeepRealmCertificate extends Item {
     @SafeVarargs
     private boolean processProgressUpgrade(CompoundTag drTag, ItemStack other, Player player, int currentRank,
                                            String progressType, net.minecraft.tags.TagKey<Item>... materialTags) {
-        int currentTotal = NBTUtils.getSpecificField(drTag, progressType);
+        int currentTotal = NBTUtils.getSpecificIntField(drTag, progressType);
         int currentProgressRank = currentTotal / MATERIAL_COUNT_PER_PROGRESS;
 
         if (currentProgressRank > currentRank) {
@@ -143,7 +146,7 @@ public class DeepRealmCertificate extends Item {
     }
 
     public static int getRank(CompoundTag drTag) {
-        return NBTUtils.getSpecificField(drTag, RANK);
+        return NBTUtils.getSpecificIntField(drTag, RANK);
     }
 
     public static double calcFinalValue(int x, int count, double give) {
@@ -159,8 +162,8 @@ public class DeepRealmCertificate extends Item {
 
         CompoundTag drTag = getDRTag(stack);
         int rank = getRank(drTag);
-        int healthProgress = NBTUtils.getSpecificField(drTag, HEALTH_PROGRESS);
-        int damageProgress = NBTUtils.getSpecificField(drTag, DAMAGE_RATE_PROGRESS);
+        int healthProgress = NBTUtils.getSpecificIntField(drTag, HEALTH_PROGRESS);
+        int damageProgress = NBTUtils.getSpecificIntField(drTag, DAMAGE_RATE_PROGRESS);
 
         // 阶级
         MutableComponent rankComponent = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.rank");

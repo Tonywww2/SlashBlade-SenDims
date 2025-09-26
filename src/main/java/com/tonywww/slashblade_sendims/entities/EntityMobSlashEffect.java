@@ -6,7 +6,6 @@ import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRan
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.entity.Projectile;
 import mods.flammpfeil.slashblade.event.handler.FallHandler;
-import mods.flammpfeil.slashblade.util.AttackManager;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -79,7 +78,7 @@ public class EntityMobSlashEffect extends EntitySlashEffect {
                 ratio = (float) this.getDamage() * (this.getIsCritical() ? 1.1F : 1.0F);
                 hits = MobAttackManager.areaAttack(shooter, KnockBacks.smash.action, ratio, forceHit, false, true, this.getAlreadyHits());
             } else {
-                hits = MobAttackManager.areaAttack(this, KnockBacks.smash.action, 4.0, forceHit, false, this.getAlreadyHits());
+                hits = MobAttackManager.areaAttack(this, KnockBacks.smash.action, 8.0, forceHit, false, this.getAlreadyHits());
             }
 
             if (!this.doCycleHit()) {

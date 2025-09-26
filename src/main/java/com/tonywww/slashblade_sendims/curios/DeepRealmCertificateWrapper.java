@@ -55,8 +55,8 @@ public class DeepRealmCertificateWrapper implements ICurio {
         if (!slotContext.identifier().equalsIgnoreCase(SLOT)) return atts;
 
         CompoundTag drTag = getDRTag(this.getStack());
-        int healthProgress = NBTUtils.getSpecificField(drTag, HEALTH_PROGRESS);
-        int damageProgress = NBTUtils.getSpecificField(drTag, DAMAGE_RATE_PROGRESS);
+        int healthProgress = NBTUtils.getSpecificIntField(drTag, HEALTH_PROGRESS);
+        int damageProgress = NBTUtils.getSpecificIntField(drTag, DAMAGE_RATE_PROGRESS);
 
         atts.put(Attributes.MAX_HEALTH,
                 new AttributeModifier(uuid, "drc_max_health",

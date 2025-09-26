@@ -127,6 +127,8 @@ repositories {
         }
     }
 
+    maven { url = 'https://maven.blamejared.com/' }
+
     maven {
         url "https://cursemaven.com"
     }
@@ -161,9 +163,12 @@ dependencies {
     implementation fg.deobf("dev.shadowsoffire:ApothicAttributes:${minecraft_version}-${attributeslibVersion}")
     implementation fg.deobf("dev.shadowsoffire:Apotheosis:${minecraft_version}-${apothVersion}")
 
+    implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
+
     runtimeOnly fg.deobf("curse.maven:kubejs-238086:5853326")
     runtimeOnly fg.deobf("curse.maven:rhino-416294:6186971")
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
 
 }
 

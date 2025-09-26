@@ -82,7 +82,8 @@ public class MobTargetSelector extends TargetSelector {
     }
 
     public static List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker, AABB aabb) {
-        double reach = getResolvedReach(attacker);
+//        double reach = getResolvedReach(attacker);
+        double reach = 8.0f;
         return MobTargetSelector.getTargettableEntitiesWithinAABB(world, attacker, aabb, reach);
     }
 
