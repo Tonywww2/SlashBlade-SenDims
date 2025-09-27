@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
@@ -55,17 +56,22 @@ public class DeepRealmCertificateWrapper implements ICurio {
         if (!slotContext.identifier().equalsIgnoreCase(SLOT)) return atts;
 
         CompoundTag drTag = getDRTag(this.getStack());
+        int rank = NBTUtils.getSpecificIntField(drTag, RANK);
         int healthProgress = NBTUtils.getSpecificIntField(drTag, HEALTH_PROGRESS);
         int damageProgress = NBTUtils.getSpecificIntField(drTag, DAMAGE_RATE_PROGRESS);
 
+        atts.put(ForgeMod.ENTITY_REACH.get(),
+                new AttributeModifier(uuid, "drc_reach",
+                        0.5d + rank * 0.5d,
+                        AttributeModifier.Operation.ADDITION));
         atts.put(Attributes.MAX_HEALTH,
                 new AttributeModifier(uuid, "drc_max_health",
-                        1 + calcFinalValue(healthProgress, MATERIAL_COUNT_PER_PROGRESS, 20d),
+                        1d + calcFinalValue(healthProgress, MATERIAL_COUNT_PER_PROGRESS, 20d),
                         AttributeModifier.Operation.ADDITION));
 
         atts.put(ModAttributes.SLASHBLADE_DAMAGE.get(),
                 new AttributeModifier(uuid, "drc_sb_damage",
-                        0.01 + calcFinalValue(damageProgress, MATERIAL_COUNT_PER_PROGRESS, 0.05d),
+                        0.01d + calcFinalValue(damageProgress, MATERIAL_COUNT_PER_PROGRESS, 0.05d),
                         AttributeModifier.Operation.ADDITION));
 
         return atts;

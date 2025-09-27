@@ -22,8 +22,28 @@ import org.joml.Vector4f;
 import java.util.List;
 
 public class EntityMobSlashEffect extends EntitySlashEffect {
+    public double reach;
+
+    public boolean forceHit;
+
     public EntityMobSlashEffect(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
+    }
+
+    public double getReach() {
+        return reach;
+    }
+
+    public void setReach(double reach) {
+        this.reach = reach;
+    }
+
+    public boolean isForceHit() {
+        return forceHit;
+    }
+
+    public void setForceHit(boolean forceHit) {
+        this.forceHit = forceHit;
     }
 
     @Override
@@ -71,14 +91,14 @@ public class EntityMobSlashEffect extends EntitySlashEffect {
         }
 
         if (this.getShooter() != null && this.tickCount % 2 == 0) {
-            boolean forceHit = true;
-            List<Entity>  hits;
+            List<Entity> hits;
             if (!this.getIndirect() && this.getShooter() instanceof LivingEntity) {
                 LivingEntity shooter = (LivingEntity) this.getShooter();
                 ratio = (float) this.getDamage() * (this.getIsCritical() ? 1.1F : 1.0F);
-                hits = MobAttackManager.areaAttack(shooter, KnockBacks.smash.action, ratio, forceHit, false, true, this.getAlreadyHits());
+//                hits = MobAttackManager.areaAttack(shooter, KnockBacks.smash.action, ratio, forceHit, false, true, this.getAlreadyHits());
+                hits = MobAttackManager.areaAttack(this, KnockBacks.smash.action, this.reach, this.isForceHit(), false, ratio, this.getAlreadyHits());
             } else {
-                hits = MobAttackManager.areaAttack(this, KnockBacks.smash.action, 8.0, forceHit, false, this.getAlreadyHits());
+                hits = MobAttackManager.areaAttack(this, KnockBacks.smash.action, this.reach, this.isForceHit(), false, this.getAlreadyHits());
             }
 
             if (!this.doCycleHit()) {

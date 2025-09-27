@@ -13,40 +13,63 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SBSDLeader {
 
-    public static final int MIN_SPECIAL_ATTACK_TICK = 60;
-    public static final int MAX_SPECIAL_ATTACK_TICK = 200;
+    public static final int MIN_SPECIAL_ATTACK_TICK = 80;
+    public static final int MAX_SPECIAL_ATTACK_TICK = 160;
+    public static final int PRE_N_ATTACK_TICK = 60;
     public static final int PRE_PARRY_TICK = 30;
     public static final int PARRY_TICK = 15;
-    public static final int END_PARRIED_TICK = 60;
+    public static final int END_PARRIED_TICK = 140;
 
+    public static final String BOSS_LEADER = "sbsd.boss";
     public static final String APOTH_BOSS = "apoth.boss";
     public static final String LEADER_ACTION_TICK_COUNT_PATH = "sbsd.act.tick";
     public static final String LEADER_NEXT_ACTION_TICK_COUNT_PATH = "sbsd.act.next";
     public static final String IS_PARRIABLE_PATH = "sbsd.isparriable";
     public static final String IS_PARRIED_PATH = "sbsd.isparried";
+    public static final String IS_INITIALIZED = "sbsd.init";
 
-    public static final float NOT_PARRIED_DAMAGE_AMOUNT = 0.25f;
+    public static final String LEADER_TEAM_NAME = "sbsd_leaders";
+
+    public static final double LEADER_HP_SCALE = 4.0d;
+    public static final float PARRIED_DAMAGE_SCALE = 3.0f;
 
     public static Set<ResourceLocation> PARRY_COMBOS = new HashSet<>();
 
     static {
         PARRY_COMBOS.add(ComboStateRegistry.RAPID_SLASH.getId());
         PARRY_COMBOS.add(ComboStateRegistry.UPPERSLASH.getId());
+    }
+
+    public static final List<SAFunction> ALL_LEADER_SA = new ArrayList<>(10);
+
+    static {
+        ALL_LEADER_SA.add(SBSDLeader::doLeaderSAQuickSLash);
+        ALL_LEADER_SA.add(SBSDLeader::doLeaderSATripleSlash);
+    }
+
+    @FunctionalInterface
+    public interface SAFunction {
+        void apply(LivingEntity entity, ServerLevel serverLevel);
     }
 
     public static final Vector3f PARRY_INDICATOR_FROM_COLOR = new Vector3f(0.3f, 0.1f, 0.1f);
@@ -80,9 +103,9 @@ public class SBSDLeader {
     }
 
     public static void scaleIncomingDamage(LivingHurtEvent event, CompoundTag persistentData) {
-        if (!SBSDLeader.getParried(persistentData)) {
+        if (SBSDLeader.getParried(persistentData)) {
             float damage = event.getAmount();
-            damage *= SBSDLeader.NOT_PARRIED_DAMAGE_AMOUNT;
+            damage *= SBSDLeader.PARRIED_DAMAGE_SCALE;
             event.setAmount(damage);
         }
     }
@@ -131,7 +154,8 @@ public class SBSDLeader {
 
         int saCurrentTick = getLeaderActionTickCount(persistentData);
         if (saCurrentTick > saTargetTick) {
-            doLeaderSpecialAttack(entity, serverLevel);
+//            doLeaderSATripleSlash(entity, serverLevel);
+            doLeaderSA(entity, serverLevel);
             saCurrentTick = 0;
             setLeaderNextActionTickCount(persistentData, 0);
             setParriable(persistentData, false);
@@ -142,17 +166,26 @@ public class SBSDLeader {
         }
 
         int diff = saTargetTick - saCurrentTick;
-        if (diff <= PRE_PARRY_TICK) {
-            if (diff <= PARRY_TICK) {
-                doLeaderParryIndicator(entity, serverLevel, diff);
-                if (diff >= 0) {
-                    setParriable(persistentData, true);
+        if (diff <= PRE_N_ATTACK_TICK) {
+            if (diff <= PRE_PARRY_TICK) {
+                if (diff == PRE_PARRY_TICK) {
+                    doLeaderAttack(entity, serverLevel);
+                }
+                if (diff <= PARRY_TICK) {
+                    doLeaderParryIndicator(entity, serverLevel, diff);
+                    if (diff >= 0) {
+                        setParriable(persistentData, true);
+                    }
+                } else {
+                    setParriable(persistentData, false);
+
                 }
             } else {
-                doLeaderPreParryIndicator(entity, serverLevel, diff);
+                doLeaderPreAttackIndicator(entity, serverLevel, diff);
                 setParriable(persistentData, false);
 
             }
+
         } else {
             setParriable(persistentData, false);
 
@@ -162,13 +195,45 @@ public class SBSDLeader {
 
     }
 
-    public static void doLeaderSpecialAttack(LivingEntity entity, ServerLevel serverLevel) {
-        MobAttackManager.doSlash(entity, -30.0F, 0x8B0000, Vec3.ZERO, true, false, 0.3f, KnockBacks.smash);
-        SenDims.serverScheduler.schedule(3, () -> {
-            MobAttackManager.doSlash(entity, 15.0F, 0x8B0000, Vec3.ZERO, true, false, 0.6f, KnockBacks.smash);
-        });
+    public static void doLeaderAttack(LivingEntity entity, ServerLevel serverLevel) {
+        if (entity.getRandom().nextBoolean()) {
+            MobAttackManager.doSlash(entity, 45.0F, 7d, 0.75f, 0xffd2d2, Vec3.ZERO,
+                    true, false, false, 0.45f, KnockBacks.cancel);
+            SenDims.serverScheduler.schedule(5, () -> {
+                MobAttackManager.doSlash(entity, 55.0F, 7d, 0.75f, 0xffd2d2, Vec3.ZERO,
+                        true, false, true, 0.45f, KnockBacks.smash);
+            });
+        } else {
+            MobAttackManager.doSlash(entity, -45.0F, 7d, 0.75f, 0xffd2d2, Vec3.ZERO,
+                    true, false, false, 0.45f, KnockBacks.cancel);
+            SenDims.serverScheduler.schedule(5, () -> {
+                MobAttackManager.doSlash(entity, -55.0F, 7d, 0.75f, 0xffd2d2, Vec3.ZERO,
+                        true, false, true, 0.45f, KnockBacks.smash);
+            });
+        }
+
+    }
+
+    public static void doLeaderSA(LivingEntity entity, ServerLevel serverLevel) {
+        ALL_LEADER_SA.get(serverLevel.getRandom().nextInt(ALL_LEADER_SA.size())).apply(entity, serverLevel);
+    }
+
+    public static void doLeaderSAQuickSLash(LivingEntity entity, ServerLevel serverLevel) {
+        MobAttackManager.doSlash(entity, 2.0F, 13d, 2f, 0xff9b9b, Vec3.ZERO,
+                true, false, false, 1.0f, KnockBacks.toss);
+
+    }
+
+    public static void doLeaderSATripleSlash(LivingEntity entity, ServerLevel serverLevel) {
+        MobAttackManager.doSlash(entity, -30.0F, 7.5d, 0.75f, 0x8B0000, Vec3.ZERO,
+                true, false, true, 0.3f, KnockBacks.meteor);
         SenDims.serverScheduler.schedule(5, () -> {
-            MobAttackManager.doSlash(entity, -15.0F, 0x8B0000, Vec3.ZERO, true, false, 0.6f, KnockBacks.smash);
+            MobAttackManager.doSlash(entity, 15.0F, 9d, 1.5f, 0x6d0000, Vec3.ZERO,
+                    true, false, true, 0.5f, KnockBacks.cancel);
+        });
+        SenDims.serverScheduler.schedule(7, () -> {
+            MobAttackManager.doSlash(entity, -15.0F, 9d, 1.5f, 0x6d0000, Vec3.ZERO,
+                    true, false, true, 1.1f, KnockBacks.smash);
         });
 
     }
@@ -182,10 +247,10 @@ public class SBSDLeader {
         spawnIndicatorParticles(serverLevel, ParticleTypes.ANGRY_VILLAGER, xPos, yPos, zPos, 1, 0.01d);
     }
 
-    public static void doLeaderPreParryIndicator(LivingEntity entity, ServerLevel serverLevel, int tickBeforeAttack) {
+    public static void doLeaderPreAttackIndicator(LivingEntity entity, ServerLevel serverLevel, int tickBeforeAttack) {
         AABB boundBox = entity.getBoundingBox();
         double xPos = entity.getX();
-        double yPos = boundBox.getYsize() + entity.getY() + 0.75d;
+        double yPos = boundBox.getYsize() / 2 + entity.getY();
         double zPos = entity.getZ();
 
         spawnIndicatorParticles(serverLevel, ParticleTypes.SOUL_FIRE_FLAME, xPos, yPos, zPos, 1, 0.01d);
@@ -194,11 +259,11 @@ public class SBSDLeader {
     public static void doLeaderParryIndicator(LivingEntity entity, ServerLevel serverLevel, int tickBeforeAttack) {
         AABB boundBox = entity.getBoundingBox();
         double xPos = entity.getX();
-        double yPos = boundBox.getYsize() + entity.getY() + 0.75d;
+        double yPos = boundBox.getYsize() / 2 + entity.getY();
         double zPos = entity.getZ();
 
         float intensity = (float) tickBeforeAttack / PARRY_TICK;
-        Vector3f toColor = new Vector3f(intensity, 0.1f * intensity, 0.1f * intensity);
+        Vector3f toColor = new Vector3f(0.5f * intensity, 0.05f * intensity, 0.05f * intensity);
 
         DustColorTransitionOptions dustOptions = new DustColorTransitionOptions(PARRY_INDICATOR_FROM_COLOR, toColor, 1.0f);
 
@@ -206,26 +271,14 @@ public class SBSDLeader {
     }
 
     public static void spawnIndicatorParticles(ServerLevel serverLevel, ParticleOptions particle, double xPos, double yPos, double zPos, int count, double speed) {
-        serverLevel.sendParticles(particle,
-                xPos, yPos, zPos,
-                count,
-                0d, 0.05d, 0d,
-                speed);
-        serverLevel.sendParticles(particle,
-                xPos, yPos - 0.25d, zPos,
-                count,
-                0d, 0.05d, 0d,
-                speed);
-        serverLevel.sendParticles(particle,
-                xPos, yPos - 0.5d, zPos,
-                count,
-                0d, 0.05d, 0d,
-                speed);
-        serverLevel.sendParticles(particle,
-                xPos, yPos - 0.75d, zPos,
-                count,
-                0d, 0.05d, 0d,
-                speed);
+        int points = 16;
+        double radius = 1;
+        for (int i = 0; i < points; i++) {
+            double angle = 2 * Math.PI * i / points;
+            double px = xPos + radius * Math.cos(angle);
+            double pz = zPos + radius * Math.sin(angle);
+            serverLevel.sendParticles(particle, px, yPos, pz, count, 0d, 0d, 0d, 0.01d);
+        }
     }
 
     public static boolean getParried(CompoundTag persistentData) {
@@ -258,5 +311,26 @@ public class SBSDLeader {
 
     public static void setLeaderNextActionTickCount(CompoundTag persistentData, int val) {
         persistentData.putInt(LEADER_NEXT_ACTION_TICK_COUNT_PATH, val);
+    }
+
+    public static void initializeLeader(LivingEntity living, CompoundTag persistentData) {
+        AttributeInstance instance = living.getAttribute(Attributes.MAX_HEALTH);
+        if (instance != null && !persistentData.contains(IS_INITIALIZED)) {
+            instance.addPermanentModifier(new AttributeModifier("sbsd.leader.health", LEADER_HP_SCALE, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            persistentData.putBoolean(IS_INITIALIZED, true);
+        }
+        living.setHealth(living.getMaxHealth());
+
+        if (living.level() instanceof ServerLevel serverLevel) {
+            ServerScoreboard scoreboard = serverLevel.getScoreboard();
+            PlayerTeam team = scoreboard.getPlayerTeam(LEADER_TEAM_NAME);
+            if (team == null) {
+                team = scoreboard.addPlayerTeam(LEADER_TEAM_NAME);
+                team.setAllowFriendlyFire(false);
+            }
+            scoreboard.addPlayerToTeam(living.getScoreboardName(), team);
+
+        }
+
     }
 }

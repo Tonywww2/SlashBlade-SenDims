@@ -2,11 +2,15 @@ package com.tonywww.slashblade_sendims.events;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
+import mods.flammpfeil.slashblade.event.handler.EntitySpawnEventHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -39,6 +43,18 @@ public class LeaderEventListener {
 
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void EntityJoinLevelEventListener(EntityJoinLevelEvent event) {
+        if (event.getEntity() instanceof LivingEntity living) {
+            CompoundTag persistentData = living.getPersistentData();
+            if (!persistentData.contains(SBSDLeader.APOTH_BOSS) || !persistentData.getBoolean(SBSDLeader.APOTH_BOSS))
+                return;
+
+            SBSDLeader.initializeLeader(living, persistentData);
+        }
+
+    }
+
 
     @SubscribeEvent
     public static void HtiEventListener(SlashBladeEvent.HitEvent event) {
@@ -48,7 +64,6 @@ public class LeaderEventListener {
             return;
 
         SBSDLeader.handleParryActions(event, target, persistentData);
-
 
     }
 

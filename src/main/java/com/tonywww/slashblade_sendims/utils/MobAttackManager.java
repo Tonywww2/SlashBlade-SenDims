@@ -13,8 +13,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Iterator;
@@ -24,7 +22,7 @@ import java.util.function.Consumer;
 
 public class MobAttackManager {
 
-    public static EntityMobSlashEffect doSlash(LivingEntity entity, float roll, int colorCode, Vec3 centerOffset, boolean mute, boolean critical, double comboRatio, KnockBacks knockback) {
+    public static EntityMobSlashEffect doSlash(LivingEntity entity, float roll, double reach, float size, int colorCode, Vec3 centerOffset, boolean mute, boolean critical, boolean forceHit,  double comboRatio, KnockBacks knockback) {
         if (entity.level().isClientSide()) {
             return null;
         } else {
@@ -42,6 +40,10 @@ public class MobAttackManager {
             jc.setDamage(comboRatio);
             jc.setKnockBack(knockback);
             jc.setRank(7.0f);
+            jc.setReach(reach);
+            jc.setBaseSize(size);
+            jc.setForceHit(forceHit);
+
             entity.level().addFreshEntity(jc);
             return jc;
         }
@@ -61,25 +63,41 @@ public class MobAttackManager {
 
             Entity entity;
             double baseAmount;
-            for (Iterator<Entity> var9 = founds.iterator(); var9.hasNext(); doAttackWith(owner.damageSources().indirectMagic(owner, ((IShootable) owner).getShooter()), (float) baseAmount, entity, forceHit, resetHit)) {
-                entity = var9.next();
-                if (entity instanceof LivingEntity living) {
-                    beforeHit.accept(living);
-                }
-
-                baseAmount = owner.getDamage();
-                Entity var14 = owner.getShooter();
-                if (var14 instanceof LivingEntity living) {
-                    if (!(owner instanceof EntityMobSlashEffect)) {
-                        int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-                        baseAmount += (double) powerLevel * 0.1;
+            Entity shooter = owner.getShooter();
+            if (shooter instanceof LivingEntity livingOwner) {
+                for (Iterator<Entity> var8 = founds.iterator(); var8.hasNext(); MobAttackManager.doMeleeAttack(livingOwner, entity, forceHit, resetHit, comboRatio)) {
+                    entity = var8.next();
+                    if (entity instanceof LivingEntity livingTarget) {
+                        beforeHit.accept(livingTarget);
                     }
-
-                    baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
-                    baseAmount += AttackHelper.getRankBonus(living);
-                    baseAmount *= (comboRatio * AttackManager.getSlashBladeDamageScale(living));
                 }
             }
+//            for (
+//                    Iterator<Entity> var9 = founds.iterator();
+//                    var9.hasNext();
+//                    doAttackWith(
+//                            owner.damageSources().indirectMagic(owner, owner.getShooter()), (float) baseAmount, entity, forceHit, resetHit
+//                    )
+//
+//            ) {
+//                entity = var9.next();
+//                if (entity instanceof LivingEntity living) {
+//                    beforeHit.accept(living);
+//                }
+//
+//                baseAmount = owner.getDamage();
+//                Entity shooter = owner.getShooter();
+//                if (shooter instanceof LivingEntity living) {
+//                    if (!(owner instanceof EntityMobSlashEffect)) {
+//                        int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+//                        baseAmount += (double) powerLevel * 0.1;
+//                    }
+//
+//                    baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
+//                    baseAmount += AttackHelper.getRankBonus(living);
+//                    baseAmount *= (comboRatio * AttackManager.getSlashBladeDamageScale(living));
+//                }
+//            }
         }
 
         return founds;

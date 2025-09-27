@@ -42,7 +42,7 @@ public class SBSDTags {
         }
 
         private static TagKey<Item> createForgeTag(String name) {
-            return ItemTags.create(new ResourceLocation("forge", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", name));
         }
 
     }
