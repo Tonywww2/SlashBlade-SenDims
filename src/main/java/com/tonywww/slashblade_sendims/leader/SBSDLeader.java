@@ -3,10 +3,11 @@ package com.tonywww.slashblade_sendims.leader;
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.utils.MobAttackManager;
 import com.tonywww.slashblade_sendims.utils.NBTUtils;
+import com.tonywww.slashblade_sendims.utils.SBSDValues;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
-import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.util.AttackManager;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -26,46 +27,7 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class SBSDLeader {
-
-    public static final int MIN_SPECIAL_ATTACK_TICK = 80;
-    public static final int MAX_SPECIAL_ATTACK_TICK = 160;
-    public static final int PRE_N_ATTACK_TICK = 60;
-    public static final int PRE_PARRY_TICK = 30;
-    public static final int PARRY_TICK = 15;
-    public static final int END_PARRIED_TICK = 140;
-
-    public static final String BOSS_LEADER = "sbsd.boss";
-    public static final String APOTH_BOSS = "apoth.boss";
-    public static final String LEADER_ACTION_TICK_COUNT_PATH = "sbsd.act.tick";
-    public static final String LEADER_NEXT_ACTION_TICK_COUNT_PATH = "sbsd.act.next";
-    public static final String IS_PARRIABLE_PATH = "sbsd.isparriable";
-    public static final String IS_PARRIED_PATH = "sbsd.isparried";
-    public static final String IS_INITIALIZED = "sbsd.init";
-
-    public static final String LEADER_TEAM_NAME = "sbsd_leaders";
-
-    public static final double LEADER_HP_SCALE = 4.0d;
-    public static final float PARRIED_DAMAGE_SCALE = 3.0f;
-
-    public static Set<ResourceLocation> PARRY_COMBOS = new HashSet<>();
-
-    static {
-        PARRY_COMBOS.add(ComboStateRegistry.RAPID_SLASH.getId());
-        PARRY_COMBOS.add(ComboStateRegistry.UPPERSLASH.getId());
-    }
-
-    public static final List<SAFunction> ALL_LEADER_SA = new ArrayList<>(10);
-
-    static {
-        ALL_LEADER_SA.add(SBSDLeader::doLeaderSAQuickSLash);
-        ALL_LEADER_SA.add(SBSDLeader::doLeaderSATripleSlash);
-    }
 
     @FunctionalInterface
     public interface SAFunction {
@@ -97,15 +59,21 @@ public class SBSDLeader {
         ISlashBladeState bladeState = event.getSlashBladeState();
         ResourceLocation currentCS = bladeState.getComboSeq();
 
-        if (getParriable(persistentData) && PARRY_COMBOS.contains(currentCS)) {
+        if (getParriable(persistentData) && SBSDValues.PARRY_COMBOS.contains(currentCS)) {
             setLeaderParried(target, persistentData);
+            // TODO 招架追加攻击做成饰品
+            LivingEntity user = event.getUser();
+            AttackManager.doSlash(user, 45.0F, 0x6cf243, Vec3.ZERO,false, false, 1.25f, KnockBacks.meteor);
+            // TODO 招架追加回复做成饰品
+            user.heal(5f);
+
         }
     }
 
     public static void scaleIncomingDamage(LivingHurtEvent event, CompoundTag persistentData) {
         if (SBSDLeader.getParried(persistentData)) {
             float damage = event.getAmount();
-            damage *= SBSDLeader.PARRIED_DAMAGE_SCALE;
+            damage *= SBSDValues.PARRIED_DAMAGE_SCALE;
             event.setAmount(damage);
         }
     }
@@ -116,7 +84,7 @@ public class SBSDLeader {
         setLeaderActionTickCount(persistentData, 0);
         setLeaderNextActionTickCount(persistentData, 0);
 
-        StunManager.setStun(target, END_PARRIED_TICK);
+        StunManager.setStun(target, SBSDValues.END_PARRIED_TICK);
 
     }
 
@@ -124,7 +92,7 @@ public class SBSDLeader {
         doLeaderParriedIndicator(entity, serverLevel);
         int endParriedTick = getLeaderNextActionTickCount(persistentData);
         if (endParriedTick <= 0) {
-            endParriedTick = END_PARRIED_TICK;
+            endParriedTick = SBSDValues.END_PARRIED_TICK;
             setLeaderNextActionTickCount(persistentData, endParriedTick);
         }
 
@@ -148,7 +116,7 @@ public class SBSDLeader {
         int saTargetTick = getLeaderNextActionTickCount(persistentData);
 
         if (saTargetTick <= 0) {
-            saTargetTick = serverLevel.random.nextInt(MIN_SPECIAL_ATTACK_TICK, MAX_SPECIAL_ATTACK_TICK);
+            saTargetTick = serverLevel.random.nextInt(SBSDValues.MIN_SPECIAL_ATTACK_TICK, SBSDValues.MAX_SPECIAL_ATTACK_TICK);
             setLeaderNextActionTickCount(persistentData, saTargetTick);
         }
 
@@ -166,12 +134,12 @@ public class SBSDLeader {
         }
 
         int diff = saTargetTick - saCurrentTick;
-        if (diff <= PRE_N_ATTACK_TICK) {
-            if (diff <= PRE_PARRY_TICK) {
-                if (diff == PRE_PARRY_TICK) {
+        if (diff <= SBSDValues.PRE_N_ATTACK_TICK) {
+            if (diff <= SBSDValues.PRE_PARRY_TICK) {
+                if (diff == SBSDValues.PRE_PARRY_TICK) {
                     doLeaderAttack(entity, serverLevel);
                 }
-                if (diff <= PARRY_TICK) {
+                if (diff <= SBSDValues.PARRY_TICK) {
                     doLeaderParryIndicator(entity, serverLevel, diff);
                     if (diff >= 0) {
                         setParriable(persistentData, true);
@@ -215,7 +183,7 @@ public class SBSDLeader {
     }
 
     public static void doLeaderSA(LivingEntity entity, ServerLevel serverLevel) {
-        ALL_LEADER_SA.get(serverLevel.getRandom().nextInt(ALL_LEADER_SA.size())).apply(entity, serverLevel);
+        SBSDValues.ALL_LEADER_SA.get(serverLevel.getRandom().nextInt(SBSDValues.ALL_LEADER_SA.size())).apply(entity, serverLevel);
     }
 
     public static void doLeaderSAQuickSLash(LivingEntity entity, ServerLevel serverLevel) {
@@ -262,7 +230,7 @@ public class SBSDLeader {
         double yPos = boundBox.getYsize() / 2 + entity.getY();
         double zPos = entity.getZ();
 
-        float intensity = (float) tickBeforeAttack / PARRY_TICK;
+        float intensity = (float) tickBeforeAttack / SBSDValues.PARRY_TICK;
         Vector3f toColor = new Vector3f(0.5f * intensity, 0.05f * intensity, 0.05f * intensity);
 
         DustColorTransitionOptions dustOptions = new DustColorTransitionOptions(PARRY_INDICATOR_FROM_COLOR, toColor, 1.0f);
@@ -277,55 +245,55 @@ public class SBSDLeader {
             double angle = 2 * Math.PI * i / points;
             double px = xPos + radius * Math.cos(angle);
             double pz = zPos + radius * Math.sin(angle);
-            serverLevel.sendParticles(particle, px, yPos, pz, count, 0d, 0d, 0d, 0.01d);
+            serverLevel.sendParticles(particle, px, yPos, pz, count, 0d, 0d, 0d, speed);
         }
     }
 
     public static boolean getParried(CompoundTag persistentData) {
-        return NBTUtils.getSpecificBoolField(persistentData, IS_PARRIED_PATH);
+        return NBTUtils.getSpecificBoolField(persistentData, SBSDValues.IS_PARRIED_PATH);
     }
 
     public static void setParried(CompoundTag persistentData, boolean b) {
-        persistentData.putBoolean(IS_PARRIED_PATH, b);
+        persistentData.putBoolean(SBSDValues.IS_PARRIED_PATH, b);
     }
 
     public static boolean getParriable(CompoundTag persistentData) {
-        return NBTUtils.getSpecificBoolField(persistentData, IS_PARRIABLE_PATH);
+        return NBTUtils.getSpecificBoolField(persistentData, SBSDValues.IS_PARRIABLE_PATH);
     }
 
     public static void setParriable(CompoundTag persistentData, boolean b) {
-        persistentData.putBoolean(IS_PARRIABLE_PATH, b);
+        persistentData.putBoolean(SBSDValues.IS_PARRIABLE_PATH, b);
     }
 
     public static int getLeaderActionTickCount(CompoundTag persistentData) {
-        return NBTUtils.getSpecificIntField(persistentData, LEADER_ACTION_TICK_COUNT_PATH);
+        return NBTUtils.getSpecificIntField(persistentData, SBSDValues.LEADER_ACTION_TICK_COUNT_PATH);
     }
 
     public static void setLeaderActionTickCount(CompoundTag persistentData, int val) {
-        persistentData.putInt(LEADER_ACTION_TICK_COUNT_PATH, val);
+        persistentData.putInt(SBSDValues.LEADER_ACTION_TICK_COUNT_PATH, val);
     }
 
     public static int getLeaderNextActionTickCount(CompoundTag persistentData) {
-        return NBTUtils.getSpecificIntField(persistentData, LEADER_NEXT_ACTION_TICK_COUNT_PATH);
+        return NBTUtils.getSpecificIntField(persistentData, SBSDValues.LEADER_NEXT_ACTION_TICK_COUNT_PATH);
     }
 
     public static void setLeaderNextActionTickCount(CompoundTag persistentData, int val) {
-        persistentData.putInt(LEADER_NEXT_ACTION_TICK_COUNT_PATH, val);
+        persistentData.putInt(SBSDValues.LEADER_NEXT_ACTION_TICK_COUNT_PATH, val);
     }
 
     public static void initializeLeader(LivingEntity living, CompoundTag persistentData) {
         AttributeInstance instance = living.getAttribute(Attributes.MAX_HEALTH);
-        if (instance != null && !persistentData.contains(IS_INITIALIZED)) {
-            instance.addPermanentModifier(new AttributeModifier("sbsd.leader.health", LEADER_HP_SCALE, AttributeModifier.Operation.MULTIPLY_TOTAL));
-            persistentData.putBoolean(IS_INITIALIZED, true);
+        if (instance != null && !persistentData.contains(SBSDValues.IS_INITIALIZED)) {
+            instance.addPermanentModifier(new AttributeModifier("sbsd.leader.health", SBSDValues.LEADER_HP_SCALE, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            persistentData.putBoolean(SBSDValues.IS_INITIALIZED, true);
         }
         living.setHealth(living.getMaxHealth());
 
         if (living.level() instanceof ServerLevel serverLevel) {
             ServerScoreboard scoreboard = serverLevel.getScoreboard();
-            PlayerTeam team = scoreboard.getPlayerTeam(LEADER_TEAM_NAME);
+            PlayerTeam team = scoreboard.getPlayerTeam(SBSDValues.LEADER_TEAM_NAME);
             if (team == null) {
-                team = scoreboard.addPlayerTeam(LEADER_TEAM_NAME);
+                team = scoreboard.addPlayerTeam(SBSDValues.LEADER_TEAM_NAME);
                 team.setAllowFriendlyFire(false);
             }
             scoreboard.addPlayerToTeam(living.getScoreboardName(), team);

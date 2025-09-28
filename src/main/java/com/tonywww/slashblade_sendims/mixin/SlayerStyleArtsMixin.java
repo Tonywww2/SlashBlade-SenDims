@@ -1,26 +1,25 @@
 package com.tonywww.slashblade_sendims.mixin;
 
+import com.tonywww.slashblade_sendims.utils.SBSDValues;
 import mods.flammpfeil.slashblade.ability.SlayerStyleArts;
+import mods.flammpfeil.slashblade.ability.Untouchable;
 import mods.flammpfeil.slashblade.capability.mobeffect.CapabilityMobEffect;
 import mods.flammpfeil.slashblade.capability.mobeffect.IMobEffectState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.util.InputCommand;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(SlayerStyleArts.class)
 public class SlayerStyleArtsMixin {
-
-    @Unique
-    private static final int SPRINT_COST = 200;
 
     @Redirect(
             method = "onInputChange(Lmods/flammpfeil/slashblade/event/handler/InputCommandEvent;)V",
@@ -39,14 +38,35 @@ public class SlayerStyleArtsMixin {
                 return LazyOptional.empty();
             }
             int ap = UmaSoulUtils.getActionPoint(soul);
-            if (ap < SPRINT_COST) {
+            CompoundTag data = serverPlayer.getPersistentData();
+            if (ap < SBSDValues.SPRINT_COST ||
+                    (
+                            data.contains(SBSDValues.SPRINT_CD_PATH) &&
+                                    data.getInt(SBSDValues.SPRINT_CD_PATH) > 0
+                    )) {
                 return LazyOptional.empty();
             } else {
-                UmaSoulUtils.addActionPoint(soul, -SPRINT_COST);
+                // Success
+                data.putInt(SBSDValues.SPRINT_CD_PATH, SBSDValues.SPRINT_CD);
+                data.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, false);
+                UmaSoulUtils.addActionPoint(soul, -SBSDValues.SPRINT_COST);
             }
         }
 
         return serverPlayer.getCapability(CapabilityMobEffect.MOB_EFFECT);
     }
+
+    @Redirect(
+            method = "onInputChange(Lmods/flammpfeil/slashblade/event/handler/InputCommandEvent;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lmods/flammpfeil/slashblade/ability/Untouchable;setUntouchable(Lnet/minecraft/world/entity/LivingEntity;I)V"
+            ),
+            remap = false
+    )
+    private void redirectUntouchable(LivingEntity entity, int ticks) {
+        Untouchable.setUntouchable(entity, SBSDValues.UNTOUCHABLE_TICK);
+    }
+
 
 }
