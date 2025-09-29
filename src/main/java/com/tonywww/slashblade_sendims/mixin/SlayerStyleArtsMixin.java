@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.mixin;
 
-import com.tonywww.slashblade_sendims.utils.SBSDValues;
+import com.tonywww.slashblade_sendims.SBSDValues;
+import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import mods.flammpfeil.slashblade.ability.SlayerStyleArts;
 import mods.flammpfeil.slashblade.ability.Untouchable;
 import mods.flammpfeil.slashblade.capability.mobeffect.CapabilityMobEffect;
@@ -47,7 +48,8 @@ public class SlayerStyleArtsMixin {
                 return LazyOptional.empty();
             } else {
                 // Success
-                data.putInt(SBSDValues.SPRINT_CD_PATH, SBSDValues.SPRINT_CD);
+                double scale = SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD.get());
+                data.putInt(SBSDValues.SPRINT_CD_PATH, (int) (SBSDValues.SPRINT_CD * scale + 0.5d));
                 data.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, false);
                 UmaSoulUtils.addActionPoint(soul, -SBSDValues.SPRINT_COST);
             }

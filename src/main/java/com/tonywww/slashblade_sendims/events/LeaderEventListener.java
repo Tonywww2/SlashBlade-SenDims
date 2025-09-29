@@ -1,7 +1,7 @@
 package com.tonywww.slashblade_sendims.events;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
-import com.tonywww.slashblade_sendims.utils.SBSDValues;
+import com.tonywww.slashblade_sendims.SBSDValues;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;

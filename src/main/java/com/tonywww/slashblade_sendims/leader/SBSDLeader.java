@@ -1,9 +1,10 @@
 package com.tonywww.slashblade_sendims.leader;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import com.tonywww.slashblade_sendims.utils.MobAttackManager;
 import com.tonywww.slashblade_sendims.utils.NBTUtils;
-import com.tonywww.slashblade_sendims.utils.SBSDValues;
+import com.tonywww.slashblade_sendims.SBSDValues;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
@@ -63,9 +64,9 @@ public class SBSDLeader {
             setLeaderParried(target, persistentData);
             // TODO 招架追加攻击做成饰品
             LivingEntity user = event.getUser();
-            AttackManager.doSlash(user, 45.0F, 0x6cf243, Vec3.ZERO,false, false, 1.25f, KnockBacks.meteor);
-            // TODO 招架追加回复做成饰品
-            user.heal(5f);
+            AttackManager.doSlash(user, 45.0F, 0x6cf243, Vec3.ZERO, false, false, 1.25f, KnockBacks.meteor);
+            float amount = (float) SBSDAttributes.getAttributeValue(event.getUser(), SBSDAttributes.SPRINT_CD.get());
+            user.heal(amount);
 
         }
     }

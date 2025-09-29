@@ -3,6 +3,10 @@
 
   "creativetab.slashblade_sendims_tab": "千界万锻",
 
+  "attribute.name.sbsd.sprint_cd": "特殊行动冷却",
+  "attribute.name.sbsd.sprint_cd_return": "特殊行动冷却返还",
+  "attribute.name.sbsd.parry_heal_amount": "招架治疗量",
+
   "ui.slashblade_sendims.deeprealm_certificate.rank": "阶级：",
   "ui.slashblade_sendims.deeprealm_certificate.rank.0": "无",
   "ui.slashblade_sendims.deeprealm_certificate.rank.1": "铜级",
