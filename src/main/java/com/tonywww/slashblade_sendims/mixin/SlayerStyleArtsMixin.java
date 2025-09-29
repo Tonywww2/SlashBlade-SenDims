@@ -8,6 +8,7 @@ import mods.flammpfeil.slashblade.capability.mobeffect.CapabilityMobEffect;
 import mods.flammpfeil.slashblade.capability.mobeffect.IMobEffectState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +46,7 @@ public class SlayerStyleArtsMixin {
                             data.contains(SBSDValues.SPRINT_CD_PATH) &&
                                     data.getInt(SBSDValues.SPRINT_CD_PATH) > 0
                     )) {
+                SBSDValues.notifyPlayer(serverPlayer, Component.translatable("text.slashblade_sendims.no_ap"));
                 return LazyOptional.empty();
             } else {
                 // Success

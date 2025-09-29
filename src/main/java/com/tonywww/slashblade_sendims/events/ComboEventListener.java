@@ -34,6 +34,7 @@ public class ComboEventListener {
                 int cost = SBSDValues.COMBO_COST_MAP.get(combo);
                 if (ap + cost < 0) {
                     slashBladeState.setComboSeq(ComboStateRegistry.NONE.getId());
+                    SBSDValues.notifyPlayer(player, Component.translatable("text.slashblade_sendims.no_ap"));
                     event.setCanceled(true);
 
                 } else {
