@@ -49,11 +49,19 @@ public class SBSDAttributes {
     public static final RegistryObject<Attribute> PARRY_HEAL_AMOUNT = ATTRIBUTES.register("parry_heal_amount",
             () -> new RangedAttribute("attribute.name.sbsd.parry_heal_amount", 3.0d, 0.0d, 512.0d).setSyncable(true));
 
+    public static final RegistryObject<Attribute> AP_REDUCE_AMOUNT = ATTRIBUTES.register("ap_reduce_amount",
+            () -> new RangedAttribute("attribute.name.sbsd.ap_reduce_amount", 0.0d, 0.0d, 512.0d).setSyncable(true));
+
+    public static final RegistryObject<Attribute> AP_GAIN_PERSENTAGE = ATTRIBUTES.register("ap_gain_amount",
+            () -> new PercentBasedAttribute("attribute.name.sbsd.ap_gain_amount", 1.0d, 0.0d, 512.0d).setSyncable(true));
+
     @SubscribeEvent
     public static void onEntityAttributeModificationEvent(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, SPRINT_CD.get());
         event.add(EntityType.PLAYER, SPRINT_CD_RETURN.get());
         event.add(EntityType.PLAYER, PARRY_HEAL_AMOUNT.get());
+        event.add(EntityType.PLAYER, AP_REDUCE_AMOUNT.get());
+        event.add(EntityType.PLAYER, AP_GAIN_PERSENTAGE.get());
     }
 
     public static double getAttributeValue(LivingEntity serverPlayer, Attribute attribute) {

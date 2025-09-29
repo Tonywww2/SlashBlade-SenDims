@@ -14,7 +14,7 @@ public class SBSDValues {
     public static final int SPRINT_CD = 40;
     public static final String SPRINT_CD_PATH = "sbsd.sprint.cd";
     public static final String SPRINT_SUCCESSED_PATH = "sbsd.sprint.cd_success";
-    public static final int SPRINT_COST = 75;
+    public static final int SPRINT_COST = -150;
     public static final int UNTOUCHABLE_TICK = 10;
     public static final int SPRINT_SUCCESS_AP = 300;
 

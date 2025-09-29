@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
@@ -28,22 +29,24 @@ public class UntouchableMixin {
                 if (soul == null || soul.isEmpty()) return;
                 CompoundTag persistentData = serverPlayer.getPersistentData();
                 if (!persistentData.contains(SBSDValues.SPRINT_SUCCESSED_PATH) || !persistentData.getBoolean(SBSDValues.SPRINT_SUCCESSED_PATH)) {
-                    UmaSoulUtils.addActionPoint(soul, SBSDValues.SPRINT_SUCCESS_AP);
+                    int gain = SBSDValues.SPRINT_SUCCESS_AP;
+                    AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_GAIN_PERSENTAGE.get());
+                    if (attributeInstance != null) gain = (int) (gain * attributeInstance.getValue());
+                    UmaSoulUtils.addActionPoint(soul, gain);
                     persistentData.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, true);
                     double scale = SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD_RETURN.get());
                     persistentData.putInt(SBSDValues.SPRINT_CD_PATH, (int) (persistentData.getInt(SBSDValues.SPRINT_CD_PATH) * scale));
 
-                serverPlayer.playNotifySound(SoundEvents.FIREWORK_ROCKET_LAUNCH, serverPlayer.getSoundSource(), 10.0f, 1.05f);
-                serverPlayer.serverLevel().sendParticles(ParticleTypes.END_ROD,
-                        serverPlayer.getX(), serverPlayer.getY() + 0.5d, serverPlayer.getZ(),
-                        12, 0.1d, 0.25d, 0.1d, 0.01d);
+                    serverPlayer.playNotifySound(SoundEvents.FIREWORK_ROCKET_LAUNCH, serverPlayer.getSoundSource(), 10.0f, 1.05f);
+                    serverPlayer.serverLevel().sendParticles(ParticleTypes.END_ROD,
+                            serverPlayer.getX(), serverPlayer.getY() + 0.5d, serverPlayer.getZ(),
+                            12, 0.1d, 0.25d, 0.1d, 0.01d);
 
                 }
 
             }
         }
     }
-
 
 
 }

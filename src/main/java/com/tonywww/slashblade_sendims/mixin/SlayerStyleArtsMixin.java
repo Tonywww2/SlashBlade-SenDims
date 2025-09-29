@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -53,7 +54,10 @@ public class SlayerStyleArtsMixin {
                 double scale = SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD.get());
                 data.putInt(SBSDValues.SPRINT_CD_PATH, (int) (SBSDValues.SPRINT_CD * scale + 0.5d));
                 data.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, false);
-                UmaSoulUtils.addActionPoint(soul, -SBSDValues.SPRINT_COST);
+                int cost = SBSDValues.SPRINT_COST;
+                AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
+                if (attributeInstance != null) cost = (int) Math.max(0, cost + attributeInstance.getValue());
+                UmaSoulUtils.addActionPoint(soul, cost);
             }
         }
 

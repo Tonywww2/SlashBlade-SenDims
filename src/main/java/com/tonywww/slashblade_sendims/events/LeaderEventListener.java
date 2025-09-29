@@ -2,11 +2,13 @@ package com.tonywww.slashblade_sendims.events;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
 import com.tonywww.slashblade_sendims.SBSDValues;
+import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -70,7 +72,10 @@ public class LeaderEventListener {
             ItemStack soul = UmapyoiAPI.getUmaSoul(serverPlayer);
             if (soul == null || soul.isEmpty()) return;
 
-            UmaSoulUtils.addActionPoint(soul, SBSDValues.HIT_LEADER_AP);
+            int gain = SBSDValues.HIT_LEADER_AP;
+            AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_GAIN_PERSENTAGE.get());
+            if (attributeInstance != null) gain = (int) (gain * attributeInstance.getValue());
+            UmaSoulUtils.addActionPoint(soul, gain);
         }
 
     }

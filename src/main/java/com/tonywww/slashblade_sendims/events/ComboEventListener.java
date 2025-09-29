@@ -1,12 +1,14 @@
 package com.tonywww.slashblade_sendims.events;
 
 import com.tonywww.slashblade_sendims.SBSDValues;
+import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
@@ -32,6 +34,10 @@ public class ComboEventListener {
                 }
                 int ap = UmaSoulUtils.getActionPoint(soul);
                 int cost = SBSDValues.COMBO_COST_MAP.get(combo);
+                if (cost < 0) {
+                    AttributeInstance attributeInstance = player.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
+                    if (attributeInstance != null) cost = (int) Math.max(0, cost + attributeInstance.getValue());
+                }
                 if (ap + cost < 0) {
                     slashBladeState.setComboSeq(ComboStateRegistry.NONE.getId());
                     SBSDValues.notifyPlayer(player, Component.translatable("text.slashblade_sendims.no_ap"));
@@ -56,9 +62,13 @@ public class ComboEventListener {
                 return;
             }
             int ap = UmaSoulUtils.getActionPoint(soul);
-            int cost = 0;
+            int cost = 500;
             if (SBSDValues.SA_COST_MAP.containsKey(sa)) {
                 cost = SBSDValues.SA_COST_MAP.get(sa);
+            }
+            if (cost < 0) {
+                AttributeInstance attributeInstance = player.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
+                if (attributeInstance != null) cost = (int) Math.max(0, cost + attributeInstance.getValue());
             }
             if (ap + cost < 0) {
                 event.setComboState(ComboStateRegistry.NONE.getId());

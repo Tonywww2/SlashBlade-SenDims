@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.items.StructureQuill;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -18,6 +19,8 @@ public class SBSDCreativeTabs {
                     .title(Component.translatable("creativetab.slashblade_sendims_tab"))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(SBSDItems.DEEPREALM_CERTIFICATE.get());
+                        pOutput.accept(SBSDItems.STRUCTURE_QUILL.get());
+                        pOutput.accept(StructureQuill.forStructure("minecraft:stronghold"));
 
                     })
                     .build());

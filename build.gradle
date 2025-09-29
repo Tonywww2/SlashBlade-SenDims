@@ -154,6 +154,8 @@ dependencies {
 //    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:6982173")
     implementation fg.deobf("mods.sbr:slashblade-resharped:1.20.1-1.6.54")
 
+    implementation fg.deobf("curse.maven:zeta-968868:6432578")
+    implementation fg.deobf("curse.maven:quark-243121:6427817")
 
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
@@ -169,6 +171,7 @@ dependencies {
     implementation fg.deobf("dev.shadowsoffire:Apotheosis:${minecraft_version}-${apothVersion}")
 
     implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
+
 
     runtimeOnly fg.deobf("curse.maven:kubejs-238086:5853326")
     runtimeOnly fg.deobf("curse.maven:rhino-416294:6186971")

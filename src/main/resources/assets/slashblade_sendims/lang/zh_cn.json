@@ -1,11 +1,23 @@
 {
 	"item.slashblade_sendims.deeprealm_certificate": "深境证章",
+	"item.slashblade_sendims.structure_quill": "结构羽毛笔",
+
+	"message.slashblade_sendims.structure_quill.tooltip": "右键点击以搜索附近的结构并创建地图",
+	"message.slashblade_sendims.structure_quill.searching": "正在搜索结构...",
+	"message.slashblade_sendims.structure_quill.no_target": "未指定目标结构",
+	"message.slashblade_sendims.structure_quill.invalid_structure": "无效的结构目标",
+	"message.slashblade_sendims.structure_quill.success": "地图创建成功！",
+	"message.slashblade_sendims.structure_quill.failed": "在该区域未找到结构",
+	"message.slashblade_sendims.structure_quill.error": "搜索时发生错误",
+	"message.slashblade_sendims.structure_quill.start_search": "开始搜索结构...",
 
 	"creativetab.slashblade_sendims_tab": "千界万锻",
 
 	"attribute.name.sbsd.sprint_cd": "特殊行动冷却",
 	"attribute.name.sbsd.sprint_cd_return": "特殊行动冷却返还",
 	"attribute.name.sbsd.parry_heal_amount": "招架治疗量",
+	"attribute.name.sbsd.ap_reduce_amount": "刀剑行动力效率",
+	"attribute.name.sbsd.ap_gain_amount": "刀剑行动力恢复",
 
 	"ui.slashblade_sendims.deeprealm_certificate.rank": "阶级：",
 	"ui.slashblade_sendims.deeprealm_certificate.rank.0": "无",
