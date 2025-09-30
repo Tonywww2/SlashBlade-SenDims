@@ -41,6 +41,7 @@ public class ComboEventListener {
                 if (ap + cost < 0) {
                     slashBladeState.setComboSeq(ComboStateRegistry.NONE.getId());
                     SBSDValues.notifyPlayer(player, Component.translatable("text.slashblade_sendims.no_ap"));
+                    player.getCooldowns().addCooldown(player.getMainHandItem().getItem(), SBSDValues.CANCELED_CD);
                     event.setCanceled(true);
 
                 } else {
@@ -52,7 +53,7 @@ public class ComboEventListener {
     }
 
     @SubscribeEvent
-    public static void Listener(SlashBladeEvent.ChargeActionEvent event) {
+    public static void ChargeActionEventListener(SlashBladeEvent.ChargeActionEvent event) {
         if (event.getEntityLiving() instanceof Player player) {
             ResourceLocation sa = event.getComboState();
 
@@ -73,6 +74,7 @@ public class ComboEventListener {
             if (ap + cost < 0) {
                 event.setComboState(ComboStateRegistry.NONE.getId());
                 SBSDValues.notifyPlayer(player, Component.translatable("text.slashblade_sendims.no_ap"));
+                player.getCooldowns().addCooldown(player.getMainHandItem().getItem(), SBSDValues.CANCELED_CD);
                 event.setCanceled(true);
 
             } else {

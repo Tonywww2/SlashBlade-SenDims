@@ -42,12 +42,11 @@ public class SlayerStyleArtsMixin {
             }
             int ap = UmaSoulUtils.getActionPoint(soul);
             CompoundTag data = serverPlayer.getPersistentData();
-            if (ap < SBSDValues.SPRINT_COST ||
-                    (
-                            data.contains(SBSDValues.SPRINT_CD_PATH) &&
-                                    data.getInt(SBSDValues.SPRINT_CD_PATH) > 0
-                    )) {
+            if (ap < SBSDValues.SPRINT_COST) {
                 SBSDValues.notifyPlayer(serverPlayer, Component.translatable("text.slashblade_sendims.no_ap"));
+                return LazyOptional.empty();
+            } else if (data.contains(SBSDValues.SPRINT_CD_PATH) &&
+                    data.getInt(SBSDValues.SPRINT_CD_PATH) > 0) {
                 return LazyOptional.empty();
             } else {
                 // Success
@@ -56,7 +55,7 @@ public class SlayerStyleArtsMixin {
                 data.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, false);
                 int cost = SBSDValues.SPRINT_COST;
                 AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
-                if (attributeInstance != null) cost = (int) Math.max(0, cost + attributeInstance.getValue());
+                if (attributeInstance != null) cost = (int) Math.min(0, cost + attributeInstance.getValue());
                 UmaSoulUtils.addActionPoint(soul, cost);
             }
         }

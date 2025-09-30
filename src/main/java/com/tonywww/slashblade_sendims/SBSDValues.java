@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.*;
 
 public class SBSDValues {
+    public static final int CANCELED_CD = 8;
     // SPRINT
     public static final int SPRINT_CD = 40;
     public static final String SPRINT_CD_PATH = "sbsd.sprint.cd";

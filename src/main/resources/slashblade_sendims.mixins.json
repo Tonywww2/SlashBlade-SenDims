@@ -4,6 +4,7 @@
   "required": true,
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
+    "EntWallEntityMixin",
     "SlayerStyleArtsMixin",
     "UntouchableMixin"
   ],
