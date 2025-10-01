@@ -24,14 +24,11 @@ public class ComboEventListener {
     @SubscribeEvent
     public static void BladeMotionEventListener(BladeMotionEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-//            ISlashBladeState slashBladeState = event.getSlashBladeState();
-//            ResourceLocation combo = slashBladeState.getComboSeq();
             ResourceLocation combo = event.getCombo();
             if (SBSDValues.COMBO_COST_MAP.containsKey(combo)) {
                 ItemStack soul = UmapyoiAPI.getUmaSoul(player);
                 if (soul == null || soul.isEmpty()) {
                     event.setCombo(ComboStateRegistry.NONE.getId());
-//                    event.setCanceled(true);
                     return;
                 }
                 int ap = UmaSoulUtils.getActionPoint(soul);
@@ -41,11 +38,9 @@ public class ComboEventListener {
                     if (attributeInstance != null) cost = (int) Math.min(0, cost + attributeInstance.getValue());
                 }
                 if (ap + cost < 0) {
-//                    slashBladeState.setComboSeq(ComboStateRegistry.NONE.getId());
                     event.setCombo(ComboStateRegistry.NONE.getId());
                     SBSDValues.notifyPlayer(player, Component.translatable("text.slashblade_sendims.no_ap"));
                     player.getCooldowns().addCooldown(player.getMainHandItem().getItem(), SBSDValues.CANCELED_CD);
-//                    event.setCanceled(true);
 
                 } else {
                     UmaSoulUtils.addActionPoint(soul, cost);

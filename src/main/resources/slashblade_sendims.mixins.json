@@ -5,6 +5,8 @@
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
     "ComboStateRegistryMixin",
+    "EntityAbstractSummonedSwordAccessor",
+    "NagaMixin",
     "SlayerStyleArtsMixin",
     "UntouchableMixin"
   ],

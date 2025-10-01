@@ -41,8 +41,8 @@ public class SBSDValues {
     public static final int PRE_PARRY_TICK = 30;
     public static final int PARRY_TICK = 15;
     public static final int END_PARRIED_TICK = 140;
-    public static final double LEADER_HP_SCALE = 4.0d;
-    public static final float PARRIED_DAMAGE_SCALE = 3.0f;
+    public static final double LEADER_HP_SCALE = 5.0d;
+    public static final float PARRIED_DAMAGE_SCALE = 5.0f;
 
     public static final String BOSS_LEADER = "sbsd.boss";
     public static final String APOTH_BOSS = "apoth.boss";

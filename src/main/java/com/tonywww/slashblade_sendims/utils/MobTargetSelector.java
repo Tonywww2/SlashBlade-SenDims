@@ -21,7 +21,13 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class MobTargetSelector extends TargetSelector {
-    public static final TargetingConditions areaAttack = (new TargetingConditions(true) {
+
+    public static class MobTargetingConditions extends TargetingConditions {
+        public MobTargetingConditions(boolean pIsCombat) {
+            super(pIsCombat);
+        }
+
+        @Override
         public boolean test(@Nullable LivingEntity attacker, LivingEntity target) {
             boolean isAttackable = false;
             LivingEntity targetLastAttacked = target.getLastHurtByMob();
@@ -46,7 +52,11 @@ public class MobTargetSelector extends TargetSelector {
 
             return super.test(attacker, target);
         }
-    })
+    }
+
+    public static final TargetingConditions test = new MobTargetingConditions(true)
+            .selector(new MobAttackablePredicate());
+    public static final TargetingConditions areaAttack = new MobTargetingConditions(true)
             .range(12.0)
             .ignoreInvisibilityTesting()
             .selector(new MobAttackablePredicate());
