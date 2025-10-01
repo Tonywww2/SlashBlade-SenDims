@@ -23,7 +23,7 @@ public class SBSDValues {
     public static final int HIT_LEADER_AP = 20;
     public static final Map<ResourceLocation, Integer> COMBO_COST_MAP = new HashMap<>();
     static {
-        COMBO_COST_MAP.put(ComboStateRegistry.RAPID_SLASH.getId(), -175); // * 4 - 5
+        COMBO_COST_MAP.put(ComboStateRegistry.RAPID_SLASH.getId(), -800);
         COMBO_COST_MAP.put(ComboStateRegistry.UPPERSLASH.getId(), -400);
     }
 
