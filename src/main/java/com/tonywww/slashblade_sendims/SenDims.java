@@ -1,15 +1,12 @@
 package com.tonywww.slashblade_sendims;
 
 import com.mojang.logging.LogUtils;
-import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import com.tonywww.slashblade_sendims.registeries.SBSDCreativeTabs;
 import com.tonywww.slashblade_sendims.registeries.SBSDItems;
+import com.tonywww.slashblade_sendims.utils.CuriosUtils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -28,7 +25,7 @@ public class SenDims {
         IEventBus modEventBus = context.getModEventBus();
         MinecraftForge.EVENT_BUS.register(serverScheduler = new ServerScheduler());
 
-        SBSDAttributes.ATTRIBUTES.register(modEventBus);
+        CuriosUtils.ATTRIBUTES.register(modEventBus);
         SBSDItems.register(modEventBus);
         SBSDCreativeTabs.register(modEventBus);
 
