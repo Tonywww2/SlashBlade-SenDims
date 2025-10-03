@@ -1,4 +1,4 @@
-package com.tonywww.slashblade_sendims.mixin;
+package com.tonywww.slashblade_sendims.mixin.slashblade;
 
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
 import net.minecraft.world.level.block.state.BlockState;

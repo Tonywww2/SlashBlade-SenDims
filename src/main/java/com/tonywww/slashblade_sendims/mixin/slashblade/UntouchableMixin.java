@@ -1,4 +1,4 @@
-package com.tonywww.slashblade_sendims.mixin;
+package com.tonywww.slashblade_sendims.mixin.slashblade;
 
 import com.tonywww.slashblade_sendims.SBSDValues;
 import com.tonywww.slashblade_sendims.SenDims;

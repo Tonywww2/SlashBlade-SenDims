@@ -1,4 +1,4 @@
-package com.tonywww.slashblade_sendims.mixin;
+package com.tonywww.slashblade_sendims.mixin.twilightforest;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
 import org.spongepowered.asm.mixin.Final;

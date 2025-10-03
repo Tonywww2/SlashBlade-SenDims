@@ -1,13 +1,15 @@
 package com.tonywww.slashblade_sendims;
 
 import com.mojang.logging.LogUtils;
+import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import com.tonywww.slashblade_sendims.registeries.SBSDCreativeTabs;
 import com.tonywww.slashblade_sendims.registeries.SBSDItems;
-import com.tonywww.slashblade_sendims.utils.CuriosUtils;
+import com.tonywww.slashblade_sendims.registeries.SBSDParticles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import se.mickelus.mutil.scheduling.ServerScheduler;
@@ -16,8 +18,9 @@ import se.mickelus.mutil.scheduling.ServerScheduler;
 public class SenDims {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "slashblade_sendims";
+
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static ServerScheduler serverScheduler;
 
@@ -25,9 +28,12 @@ public class SenDims {
         IEventBus modEventBus = context.getModEventBus();
         MinecraftForge.EVENT_BUS.register(serverScheduler = new ServerScheduler());
 
-        CuriosUtils.ATTRIBUTES.register(modEventBus);
+        SBSDParticles.register(modEventBus);
+
+        SBSDAttributes.register(modEventBus);
         SBSDItems.register(modEventBus);
         SBSDCreativeTabs.register(modEventBus);
+
 
     }
 

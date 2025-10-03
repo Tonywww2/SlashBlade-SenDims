@@ -1,6 +1,6 @@
 package com.tonywww.slashblade_sendims.entities;
 
-import com.tonywww.slashblade_sendims.mixin.EntityAbstractSummonedSwordAccessor;
+import com.tonywww.slashblade_sendims.mixin.slashblade.EntityAbstractSummonedSwordAccessor;
 import com.tonywww.slashblade_sendims.utils.MobTargetSelector;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;

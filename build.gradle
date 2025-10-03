@@ -139,6 +139,11 @@ repositories {
         url "https://cursemaven.com"
     }
 
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+
     mavenLocal()
     maven {
         url = "file://C:/Users/12044/Documents/EX/IDEA_PROJECT/maven-repo"
@@ -152,6 +157,7 @@ dependencies {
     implementation fg.deobf("curse.maven:curios-309927:6418456")
     implementation fg.deobf("curse.maven:lionfish-api-1001614:5922047")
     implementation fg.deobf("curse.maven:playeranimator-658587:4587214")
+    implementation fg.deobf("curse.maven:citadel-331936:6702068")
 
     implementation fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
     implementation fg.deobf("curse.maven:umapyoi-776121:7013344")
@@ -162,6 +168,8 @@ dependencies {
 
     implementation fg.deobf("curse.maven:zeta-968868:6432578")
     implementation fg.deobf("curse.maven:quark-243121:6427817")
+
+    implementation fg.deobf("curse.maven:nuclearcraft-neoteric-840010:7043527")
 
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))

@@ -4,11 +4,13 @@
   "required": true,
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
-    "ComboStateRegistryMixin",
-    "EntityAbstractSummonedSwordAccessor",
-    "NagaMixin",
-    "SlayerStyleArtsMixin",
-    "UntouchableMixin"
+    "slashblade.ComboStateRegistryMixin",
+    "slashblade.EntityAbstractSummonedSwordAccessor",
+    "twilightforest.NagaMixin",
+    "slashblade.SlayerStyleArtsMixin",
+    "slashblade.UntouchableMixin",
+    "nc.NCFluidsMixin",
+    "nc.NCFluidsMixin$FluidEntryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

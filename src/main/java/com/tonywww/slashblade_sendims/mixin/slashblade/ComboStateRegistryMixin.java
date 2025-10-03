@@ -1,4 +1,4 @@
-package com.tonywww.slashblade_sendims.mixin;
+package com.tonywww.slashblade_sendims.mixin.slashblade;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
