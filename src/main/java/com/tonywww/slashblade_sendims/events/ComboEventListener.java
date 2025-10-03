@@ -95,6 +95,7 @@ public class ComboEventListener {
         if (cd > 0) {
             cd--;
             data.putInt(SBSDValues.SPRINT_CD_PATH, cd);
+            if (cd == 0) data.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, true);
         }
 
     }

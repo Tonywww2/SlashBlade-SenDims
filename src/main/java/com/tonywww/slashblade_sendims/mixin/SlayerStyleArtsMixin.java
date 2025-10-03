@@ -4,14 +4,19 @@ import com.tonywww.slashblade_sendims.SBSDValues;
 import com.tonywww.slashblade_sendims.utils.UmaUtils;
 import mods.flammpfeil.slashblade.ability.SlayerStyleArts;
 import mods.flammpfeil.slashblade.ability.Untouchable;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.InputCommand;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.EnumSet;
@@ -38,6 +43,19 @@ public class SlayerStyleArtsMixin {
         if (!UmaUtils.checkSprint(sender)) {
             cir.setReturnValue(true);
         }
+    }
+
+    @Inject(method = "prepareTeleportEffects(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"), cancellable = true, remap = false)
+    private static void injectPrepareTeleportEffects(Entity entityIn, CallbackInfo ci) {
+        if (entityIn instanceof ServerPlayer serverPlayer) {
+            serverPlayer.playNotifySound(SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.75F, 1.25F);
+            serverPlayer.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
+                state.updateComboSeq(serverPlayer, state.getComboRoot());
+            });
+            Untouchable.setUntouchable(serverPlayer, 10);
+            serverPlayer.getPersistentData().putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, true);
+        }
+        ci.cancel();
     }
 
     @Redirect(

@@ -3,8 +3,11 @@ package com.tonywww.slashblade_sendims;
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -67,5 +70,12 @@ public class SBSDValues {
     public static void notifyPlayer(Player player, MutableComponent translatable) {
         player.sendSystemMessage(translatable);
 
+    }
+
+    public static void doSprintSuccessIndicators(ServerPlayer serverPlayer, int count) {
+        serverPlayer.playNotifySound(SoundEvents.FIREWORK_ROCKET_LAUNCH, serverPlayer.getSoundSource(), 0.5f * count, 1.05f);
+        serverPlayer.serverLevel().sendParticles(ParticleTypes.END_ROD,
+                serverPlayer.getX(), serverPlayer.getY() + 0.5d, serverPlayer.getZ(),
+                count * 3, 0.5d, 0.25d, 0.5d, 0.05d);
     }
 }
