@@ -1,10 +1,7 @@
 package com.tonywww.slashblade_sendims;
 
 import com.mojang.logging.LogUtils;
-import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
-import com.tonywww.slashblade_sendims.registeries.SBSDCreativeTabs;
-import com.tonywww.slashblade_sendims.registeries.SBSDItems;
-import com.tonywww.slashblade_sendims.registeries.SBSDParticles;
+import com.tonywww.slashblade_sendims.registeries.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -29,6 +26,7 @@ public class SenDims {
         MinecraftForge.EVENT_BUS.register(serverScheduler = new ServerScheduler());
 
         SBSDParticles.register(modEventBus);
+        SBSDSpecialEffects.register(modEventBus);
 
         SBSDAttributes.register(modEventBus);
         SBSDItems.register(modEventBus);

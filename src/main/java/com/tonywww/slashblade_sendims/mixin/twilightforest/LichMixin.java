@@ -23,31 +23,31 @@ import twilightforest.init.TFSounds;
 
 import java.util.Optional;
 
-@Mixin(value = Lich.class, remap = false)
+@Mixin(value = Lich.class, remap = true)
 public abstract class LichMixin extends Monster {
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private static EntityDataAccessor<Boolean> IS_CLONE;
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private static EntityDataAccessor<Integer> SHIELD_STRENGTH;
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private static EntityDataAccessor<Integer> MINIONS_LEFT;
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private static EntityDataAccessor<Integer> ATTACK_TYPE;
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private static EntityDataAccessor<Optional<GlobalPos>> HOME_POINT;
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     public static int INITIAL_SHIELD_STRENGTH = 12;
 
     @Unique
@@ -56,17 +56,17 @@ public abstract class LichMixin extends Monster {
     @Unique
     private static int SHIELD_BREAK_CD = 120;
 
-    @Shadow
+    @Shadow(remap = false)
     public abstract int getShieldStrength();
 
-    @Shadow
+    @Shadow(remap = false)
     public abstract int getPhase();
 
     protected LichMixin(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
-    @Inject(method = "defineSynchedData()V", at = @At("HEAD"), remap = false, cancellable = true)
+    @Inject(method = "defineSynchedData()V", at = @At("HEAD"), cancellable = true)
     private void injectDefineSynchedData(CallbackInfo ci) {
         super.defineSynchedData();
         this.getEntityData().define(IS_CLONE, false);

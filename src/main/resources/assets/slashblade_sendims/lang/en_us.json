@@ -2,6 +2,8 @@
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
   "item.slashblade_sendims.structure_quill": "结构羽毛笔",
 
+  "se.slashblade_sendims.frenzied_flame": "癫火",
+
   "message.slashblade_sendims.structure_quill.tooltip": "右键点击以创建地图",
   "message.slashblade_sendims.structure_quill.searching": "正在搜索结构...",
   "message.slashblade_sendims.structure_quill.no_target": "未指定目标结构",
