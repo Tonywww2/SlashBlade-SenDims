@@ -29,8 +29,9 @@ public class FrenziedFlame extends SpecialEffect {
 
     public static final int BASE_MADNESS = 4;
     public static final int MADNESS_STUN_TICK = 50;
-    public static final int MADNESS_BASE_DAMAGE_COUNT = 5;
-    public static final int MADNESS_BADE_DAMAGE = 6;
+
+    public static final int MADNESS_BASE_DAMAGE_COUNT = 6;
+    public static final int MADNESS_BADE_DAMAGE = 4;
     public static final int DAMAGE_CYCLE = 20;
     public static final int COUNT_CYCLE = 8;
 
