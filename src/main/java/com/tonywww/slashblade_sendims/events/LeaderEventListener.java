@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 import twilightforest.entity.boss.Naga;
+import twilightforest.init.TFEntities;
 
 @Mod.EventBusSubscriber
 public class LeaderEventListener {
@@ -34,13 +35,14 @@ public class LeaderEventListener {
                 SBSDLeader.tickLeader(living, serverLevel, persistentData, living.tickCount);
 
             }
-        } else if (persistentData.contains(SBSDValues.BOSS_LEADER)) {
-            if (living.level() instanceof ServerLevel serverLevel) {
-                SBSDLeader.tickBossLeader(living, serverLevel, persistentData, living.tickCount);
-
-            }
-
         }
+//        else if (persistentData.contains(SBSDValues.BOSS_LEADER)) {
+//            if (living.level() instanceof ServerLevel serverLevel) {
+//
+//                SBSDLeader.tickBossLeader(living, serverLevel, persistentData, living.tickCount);
+//
+//            }
+//        }
 
     }
 
@@ -62,7 +64,7 @@ public class LeaderEventListener {
             if (persistentData.contains(SBSDValues.APOTH_BOSS)) {
                 SBSDLeader.initializeLeader(living, persistentData);
 
-            } else if (event.getEntity() instanceof Naga) {
+            } else if (event.getEntity().getType() == TFEntities.NAGA.get()) {
                 persistentData.putBoolean(SBSDValues.BOSS_LEADER, true);
 
             } else if (false) {
@@ -111,6 +113,5 @@ public class LeaderEventListener {
         UmaSoulUtils.addActionPoint(soul, gain);
 
     }
-
 
 }

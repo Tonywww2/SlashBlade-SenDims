@@ -119,7 +119,7 @@ public class SBSDLeader {
     }
 
     public static void tickBossParried(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData) {
-        if(tickParried(entity, serverLevel, persistentData)) {
+        if (tickParried(entity, serverLevel, persistentData)) {
             if (entity instanceof Naga naga) {
                 naga.getMovementAI().doDaze();
             }
@@ -249,11 +249,31 @@ public class SBSDLeader {
 
     }
 
+    public static void doLeaderSAMagicSLash(LivingEntity entity, ServerLevel serverLevel) {
+        MobAttackManager.doSlash(entity, 90, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
+                true, false, false, 0.2f, KnockBacks.cancel);
+        MobAttackManager.doSlash(entity, 210, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
+                true, false, false, 0.2f, KnockBacks.cancel);
+        MobAttackManager.doSlash(entity, -30, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
+                true, false, false, 0.2f, KnockBacks.cancel);
+
+    }
+
     public static void doLeaderSATripleDrive(LivingEntity entity, ServerLevel serverLevel) {
         EntityMobDrive.doSlash(entity, 0f, 0f, 60, 0x126000, Vec3.ZERO,
                 false, 0.3f, KnockBacks.cancel, 1.5f, 2f);
         EntityMobDrive.doSlash(entity, 90f, 0f, 60, 0x126000, Vec3.ZERO,
                 false, 0.3f, KnockBacks.cancel, 1.5f, 2f);
+
+    }
+
+    public static void doLeaderSAMagicDrive(LivingEntity entity, ServerLevel serverLevel) {
+        EntityMobDrive.doSlash(entity, 60, 0f, 60, 0xb16cc4, Vec3.ZERO,
+                false, 0.15f, KnockBacks.cancel, 0.75f, 0.75f);
+        EntityMobDrive.doSlash(entity, 180, 0f, 60, 0xb16cc4, Vec3.ZERO,
+                false, 0.15f, KnockBacks.cancel, 0.75f, 0.75f);
+        EntityMobDrive.doSlash(entity, 300, 0f, 60, 0xb16cc4, Vec3.ZERO,
+                false, 0.15f, KnockBacks.cancel, 0.75f, 0.75f);
 
     }
 

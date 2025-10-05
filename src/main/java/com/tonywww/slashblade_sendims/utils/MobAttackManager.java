@@ -72,32 +72,6 @@ public class MobAttackManager {
                     }
                 }
             }
-//            for (
-//                    Iterator<Entity> var9 = founds.iterator();
-//                    var9.hasNext();
-//                    doAttackWith(
-//                            owner.damageSources().indirectMagic(owner, owner.getShooter()), (float) baseAmount, entity, forceHit, resetHit
-//                    )
-//
-//            ) {
-//                entity = var9.next();
-//                if (entity instanceof LivingEntity living) {
-//                    beforeHit.accept(living);
-//                }
-//
-//                baseAmount = owner.getDamage();
-//                Entity shooter = owner.getShooter();
-//                if (shooter instanceof LivingEntity living) {
-//                    if (!(owner instanceof EntityMobSlashEffect)) {
-//                        int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-//                        baseAmount += (double) powerLevel * 0.1;
-//                    }
-//
-//                    baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
-//                    baseAmount += AttackHelper.getRankBonus(living);
-//                    baseAmount *= (comboRatio * AttackManager.getSlashBladeDamageScale(living));
-//                }
-//            }
         }
 
         return founds;

@@ -1,23 +1,33 @@
 package com.tonywww.slashblade_sendims.mixin.twilightforest;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import twilightforest.entity.ai.goal.NagaMovementPattern;
 import twilightforest.entity.boss.Naga;
 
-@Mixin(value = NagaMovementPattern.class)
-public class NagaMixin {
-    @Final
-    @Shadow(remap = false)
-    private Naga naga;
+@Mixin(value = Naga.class)
+public class NagaMixin extends Monster {
 
-    @Inject(method = "doCharge(Z)V", at = @At("HEAD"), remap = false)
-    public void injectDoCharge(boolean stunless, CallbackInfo ci) {
-        SBSDLeader.doLeaderSATripleDrive(naga, null);
+    protected NagaMixin(EntityType<? extends Monster> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
     }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.level() instanceof ServerLevel serverLevel) {
+            SBSDLeader.tickBossLeader(this, serverLevel, this.getPersistentData(), this.tickCount);
+
+        }
+    }
+
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        return super.hurt(pSource, pAmount);
+    }
+
 }
