@@ -52,8 +52,17 @@ public class SBSDAttributes {
     public static final RegistryObject<Attribute> AP_REDUCE_AMOUNT = ATTRIBUTES.register("ap_reduce_amount",
             () -> new RangedAttribute("attribute.name.sbsd.ap_reduce_amount", 0.0d, 0.0d, 512.0d).setSyncable(true));
 
-    public static final RegistryObject<Attribute> AP_GAIN_PERSENTAGE = ATTRIBUTES.register("ap_gain_amount",
-            () -> new PercentBasedAttribute("attribute.name.sbsd.ap_gain_amount", 1.0d, 0.0d, 512.0d).setSyncable(true));
+    public static final RegistryObject<Attribute> AP_GAIN_PERCENTAGE = ATTRIBUTES.register("ap_gain_percentage",
+            () -> new PercentBasedAttribute("attribute.name.sbsd.ap_gain_percentage", 1.0d, 0.0d, 512.0d).setSyncable(true));
+
+    public static final RegistryObject<Attribute> MADNESS_REDUCE = ATTRIBUTES.register("madness_reduce",
+            () -> new RangedAttribute("attribute.name.sbsd.madness_reduce", 0.0d, 0.0d, 512.0d).setSyncable(true));
+
+    public static final RegistryObject<Attribute> FRENZY_RESISTANCE = ATTRIBUTES.register("frenzy_resistance",
+            () -> new PercentBasedAttribute("attribute.name.sbsd.frenzy_resistance", 0.0d, 0.0d, 1.0d).setSyncable(true));
+
+    public static final RegistryObject<Attribute> FRENZY_DAMAGE = ATTRIBUTES.register("frenzy_damage",
+            () -> new PercentBasedAttribute("attribute.name.sbsd.frenzy_damage", 0.0d, 0.0d, 512.0d).setSyncable(true));
 
     @SubscribeEvent
     public static void onEntityAttributeModificationEvent(final EntityAttributeModificationEvent event) {
@@ -61,7 +70,11 @@ public class SBSDAttributes {
         event.add(EntityType.PLAYER, SPRINT_CD_RETURN.get());
         event.add(EntityType.PLAYER, PARRY_HEAL_AMOUNT.get());
         event.add(EntityType.PLAYER, AP_REDUCE_AMOUNT.get());
-        event.add(EntityType.PLAYER, AP_GAIN_PERSENTAGE.get());
+        event.add(EntityType.PLAYER, AP_GAIN_PERCENTAGE.get());
+
+        event.add(EntityType.PLAYER, MADNESS_REDUCE.get());
+        event.add(EntityType.PLAYER, FRENZY_RESISTANCE.get());
+        event.add(EntityType.PLAYER, FRENZY_DAMAGE.get());
     }
 
     public static double getAttributeValue(LivingEntity serverPlayer, Attribute attribute) {

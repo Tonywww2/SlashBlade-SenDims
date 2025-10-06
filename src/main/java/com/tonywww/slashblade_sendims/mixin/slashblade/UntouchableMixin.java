@@ -34,7 +34,7 @@ public class UntouchableMixin {
                         persistentData.getBoolean(SBSDValues.SPRINT_SUCCESSED_PATH)) return;
 
                 int gain = SBSDValues.SPRINT_SUCCESS_AP;
-                AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_GAIN_PERSENTAGE.get());
+                AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_GAIN_PERCENTAGE.get());
                 if (attributeInstance != null) gain = (int) (gain * attributeInstance.getValue());
                 UmaSoulUtils.addActionPoint(soul, gain);
                 persistentData.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, true);

@@ -2,7 +2,8 @@
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
   "item.slashblade_sendims.structure_quill": "结构羽毛笔",
 
-  "se.slashblade_sendims.frenzied_flame": "癫火",
+  "slash_art.slashblade_sendims.frenzied_burst": "§6划空癫火",
+  "se.slashblade_sendims.frenzied_flame": "§6癫火",
 
   "message.slashblade_sendims.structure_quill.tooltip": "右键点击以创建地图",
   "message.slashblade_sendims.structure_quill.searching": "正在搜索结构...",
@@ -19,7 +20,10 @@
   "attribute.name.sbsd.sprint_cd_return": "特殊行动冷却返还",
   "attribute.name.sbsd.parry_heal_amount": "招架治疗量",
   "attribute.name.sbsd.ap_reduce_amount": "刀剑行动力效率",
-  "attribute.name.sbsd.ap_gain_amount": "刀剑行动力恢复",
+  "attribute.name.sbsd.ap_gain_percentage": "刀剑行动力恢复",
+  "attribute.name.sbsd.madness_reduce": "发狂抵抗",
+  "attribute.name.sbsd.frenzy_resistance": "癫火抗性",
+  "attribute.name.sbsd.frenzy_damage": "癫火伤害",
 
   "ui.slashblade_sendims.deeprealm_certificate.rank": "阶级：",
   "ui.slashblade_sendims.deeprealm_certificate.rank.0": "无",
@@ -28,7 +32,6 @@
   "ui.slashblade_sendims.deeprealm_certificate.rank.3": "金级",
   "ui.slashblade_sendims.deeprealm_certificate.rank.4": "钻石级",
   "ui.slashblade_sendims.deeprealm_certificate.rank.5": "合金级",
-
   "ui.slashblade_sendims.deeprealm_certificate.healthprogress": "生命强化进度：",
   "ui.slashblade_sendims.deeprealm_certificate.damageprogress": "伤害强化进度：",
 
