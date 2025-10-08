@@ -2,7 +2,6 @@ package com.tonywww.slashblade_sendims.mixin.twilightforest;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
@@ -24,10 +23,4 @@ public class NagaMixin extends Monster {
 
         }
     }
-
-    @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-        return super.hurt(pSource, pAmount);
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.items.BloodJade;
 import com.tonywww.slashblade_sendims.items.DeepRealmCertificate;
 import com.tonywww.slashblade_sendims.items.StructureQuill;
 import net.minecraft.world.item.Item;
@@ -26,6 +27,12 @@ public class SBSDItems {
                     .stacksTo(1)
                     .fireResistant()
                     .rarity(Rarity.UNCOMMON)
+            ));
+    public static final RegistryObject<Item> BLOOD_JADE = ITEMS.register("blood_jade",
+            () -> new BloodJade(new Item.Properties()
+                    .stacksTo(64)
+                    .fireResistant()
+                    .rarity(Rarity.RARE)
             ));
 
     public static void register(IEventBus eventBus) {

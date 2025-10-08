@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.items.BloodJade;
 import com.tonywww.slashblade_sendims.items.StructureQuill;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,15 @@ public class SBSDCreativeTabs {
                         pOutput.accept(SBSDItems.DEEPREALM_CERTIFICATE.get());
                         pOutput.accept(SBSDItems.STRUCTURE_QUILL.get());
                         pOutput.accept(StructureQuill.forStructure("minecraft:stronghold"));
+
+                        pOutput.accept(SBSDItems.BLOOD_JADE.get());
+                        pOutput.accept(BloodJade.withKillCount(10));
+                        pOutput.accept(BloodJade.withKillCount(50));
+                        pOutput.accept(BloodJade.withKillCount(100));
+                        pOutput.accept(BloodJade.withKillCount(500));
+                        pOutput.accept(BloodJade.withKillCount(1000));
+                        pOutput.accept(BloodJade.withKillCount(5000));
+                        pOutput.accept(BloodJade.withKillCount(10000));
 
                     })
                     .build());

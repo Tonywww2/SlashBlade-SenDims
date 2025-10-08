@@ -28,6 +28,7 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.joml.Vector3f;
 import twilightforest.entity.ai.goal.NagaMovementPattern;
+import twilightforest.entity.boss.Minoshroom;
 import twilightforest.entity.boss.Naga;
 
 public class SBSDLeader {
@@ -78,7 +79,6 @@ public class SBSDLeader {
                         }
                     }
 
-
                 }
             }
 
@@ -95,7 +95,7 @@ public class SBSDLeader {
             // TODO 招架追加攻击做成饰品
             LivingEntity user = event.getUser();
             AttackManager.doSlash(user, 45.0F, 0x6cf243, Vec3.ZERO, false, false, 1.25f, KnockBacks.meteor);
-            float amount = (float) SBSDAttributes.getAttributeValue(event.getUser(), SBSDAttributes.SPRINT_CD.get());
+            float amount = (float) SBSDAttributes.getAttributeValue(event.getUser(), SBSDAttributes.PARRY_HEAL_AMOUNT.get());
             user.heal(amount);
             return true;
         }
@@ -311,7 +311,7 @@ public class SBSDLeader {
 
     public static void spawnIndicatorParticles(ServerLevel serverLevel, ParticleOptions particle, double xPos, double yPos, double zPos, int count, double speed) {
         int points = 16;
-        double radius = 1;
+        double radius = 1.5d;
         for (int i = 0; i < points; i++) {
             double angle = 2 * Math.PI * i / points;
             double px = xPos + radius * Math.cos(angle);

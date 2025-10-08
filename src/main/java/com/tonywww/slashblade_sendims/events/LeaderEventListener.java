@@ -19,6 +19,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
+import twilightforest.entity.boss.AlphaYeti;
+import twilightforest.entity.boss.KnightPhantom;
+import twilightforest.entity.boss.Minoshroom;
 import twilightforest.entity.boss.Naga;
 import twilightforest.init.TFEntities;
 
@@ -31,18 +34,10 @@ public class LeaderEventListener {
         CompoundTag persistentData = living.getPersistentData();
         if (persistentData.contains(SBSDValues.APOTH_BOSS)) {
             if (living.level() instanceof ServerLevel serverLevel) {
-
                 SBSDLeader.tickLeader(living, serverLevel, persistentData, living.tickCount);
 
             }
         }
-//        else if (persistentData.contains(SBSDValues.BOSS_LEADER)) {
-//            if (living.level() instanceof ServerLevel serverLevel) {
-//
-//                SBSDLeader.tickBossLeader(living, serverLevel, persistentData, living.tickCount);
-//
-//            }
-//        }
 
     }
 
@@ -61,6 +56,11 @@ public class LeaderEventListener {
     public static void EntityJoinLevelEventListener(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof LivingEntity living) {
             CompoundTag persistentData = living.getPersistentData();
+            if (living instanceof Minoshroom || living instanceof KnightPhantom || living instanceof AlphaYeti) {
+                persistentData.putBoolean(SBSDValues.BOSS_LEADER, true);
+                persistentData.putBoolean(SBSDValues.APOTH_BOSS, true);
+            }
+
             if (persistentData.contains(SBSDValues.APOTH_BOSS)) {
                 SBSDLeader.initializeLeader(living, persistentData);
 

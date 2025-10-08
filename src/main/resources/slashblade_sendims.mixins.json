@@ -8,6 +8,7 @@
     "nc.NCFluidsMixin$FluidEntryMixin",
     "slashblade.ComboStateRegistryMixin",
     "slashblade.EntityAbstractSummonedSwordAccessor",
+    "slashblade.ItemSlashBladeMixin",
     "slashblade.SlayerStyleArtsMixin",
     "slashblade.UntouchableMixin",
     "twilightforest.LichMixin",

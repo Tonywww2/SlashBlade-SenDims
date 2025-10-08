@@ -24,24 +24,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class SBSDAttributes {
     public static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, SenDims.MOD_ID);
     public static final RegistryObject<Attribute> SPRINT_CD = ATTRIBUTES.register("sprint_cd",
-            () -> new PercentBasedAttribute("attribute.name.sbsd.sprint_cd", 1.0d, 0.6d, 10.0d) {
-                @Override
-                public MutableComponent toComponent(AttributeModifier modif, TooltipFlag flag) {
-                    Attribute attr = this.ths();
-                    double value = modif.getAmount();
-                    MutableComponent comp;
-                    if (value > 0.0) {
-                        comp = Component.translatable("attributeslib.modifier.plus",
-                                this.toValueComponent(modif.getOperation(), value, flag), Component.translatable(attr.getDescriptionId())).withStyle(ChatFormatting.RED);
-                    } else {
-                        value *= -1.0;
-                        comp = Component.translatable("attributeslib.modifier.take",
-                                this.toValueComponent(modif.getOperation(), value, flag), Component.translatable(attr.getDescriptionId())).withStyle(ChatFormatting.BLUE);
-                    }
-
-                    return comp.append(this.getDebugInfo(modif, flag));
-                }
-            }.setSyncable(true));
+            () -> new PercentBasedAttribute("attribute.name.sbsd.sprint_cd", 0.0d, -1.0d, 0.6d).setSyncable(true));
 
     public static final RegistryObject<Attribute> SPRINT_CD_RETURN = ATTRIBUTES.register("sprint_cd_return",
             () -> new PercentBasedAttribute("attribute.name.sbsd.sprint_cd_return", 0.0d, 0.0d, 0.8d).setSyncable(true));
