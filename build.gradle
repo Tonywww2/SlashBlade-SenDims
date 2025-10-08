@@ -164,7 +164,9 @@ dependencies {
 
     implementation fg.deobf("curse.maven:lendercataclysm-551586:6906993")
 //    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:6982173")
-    implementation fg.deobf("mods.sbr:slashblade-resharped:1.20.1-1.6.54")
+    //1.7.56
+    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7073488")
+    //implementation fg.deobf("mods.sbr:slashblade-resharped:1.20.1-1.6.54")
 
     implementation fg.deobf("curse.maven:zeta-968868:6432578")
     implementation fg.deobf("curse.maven:quark-243121:6427817")
@@ -186,10 +188,10 @@ dependencies {
 
     implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
 
-    runtimeOnly fg.deobf("curse.maven:kubejs-238086:5853326")
-    runtimeOnly fg.deobf("curse.maven:rhino-416294:6186971")
+    implementation fg.deobf("curse.maven:kubejs-238086:5853326")
+    implementation fg.deobf("curse.maven:rhino-416294:6186971")
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
+    implementation fg.deobf("curse.maven:jade-324717:6855440")
 
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
     runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:6807424")
