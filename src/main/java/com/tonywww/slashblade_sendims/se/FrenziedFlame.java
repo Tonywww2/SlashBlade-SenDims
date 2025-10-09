@@ -34,7 +34,7 @@ public class FrenziedFlame extends SpecialEffect {
 
     public static final int MADNESS_REGIN_CD = 5;
 
-    public static final int BASE_MADNESS = 3;
+    public static final int BASE_MADNESS = 5;
     public static final int MADNESS_STUN_TICK = 50;
 
     public static final int MADNESS_BASE_DAMAGE_COUNT = 3;
@@ -57,7 +57,7 @@ public class FrenziedFlame extends SpecialEffect {
     }
 
     public static double calcFernRatio(int level) {
-        return Math.min(2d, Math.sqrt(level) / 5d);
+        return Math.min(5d, Math.sqrt(level) / 5d);
     }
 
     @SubscribeEvent
@@ -98,7 +98,7 @@ public class FrenziedFlame extends SpecialEffect {
         ISlashBladeState state = event.getSlashBladeState();
         if (!state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId())) return;
 
-        addMadness(serverPlayer, serverPlayer, BASE_MADNESS);
+        addMadness(serverPlayer, serverPlayer, (int) (BASE_MADNESS + (serverPlayer.getHealth() * 0.015d)));
 
     }
 
@@ -123,32 +123,37 @@ public class FrenziedFlame extends SpecialEffect {
     public static int getFinalMadness(LivingEntity attacker, int expLevel) {
         AttributeInstance instance = attacker.getAttribute(Attributes.ATTACK_DAMAGE);
         return instance == null ?
-                BASE_MADNESS:
-        (int) (BASE_MADNESS + (instance.getValue() * calcFernRatio(expLevel)));
+                BASE_MADNESS :
+                (int) (BASE_MADNESS + (instance.getValue() * calcFernRatio(expLevel)));
 
     }
 
     public static void addMadness(LivingEntity target, LivingEntity attacker, int amount) {
         CompoundTag data = target.getPersistentData();
-        AttributeInstance instance = target.getAttribute(SBSDAttributes.MADNESS_REDUCE.get());
-        amount = instance == null ?
-                amount :
-                (int) (amount - instance.getValue());
-        if (!data.contains(MADNESS_PATH)) {
-            data.putInt(MADNESS_PATH, amount);
-        } else {
-            int newMadness = data.getInt(MADNESS_PATH) + amount;
-
-            if (newMadness >= target.getMaxHealth()) {
-                doFrenzyFullEffect(target, attacker, newMadness);
-                data.putInt(MADNESS_PATH, 0);
+        if (amount > 0) {
+            AttributeInstance instance = target.getAttribute(SBSDAttributes.MADNESS_REDUCE.get());
+            amount = instance == null ?
+                    amount :
+                    (int) (amount - instance.getValue());
+            if (!data.contains(MADNESS_PATH)) {
+                data.putInt(MADNESS_PATH, amount);
             } else {
-                data.putInt(MADNESS_PATH, Math.max(0, newMadness));
-                doMadnessParticle(target, (ServerLevel) target.level());
+                int newMadness = data.getInt(MADNESS_PATH) + amount;
+
+                if (newMadness >= target.getMaxHealth()) {
+                    doFrenzyFullEffect(target, attacker, newMadness);
+                    data.putInt(MADNESS_PATH, 0);
+                } else {
+                    data.putInt(MADNESS_PATH, Math.max(0, newMadness));
+                    doMadnessParticle(target, (ServerLevel) target.level());
+
+                }
+                data.putInt(MADNESS_REGIN_CD_PATH, MADNESS_REGIN_CD);
 
             }
-            data.putInt(MADNESS_REGIN_CD_PATH, MADNESS_REGIN_CD);
-
+        } else {
+            int newMadness = data.getInt(MADNESS_PATH) + amount;
+            data.putInt(MADNESS_PATH, Math.max(0, newMadness));
         }
 
         if (target instanceof ServerPlayer serverPlayer) {
@@ -160,7 +165,7 @@ public class FrenziedFlame extends SpecialEffect {
     public static void doMadnessParticle(LivingEntity target, ServerLevel serverLevel) {
         for (int i = 0; i < 3; i++) {
             double offsetX = (target.getRandom().nextDouble() - 0.5) * 0.5;
-            double offsetY = target.getBbHeight() +  target.getRandom().nextDouble() * 0.5;
+            double offsetY = target.getBbHeight() + target.getRandom().nextDouble() * 0.5;
             double offsetZ = (target.getRandom().nextDouble() - 0.5) * 0.5;
 
             serverLevel.sendParticles(
@@ -186,10 +191,10 @@ public class FrenziedFlame extends SpecialEffect {
         target.addEffect(new MobEffectInstance(ALObjects.MobEffects.DETONATION.get(), MADNESS_STUN_TICK, 0));
         target.addEffect(new MobEffectInstance(ALObjects.MobEffects.GRIEVOUS.get(), MADNESS_STUN_TICK, 0));
 
-        AttributeInstance instanceFrenzyDamage= attacker.getAttribute(SBSDAttributes.FRENZY_DAMAGE.get());
+        AttributeInstance instanceFrenzyDamage = attacker.getAttribute(SBSDAttributes.FRENZY_DAMAGE.get());
         float totalDamage = instanceFrenzyDamage == null ?
-                madness * 0.6f:
-                (float) (madness * 0.6f * (1d + instanceFrenzyDamage.getValue()));
+                madness * 0.5f :
+                (float) (madness * 0.5f * (1d + instanceFrenzyDamage.getValue()));
         int originCount = (int) (Math.log(madness) * 2 + 1);
 
         AttributeInstance instanceFrenzyResistance = target.getAttribute(SBSDAttributes.FRENZY_RESISTANCE.get());
@@ -197,15 +202,18 @@ public class FrenziedFlame extends SpecialEffect {
                 1d :
                 1d - instanceFrenzyResistance.getValue();
 
-        float finalDamage = (float) ((totalDamage / originCount + FrenziedFlame.MADNESS_BADE_DAMAGE) * damageRatio);
+        float finalDamage = (float) (((totalDamage / originCount) + FrenziedFlame.MADNESS_BADE_DAMAGE) * damageRatio);
         int finalCount = originCount + FrenziedFlame.MADNESS_BASE_DAMAGE_COUNT;
 
-        for (int i = 0; i < finalCount; i += 2) {
-            SenDims.serverScheduler.schedule(i, () -> {
-                AttackManager.doAttackWith(attacker.damageSources().sonicBoom(attacker), finalDamage, target, false, true);
-                doMadnessParticle(target, (ServerLevel) target.level());
+        if (finalDamage > 0) {
+            for (int i = 0; i < finalCount; i += 2) {
+                SenDims.serverScheduler.schedule(i, () -> {
+                    AttackManager.doAttackWith(attacker.damageSources().sonicBoom(attacker), finalDamage, target, false, true);
+                    doMadnessParticle(target, (ServerLevel) target.level());
 
-            });
+                });
+            }
+
         }
 
     }

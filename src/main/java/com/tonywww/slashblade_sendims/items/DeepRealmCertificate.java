@@ -46,7 +46,7 @@ public class DeepRealmCertificate extends Item {
     }
 
     @Override
-    public boolean overrideOtherStackedOnMe(@NotNull ItemStack self, @NotNull ItemStack other, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, SlotAccess access) {
+    public boolean overrideOtherStackedOnMe(@NotNull ItemStack self, @NotNull ItemStack other, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, @NotNull SlotAccess access) {
         if (action != ClickAction.SECONDARY) {
             return false;
         }
@@ -77,7 +77,7 @@ public class DeepRealmCertificate extends Item {
 
             );
         }
-
+        slot.setChanged();
         return false;
     }
 

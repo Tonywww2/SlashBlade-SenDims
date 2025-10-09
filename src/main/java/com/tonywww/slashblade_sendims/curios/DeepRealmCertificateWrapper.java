@@ -66,12 +66,12 @@ public class DeepRealmCertificateWrapper implements ICurio {
                         AttributeModifier.Operation.ADDITION));
         atts.put(Attributes.MAX_HEALTH,
                 new AttributeModifier(uuid, "drc_max_health",
-                        1d + calcFinalValue(healthProgress, MATERIAL_COUNT_PER_PROGRESS, 20d),
+                        1d + calcFinalValue(healthProgress, MATERIAL_COUNT_PER_PROGRESS, 80d),
                         AttributeModifier.Operation.ADDITION));
 
         atts.put(ModAttributes.SLASHBLADE_DAMAGE.get(),
                 new AttributeModifier(uuid, "drc_sb_damage",
-                        0.01d + calcFinalValue(damageProgress, MATERIAL_COUNT_PER_PROGRESS, 0.05d),
+                        0.01d + calcFinalValue(damageProgress, MATERIAL_COUNT_PER_PROGRESS, 0.03d),
                         AttributeModifier.Operation.ADDITION));
 
         return atts;

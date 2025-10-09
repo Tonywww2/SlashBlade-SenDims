@@ -26,7 +26,7 @@ public class UmaUtils {
             return false;
         } else {
             // Success
-            double scale = SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD.get());
+            double scale = 1 - SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD.get());
             data.putInt(SBSDValues.SPRINT_CD_PATH, (int) (SBSDValues.SPRINT_CD * scale + 0.5d));
             data.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, false);
             int cost = SBSDValues.SPRINT_COST;
