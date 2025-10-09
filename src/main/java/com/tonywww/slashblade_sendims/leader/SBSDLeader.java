@@ -28,7 +28,6 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.joml.Vector3f;
 import twilightforest.entity.ai.goal.NagaMovementPattern;
-import twilightforest.entity.boss.Minoshroom;
 import twilightforest.entity.boss.Naga;
 
 public class SBSDLeader {
@@ -229,9 +228,9 @@ public class SBSDLeader {
     }
 
     // 首领SA
-    public static void doLeaderSAQuickSLash(LivingEntity entity, ServerLevel serverLevel) {
+    public static void doLeaderSAWideSLash(LivingEntity entity, ServerLevel serverLevel) {
         MobAttackManager.doSlash(entity, 2.0F, 13d, 2f, 0xff9b9b, Vec3.ZERO,
-                true, false, false, 1.0f, KnockBacks.toss);
+                true, false, true, 1.0f, KnockBacks.toss);
 
     }
 
@@ -251,11 +250,11 @@ public class SBSDLeader {
 
     public static void doLeaderSAMagicSLash(LivingEntity entity, ServerLevel serverLevel) {
         MobAttackManager.doSlash(entity, 90, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
-                true, false, false, 0.2f, KnockBacks.cancel);
+                true, false, true, 0.2f, KnockBacks.cancel);
         MobAttackManager.doSlash(entity, 210, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
-                true, false, false, 0.2f, KnockBacks.cancel);
+                true, false, true, 0.2f, KnockBacks.cancel);
         MobAttackManager.doSlash(entity, -30, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
-                true, false, false, 0.2f, KnockBacks.cancel);
+                true, false, true, 0.2f, KnockBacks.cancel);
 
     }
 

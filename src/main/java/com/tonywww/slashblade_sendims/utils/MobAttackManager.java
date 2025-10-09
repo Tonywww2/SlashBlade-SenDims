@@ -113,8 +113,8 @@ public class MobAttackManager {
         MobAttackManager.doManagedAttack((t) -> {
             AttackHelper.attack(attacker, t, comboRatio);
         }, target, forceHit, resetHit);
-        ArrowReflector.doReflect(target, attacker);
-        TNTExtinguisher.doExtinguishing(target, attacker);
+//        ArrowReflector.doReflect(target, attacker);
+//        TNTExtinguisher.doExtinguishing(target, attacker);
     }
 
     public static void doManagedAttack(Consumer<Entity> attack, Entity target, boolean forceHit, boolean resetHit) {

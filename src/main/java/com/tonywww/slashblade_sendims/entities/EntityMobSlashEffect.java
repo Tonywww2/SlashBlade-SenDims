@@ -93,7 +93,7 @@ public class EntityMobSlashEffect extends EntitySlashEffect {
         if (this.getShooter() != null && this.tickCount % 2 == 0) {
             List<Entity> hits;
             if (!this.getIndirect() && this.getShooter() instanceof LivingEntity) {
-                LivingEntity shooter = (LivingEntity) this.getShooter();
+//                LivingEntity shooter = (LivingEntity) this.getShooter();
                 ratio = (float) this.getDamage() * (this.getIsCritical() ? 1.1F : 1.0F);
 //                hits = MobAttackManager.areaAttack(shooter, KnockBacks.smash.action, ratio, forceHit, false, true, this.getAlreadyHits());
                 hits = MobAttackManager.areaAttack(this, KnockBacks.smash.action, this.reach, this.isForceHit(), false, ratio, this.getAlreadyHits());

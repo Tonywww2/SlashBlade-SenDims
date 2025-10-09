@@ -63,7 +63,7 @@ public class SBSDValues {
     }
     public static final List<SBSDLeader.SAFunction> ALL_LEADER_SA = new ArrayList<>(10);
     static {
-        ALL_LEADER_SA.add(SBSDLeader::doLeaderSAQuickSLash);
+        ALL_LEADER_SA.add(SBSDLeader::doLeaderSAWideSLash);
         ALL_LEADER_SA.add(SBSDLeader::doLeaderSATripleSlash);
     }
 
