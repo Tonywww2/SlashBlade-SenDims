@@ -199,7 +199,7 @@ public class StructureQuill extends Item {
 
         ServerChunkCache chunkSource = level.getChunkSource();
         ChunkGenerator generator = chunkSource.getGenerator();
-        ChunkGeneratorStructureState structureState = level.getChunkSource().getGeneratorState();
+        ChunkGeneratorStructureState structureState = chunkSource.getGeneratorState();
 
         Map<StructurePlacement, Set<Holder<Structure>>> placementMap = new Object2ObjectArrayMap<>();
 

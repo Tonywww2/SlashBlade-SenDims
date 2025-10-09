@@ -187,10 +187,10 @@ dependencies {
 
     implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
 
-    runtimeOnly fg.deobf("curse.maven:kubejs-238086:5853326")
-    runtimeOnly fg.deobf("curse.maven:rhino-416294:6186971")
-    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
+    implementation fg.deobf("curse.maven:kubejs-238086:5853326")
+    implementation fg.deobf("curse.maven:rhino-416294:6186971")
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:jade-324717:6855440")
 
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
     runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:6807424")
