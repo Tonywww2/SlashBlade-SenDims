@@ -24,6 +24,7 @@ public class NewTierToolHandler implements ToolHandler {
     public NewTierToolHandler(ForgeTier tier, String name) {
         displayItem = tier.getRepairIngredient().getItems()[0];
         this.name = name;
+        this.tag = tier.getTag();
     }
 
     @Override
