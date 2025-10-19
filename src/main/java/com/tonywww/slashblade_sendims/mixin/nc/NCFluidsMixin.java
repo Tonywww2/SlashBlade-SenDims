@@ -42,7 +42,6 @@ public class NCFluidsMixin {
                 remap = false)
         private static NCFluidBlock redirectNCFluidBlock(NCFluids.FluidEntry fluidEntry, BlockBehaviour.Properties properties) {
             if (fluidEntry.still().getId().equals(slashBlade_SenDims$ACID)) {
-//                System.out.println("INJECTED: " + slashBlade_SenDims$ACID);
                 return new AcidNCFluidBlock(fluidEntry, properties);
             }
 

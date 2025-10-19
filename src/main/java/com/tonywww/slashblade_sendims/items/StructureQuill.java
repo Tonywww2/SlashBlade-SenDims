@@ -370,7 +370,9 @@ public class StructureQuill extends Item {
     // 静态工厂方法
     public static ItemStack forStructure(String structureName) {
         ItemStack stack = new ItemStack(SBSDItems.STRUCTURE_QUILL.get());
-        stack.getOrCreateTag().putString(TAG_STRUCTURE, structureName);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putString(TAG_STRUCTURE, structureName);
+        tag.putBoolean(TAG_SKIP_KNOWN, true);
         return stack;
     }
 

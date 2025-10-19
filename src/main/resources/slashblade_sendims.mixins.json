@@ -4,6 +4,7 @@
   "required": true,
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
+    "classicbar.HungerBarMixin",
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
     "slashblade.ComboStateRegistryMixin",

@@ -33,7 +33,7 @@ public class SBSDAttributes {
             () -> new RangedAttribute("attribute.name.sbsd.parry_heal_amount", 3.0d, 0.0d, 512.0d).setSyncable(true));
 
     public static final RegistryObject<Attribute> AP_REDUCE_AMOUNT = ATTRIBUTES.register("ap_reduce_amount",
-            () -> new RangedAttribute("attribute.name.sbsd.ap_reduce_amount", 0.0d, 0.0d, 512.0d).setSyncable(true));
+            () -> new RangedAttribute("attribute.name.sbsd.ap_reduce_amount", 0.0d, -512.0d, 512.0d).setSyncable(true));
 
     public static final RegistryObject<Attribute> AP_GAIN_PERCENTAGE = ATTRIBUTES.register("ap_gain_percentage",
             () -> new PercentBasedAttribute("attribute.name.sbsd.ap_gain_percentage", 1.0d, 0.0d, 512.0d).setSyncable(true));

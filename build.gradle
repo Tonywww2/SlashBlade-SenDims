@@ -196,6 +196,8 @@ dependencies {
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:jade-324717:6855440")
 
+    implementation fg.deobf("curse.maven:classic-bars-317642:5983897")
+
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
     runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:6807424")
 
