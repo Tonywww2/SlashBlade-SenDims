@@ -50,38 +50,38 @@ public class ComboEventListener {
         }
     }
 
-    @SubscribeEvent
-    public static void ChargeActionEventListener(SlashBladeEvent.ChargeActionEvent event) {
-        if (event.getEntityLiving() instanceof ServerPlayer player) {
-            ResourceLocation sa = event.getComboState();
-
-            ItemStack soul = UmapyoiAPI.getUmaSoul(player);
-            if (soul == null || soul.isEmpty()) {
-                event.setComboState(ComboStateRegistry.NONE.getId());
-                event.setCanceled(true);
-                return;
-            }
-            int ap = UmaSoulUtils.getActionPoint(soul);
-            int cost = 0;
-            if (SBSDValues.SA_COST_MAP.containsKey(sa)) {
-                cost = SBSDValues.SA_COST_MAP.get(sa);
-            }
-            if (cost < 0) {
-                AttributeInstance attributeInstance = player.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
-                if (attributeInstance != null) cost = (int) Math.min(0, cost + attributeInstance.getValue());
-            }
-            if (ap + cost < 0) {
-                event.setComboState(ComboStateRegistry.NONE.getId());
-                SBSDValues.notifyPlayer(player, Component.translatable("text.slashblade_sendims.no_ap"));
-                player.getCooldowns().addCooldown(player.getMainHandItem().getItem(), SBSDValues.CANCELED_CD);
-                event.setCanceled(true);
-
-            } else {
-                UmaSoulUtils.addActionPoint(soul, cost);
-            }
-
-        }
-    }
+//    @SubscribeEvent
+//    public static void ChargeActionEventListener(SlashBladeEvent.ChargeActionEvent event) {
+//        if (event.getEntityLiving() instanceof ServerPlayer player) {
+//            ResourceLocation sa = event.getComboState();
+//
+//            ItemStack soul = UmapyoiAPI.getUmaSoul(player);
+//            if (soul == null || soul.isEmpty()) {
+//                event.setComboState(ComboStateRegistry.NONE.getId());
+//                event.setCanceled(true);
+//                return;
+//            }
+//            int ap = UmaSoulUtils.getActionPoint(soul);
+//            int cost = 0;
+//            if (SBSDValues.SA_COST_MAP.containsKey(sa)) {
+//                cost = SBSDValues.SA_COST_MAP.get(sa);
+//            }
+//            if (cost < 0) {
+//                AttributeInstance attributeInstance = player.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
+//                if (attributeInstance != null) cost = (int) Math.min(0, cost + attributeInstance.getValue());
+//            }
+//            if (ap + cost < 0) {
+//                event.setComboState(ComboStateRegistry.NONE.getId());
+//                SBSDValues.notifyPlayer(player, Component.translatable("text.slashblade_sendims.no_ap"));
+//                player.getCooldowns().addCooldown(player.getMainHandItem().getItem(), SBSDValues.CANCELED_CD);
+//                event.setCanceled(true);
+//
+//            } else {
+//                UmaSoulUtils.addActionPoint(soul, cost);
+//            }
+//
+//        }
+//    }
 
     @SubscribeEvent
     public static void PlayerTickEventListener(TickEvent.PlayerTickEvent event) {

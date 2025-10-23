@@ -30,12 +30,81 @@ public class SBSDValues {
         COMBO_COST_MAP.put(ComboStateRegistry.UPPERSLASH.getId(), -400);
     }
 
-    public static final Map<ResourceLocation, Integer> SA_COST_MAP = new HashMap<>();
-    static {
-        SA_COST_MAP.put(SlashArtsRegistry.VOID_SLASH.getId(), -400);
-        SA_COST_MAP.put(SlashArtsRegistry.DRIVE_HORIZONTAL.getId(), -300);
-        SA_COST_MAP.put(SlashArtsRegistry.DRIVE_VERTICAL.getId(), -300);
-    }
+//    public static final Map<ResourceLocation, Integer> SA_COST_MAP = new HashMap<>();
+//    static {
+//        SA_COST_MAP.put(SlashArtsRegistry.VOID_SLASH.getId(), -400);
+//        SA_COST_MAP.put(SlashArtsRegistry.DRIVE_HORIZONTAL.getId(), -300);
+//        SA_COST_MAP.put(SlashArtsRegistry.DRIVE_VERTICAL.getId(), -300);
+//        SA_COST_MAP.put(SlashArtsRegistry.CIRCLE_SLASH.getId(), -350);
+//        SA_COST_MAP.put(SlashArtsRegistry.JUDGEMENT_CUT.getId(), -300);
+//        SA_COST_MAP.put(SlashArtsRegistry.PIERCING.getId(), -300);
+//        SA_COST_MAP.put(SlashArtsRegistry.SAKURA_END.getId(), -300);
+//        SA_COST_MAP.put(SlashArtsRegistry.WAVE_EDGE.getId(), -300);
+//
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:blaze_reborn"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:circle_slash"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:corpse_piler"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:cross_slash"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:cross_wave_slash"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:ground_pound"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:heavens_thirteen_slashes"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:ice_thunder_sword"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:law_of_regression"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:none"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:quick_draw"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:seppuku"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:storm_bias"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:swallow_return"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:thermal_wave_beam"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:transient_moonlight"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade:waterfowl_dance"), -300);
+//
+//        SA_COST_MAP.put(ResourceLocation.parse("foxextra:sakura_endex"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("foxextra:thrust"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("foxextra:void_slash_plus"), -300);
+//
+//        SA_COST_MAP.put(ResourceLocation.parse("last_smith:fushigiri"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("last_smith:iai_cross"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("last_smith:sakura_blistering_swords"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("last_smith:transmigration_slash"), -300);
+//
+//        SA_COST_MAP.put(ResourceLocation.parse("pseudoedge_break_dawn:black_hole"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("pseudoedge_break_dawn:blackslash"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("pseudoedge_break_dawn:dragon_boost"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("pseudoedge_break_dawn:kingblade"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("pseudoedge_break_dawn:thrust_eex"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("pseudoedge_break_dawn:thrust_slash"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("pseudoedge_break_dawn:thrust_slash_ex"), -300);
+//
+//        SA_COST_MAP.put(ResourceLocation.parse("redtassel:that_go_go_go"), -300);
+//
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:burning_dances"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:cold_drive"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:dark_cuts"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:dark_cuts_ex"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:explosive_dawn"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:fire_dance"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:for_life"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:for_life_drive"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:illusion_drive"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:lightinggwaves"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:rainbow_drives"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:sakura_drive"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:sakura_wave_edge"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:super_blood_cuts"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:terrifyingwaves"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:wave_edge_supers"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("sjap_adder:xross_thunder"), -300);
+//
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade_addon:fire_spiral"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade_addon:gale_swords"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade_addon:lighting_swords"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade_addon:rapid_blistering_swords"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade_addon:spiral_edge"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade_addon:water_drive"), -300);
+//        SA_COST_MAP.put(ResourceLocation.parse("slashblade_sendims:frenzied_burst"), -300);
+//
+//    }
 
     // LEADER
     public static final int MIN_SPECIAL_ATTACK_TICK = 80;

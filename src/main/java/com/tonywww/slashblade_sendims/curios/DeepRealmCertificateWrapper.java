@@ -62,7 +62,7 @@ public class DeepRealmCertificateWrapper implements ICurio {
 
         atts.put(ForgeMod.ENTITY_REACH.get(),
                 new AttributeModifier(uuid, "drc_reach",
-                        0.5d + rank * 0.5d,
+                        0.5d + rank * 0.15d,
                         AttributeModifier.Operation.ADDITION));
         atts.put(Attributes.MAX_HEALTH,
                 new AttributeModifier(uuid, "drc_max_health",
