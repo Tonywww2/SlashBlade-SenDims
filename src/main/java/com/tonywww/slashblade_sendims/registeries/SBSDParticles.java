@@ -17,7 +17,7 @@ public class SBSDParticles {
     public static final RegistryObject<SimpleParticleType> ACID_BUBBLE =
             PARTICLES.register("acid_bubble", () -> new SimpleParticleType(false));
 
-    public static void onParticleFactoryRegistration(RegisterParticleProvidersEvent event) {
+    public static void setupParticles(RegisterParticleProvidersEvent event) {
         SenDims.LOGGER.info("Begin register particles.");
         event.registerSpriteSet(SBSDParticles.ACID_BUBBLE.get(), AcidBubbleParticle.Factory::new);
     }
@@ -28,7 +28,7 @@ public class SBSDParticles {
     }
 
     public static void registerClient(IEventBus eventBus) {
-        eventBus.addListener(SBSDParticles::onParticleFactoryRegistration);
+        eventBus.addListener(SBSDParticles::setupParticles);
 
     }
 

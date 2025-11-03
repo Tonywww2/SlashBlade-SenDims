@@ -67,7 +67,10 @@ public class SenDims {
     @SuppressWarnings("removal")
     private void clientSetup(final FMLClientSetupEvent event) {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        bus.addListener(SBSDParticles::registerClient);
+        event.enqueueWork(() -> {
+            SBSDParticles.registerClient(bus);
+
+        });
 
     }
 
