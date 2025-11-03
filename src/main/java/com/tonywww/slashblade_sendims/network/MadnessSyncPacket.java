@@ -1,7 +1,6 @@
 package com.tonywww.slashblade_sendims.network;
 
 import com.tonywww.slashblade_sendims.se.FrenziedFlame;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
@@ -28,7 +27,7 @@ public class MadnessSyncPacket {
 
     public static void handle(MadnessSyncPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            Player player = Minecraft.getInstance().player;
+            Player player = ctx.get().getSender();
             if (player != null && player.getId() == msg.entityId) {
                 player.getPersistentData().putInt(FrenziedFlame.MADNESS_PATH, msg.madness);
             }

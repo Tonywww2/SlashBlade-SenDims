@@ -22,8 +22,12 @@ public class SBSDParticles {
         event.registerSpriteSet(SBSDParticles.ACID_BUBBLE.get(), AcidBubbleParticle.Factory::new);
     }
 
-    public static void register(IEventBus eventBus) {
+    public static void registerCommon(IEventBus eventBus) {
         PARTICLES.register(eventBus);
+
+    }
+
+    public static void registerClient(IEventBus eventBus) {
         eventBus.addListener(SBSDParticles::onParticleFactoryRegistration);
 
     }

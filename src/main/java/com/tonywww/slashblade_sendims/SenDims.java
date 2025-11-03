@@ -5,6 +5,7 @@ import com.tonywww.slashblade_sendims.kubejs.SBSDPlugin;
 import com.tonywww.slashblade_sendims.network.MadnessSyncPacket;
 import com.tonywww.slashblade_sendims.registeries.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -40,7 +41,9 @@ public class SenDims {
 
         SBSDPlugin.register(modEventBus);
 
-        SBSDParticles.register(modEventBus);
+        modEventBus.addListener(this::clientSetup);
+
+        SBSDParticles.registerCommon(modEventBus);
         SBSDSpecialEffects.register(modEventBus);
         SBSDComboRegistry.register(modEventBus);
         SBSDSlashArtRegistry.register(modEventBus);
@@ -59,6 +62,13 @@ public class SenDims {
                 MadnessSyncPacket::encode,
                 MadnessSyncPacket::decode,
                 MadnessSyncPacket::handle);
+    }
+
+    @SuppressWarnings("removal")
+    private void clientSetup(final FMLClientSetupEvent event) {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.addListener(SBSDParticles::registerClient);
+
     }
 
     public static ResourceLocation prefix(String path) {
