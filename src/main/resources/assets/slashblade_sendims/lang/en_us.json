@@ -2,6 +2,13 @@
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
   "item.slashblade_sendims.structure_quill": "结构羽毛笔",
   "item.slashblade_sendims.blood_jade": "血玉",
+  "item.slashblade_sendims.estus_flask_0": "原素瓶 +0",
+  "item.slashblade_sendims.estus_flask_1": "原素瓶 +1",
+  "item.slashblade_sendims.estus_flask_2": "原素瓶 +2",
+  "item.slashblade_sendims.estus_flask_3": "原素瓶 +3",
+  "item.slashblade_sendims.estus_flask_4": "原素瓶 +4",
+  "item.slashblade_sendims.estus_flask_5": "原素瓶 +5",
+  "item.slashblade_sendims.estus_flask_6": "原素瓶 +6",
 
   "slash_art.slashblade_sendims.frenzied_burst": "§6划空癫火",
   "se.slashblade_sendims.frenzied_flame": "§6癫火",
@@ -35,6 +42,9 @@
   "ui.slashblade_sendims.deeprealm_certificate.rank.5": "合金级",
   "ui.slashblade_sendims.deeprealm_certificate.healthprogress": "生命强化进度：",
   "ui.slashblade_sendims.deeprealm_certificate.damageprogress": "伤害强化进度：",
+
+  "ui.slashblade_sendims.estus_flask.base": "基础回复：",
+  "ui.slashblade_sendims.estus_flask.percentage": "损失生命回复：",
 
   "text.slashblade_sendims.no_ap": "行动力不足！",
 

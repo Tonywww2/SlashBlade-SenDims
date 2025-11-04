@@ -32,6 +32,14 @@ public class SBSDCreativeTabs {
                         pOutput.accept(BloodJade.withKillCount(5000));
                         pOutput.accept(BloodJade.withKillCount(10000));
 
+                        pOutput.accept(SBSDItems.ESTUS_FLASK_0.get());
+                        pOutput.accept(SBSDItems.ESTUS_FLASK_1.get());
+                        pOutput.accept(SBSDItems.ESTUS_FLASK_2.get());
+                        pOutput.accept(SBSDItems.ESTUS_FLASK_3.get());
+                        pOutput.accept(SBSDItems.ESTUS_FLASK_4.get());
+                        pOutput.accept(SBSDItems.ESTUS_FLASK_5.get());
+                        pOutput.accept(SBSDItems.ESTUS_FLASK_6.get());
+
                     })
                     .build());
 
