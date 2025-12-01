@@ -13,6 +13,7 @@
     "slashblade.ItemSlashBladeMixin",
     "slashblade.SlayerStyleArtsMixin",
     "slashblade.UntouchableMixin",
+    "tetra.TetraEnchantmentHelperMixin",
     "twilightforest.LichMixin",
     "twilightforest.NagaGoalMixin",
     "twilightforest.NagaMixin"

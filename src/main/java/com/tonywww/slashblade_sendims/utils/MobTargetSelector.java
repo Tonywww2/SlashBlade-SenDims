@@ -110,7 +110,7 @@ public class MobTargetSelector extends TargetSelector {
             user = null;
         }
 
-        list1.addAll(MobTargetSelector.getReflectableEntitiesWithinAABB(world, reach, owner));
+//        list1.addAll(MobTargetSelector.getReflectableEntitiesWithinAABB(world, reach, owner));
         TargetingConditions predicate = MobTargetSelector.getAreaAttackPredicate(0.0);
         list1.addAll(world.getEntitiesOfClass(LivingEntity.class, aabb, (e) -> true).stream()
                 .filter((t) -> predicate.test(user, t)).toList());

@@ -249,11 +249,11 @@ public class SBSDLeader {
     }
 
     public static void doLeaderSAMagicSLash(LivingEntity entity, ServerLevel serverLevel) {
-        MobAttackManager.doSlash(entity, 90, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
+        MobAttackManager.doSlash(entity, 90, 3d, 0.75f, 0xb16cc4, Vec3.ZERO,
                 true, false, true, 0.2f, KnockBacks.cancel);
-        MobAttackManager.doSlash(entity, 210, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
+        MobAttackManager.doSlash(entity, 210, 3d, 0.75f, 0xb16cc4, Vec3.ZERO,
                 true, false, true, 0.2f, KnockBacks.cancel);
-        MobAttackManager.doSlash(entity, -30, 8d, 0.75f, 0xb16cc4, Vec3.ZERO,
+        MobAttackManager.doSlash(entity, -30, 3d, 0.75f, 0xb16cc4, Vec3.ZERO,
                 true, false, true, 0.2f, KnockBacks.cancel);
 
     }
