@@ -14,11 +14,12 @@ public class UmaUtils {
     public static boolean checkSprint(ServerPlayer serverPlayer) {
         ItemStack soul = UmapyoiAPI.getUmaSoul(serverPlayer);
         if (soul == null || soul.isEmpty()) {
+            SBSDValues.notifyPlayer(serverPlayer, Component.translatable("text.slashblade_sendims.no_ap"));
             return false;
         }
         int ap = UmaSoulUtils.getActionPoint(soul);
         CompoundTag data = serverPlayer.getPersistentData();
-        if (ap < SBSDValues.SPRINT_COST) {
+        if (ap + SBSDValues.SPRINT_COST < 0) {
             SBSDValues.notifyPlayer(serverPlayer, Component.translatable("text.slashblade_sendims.no_ap"));
             return false;
         } else if (data.contains(SBSDValues.SPRINT_CD_PATH) &&

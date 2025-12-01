@@ -2,16 +2,12 @@ package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
 import dev.shadowsoffire.attributeslib.impl.PercentBasedAttribute;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,6 +54,8 @@ public class SBSDAttributes {
         event.add(EntityType.PLAYER, MADNESS_REDUCE.get());
         event.add(EntityType.PLAYER, FRENZY_RESISTANCE.get());
         event.add(EntityType.PLAYER, FRENZY_DAMAGE.get());
+
+        event.add(EntityType.SHULKER, Attributes.ATTACK_DAMAGE);
     }
 
     public static double getAttributeValue(LivingEntity serverPlayer, Attribute attribute) {

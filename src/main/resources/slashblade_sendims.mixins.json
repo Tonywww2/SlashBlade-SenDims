@@ -4,6 +4,7 @@
   "required": true,
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
+    "aether_redux.ConstructionRingItemMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
     "nc.NCFluidsMixin",
@@ -13,6 +14,7 @@
     "slashblade.ItemSlashBladeMixin",
     "slashblade.SlayerStyleArtsMixin",
     "slashblade.UntouchableMixin",
+    "tetra.TetraEnchantmentHelperMixin",
     "twilightforest.LichMixin",
     "twilightforest.NagaGoalMixin",
     "twilightforest.NagaMixin"
