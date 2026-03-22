@@ -94,11 +94,16 @@ public class FrenziedFlame extends SpecialEffect {
         int expLevel = serverPlayer.experienceLevel;
         if (!SpecialEffect.isEffective(SBSDSpecialEffects.FRENZIED_FLAME.get(), expLevel)) return;
         ItemStack bladeStack = serverPlayer.getMainHandItem();
+
         if (!(bladeStack.getItem() instanceof ItemSlashBlade)) return;
         ISlashBladeState state = event.getSlashBladeState();
+
         if (!state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId())) return;
 
-        addMadness(serverPlayer, serverPlayer, (int) (BASE_MADNESS + (serverPlayer.getHealth() * 0.015d)));
+        boolean withThreeFingers = SpecialEffect.isEffective(SBSDSpecialEffects.THREE_FINGERS.get(), expLevel) &
+                state.hasSpecialEffect(SBSDSpecialEffects.THREE_FINGERS.getId());
+
+        addMadness(serverPlayer, serverPlayer, (int) (BASE_MADNESS + (serverPlayer.getHealth() * (withThreeFingers ? 0.035d : 0.015d))));
 
     }
 
@@ -111,20 +116,33 @@ public class FrenziedFlame extends SpecialEffect {
         int expLevel = serverPlayer.experienceLevel;
         if (!SpecialEffect.isEffective(SBSDSpecialEffects.FRENZIED_FLAME.get(), expLevel)) return;
         ItemStack bladeStack = serverPlayer.getMainHandItem();
+
         if (!(bladeStack.getItem() instanceof ItemSlashBlade)) return;
         ISlashBladeState state = event.getSlashBladeState();
-        if (!state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId())) return;
 
-        int finalMadness = getFinalMadness(serverPlayer, expLevel);
+        if (!state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId())) return;
+        boolean withArcane = SpecialEffect.isEffective(SBSDSpecialEffects.ARCANE_A.get(), expLevel) &
+                state.hasSpecialEffect(SBSDSpecialEffects.ARCANE_A.getId());
+
+        boolean withThreeFingers = SpecialEffect.isEffective(SBSDSpecialEffects.THREE_FINGERS.get(), expLevel) &
+                state.hasSpecialEffect(SBSDSpecialEffects.THREE_FINGERS.getId());
+
+        int finalMadness = getFinalMadness(serverPlayer, expLevel, withArcane, withThreeFingers);
         addMadness(event.getTarget(), serverPlayer, finalMadness);
 
     }
 
-    public static int getFinalMadness(LivingEntity attacker, int expLevel) {
+    public static int getFinalMadness(LivingEntity attacker, int expLevel, boolean withArcane, boolean withThreeFingers) {
         AttributeInstance instance = attacker.getAttribute(Attributes.ATTACK_DAMAGE);
         return instance == null ?
                 BASE_MADNESS :
-                (int) (BASE_MADNESS + (instance.getValue() * calcFernRatio(expLevel)));
+                (int) (
+                        BASE_MADNESS + (
+                                instance.getValue() *
+                                        calcFernRatio(expLevel) *
+                                        (withArcane ? 1.15 : 1)
+                        ) + (withThreeFingers ? attacker.getHealth() * 0.2f : 0f)
+                );
 
     }
 

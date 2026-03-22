@@ -12,6 +12,9 @@
 
   "slash_art.slashblade_sendims.frenzied_burst": "§6划空癫火",
   "se.slashblade_sendims.frenzied_flame": "§6癫火",
+  "se.slashblade_sendims.arcane_a": "§6感应 A",
+  "se.slashblade_sendims.three_fingers": "§6三指",
+  "se.slashblade_sendims.distant_thunder": "§b远雷",
 
   "message.slashblade_sendims.structure_quill.tooltip": "右键点击以创建地图",
   "message.slashblade_sendims.structure_quill.searching": "正在搜索结构...",

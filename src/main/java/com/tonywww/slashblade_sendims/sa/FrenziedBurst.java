@@ -6,6 +6,7 @@ import com.tonywww.slashblade_sendims.se.FrenziedFlame;
 import com.tonywww.slashblade_sendims.utils.SlashBladeUtil;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.util.AttackManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -48,7 +49,11 @@ public class FrenziedBurst {
         Vec3 startPos = attacker.position().add(attacker.getBbWidth() / 2, attacker.getBbHeight(), attacker.getBbWidth() / 2);
         Vec3 endPos = target.position().add(target.getBbWidth() / 2, target.getBbHeight() / 2, target.getBbWidth() / 2);
 
-        boolean hasFrenziedFlame = state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId());
+        int expLevel = attacker instanceof Player player ?
+                player.experienceLevel :
+                30;
+        boolean hasFrenziedFlame = SpecialEffect.isEffective(SBSDSpecialEffects.FRENZIED_FLAME.get(), expLevel) &
+                state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId());
 
         if (hasFrenziedFlame) {
             if (target instanceof LivingEntity livingEntity) {
@@ -68,10 +73,14 @@ public class FrenziedBurst {
                         2.0f * damageScale);
                 AttackManager.doMeleeAttack(attacker, target, true, true,
                         2.0f * damageScale);
-                int expLevel = attacker instanceof Player player ?
-                        player.experienceLevel :
-                        30;
-                int finalMadness = FrenziedFlame.getFinalMadness(attacker, expLevel * 3) * 2;
+
+                boolean withArcane = SpecialEffect.isEffective(SBSDSpecialEffects.ARCANE_A.get(), expLevel) &
+                        state.hasSpecialEffect(SBSDSpecialEffects.ARCANE_A.getId());
+
+                boolean withThreeFingers = SpecialEffect.isEffective(SBSDSpecialEffects.THREE_FINGERS.get(), expLevel) &
+                        state.hasSpecialEffect(SBSDSpecialEffects.THREE_FINGERS.getId());
+
+                int finalMadness = FrenziedFlame.getFinalMadness(attacker, expLevel, withArcane, withThreeFingers) * 2;
 
                 FrenziedFlame.addMadness(livingEntity, attacker, finalMadness);
                 FrenziedFlame.addMadness(attacker, attacker, FrenziedFlame.BASE_MADNESS * 3);
