@@ -55,7 +55,7 @@ public class SBSDAttributes {
         event.add(EntityType.PLAYER, FRENZY_RESISTANCE.get());
         event.add(EntityType.PLAYER, FRENZY_DAMAGE.get());
 
-        event.add(EntityType.SHULKER, Attributes.ATTACK_DAMAGE);
+//        event.add(EntityType.SHULKER, Attributes.ATTACK_DAMAGE);
     }
 
     public static double getAttributeValue(LivingEntity serverPlayer, Attribute attribute) {

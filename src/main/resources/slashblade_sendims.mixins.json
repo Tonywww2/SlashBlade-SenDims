@@ -7,6 +7,7 @@
     "aether_redux.ConstructionRingItemMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
+    "minecraft.NoiseBasedChunkGeneratorMixin",
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
     "slashblade.ComboStateRegistryMixin",

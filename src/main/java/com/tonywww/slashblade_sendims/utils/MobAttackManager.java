@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.utils;
 
 import com.google.common.collect.Lists;
+import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.entities.EntityMobSlashEffect;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.ArrowReflector;
@@ -13,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Iterator;
@@ -110,6 +112,13 @@ public class MobAttackManager {
     }
 
     public static void doMeleeAttack(LivingEntity attacker, Entity target, boolean forceHit, boolean resetHit, float comboRatio) {
+        if (!attacker.getAttributes().hasAttribute(Attributes.ATTACK_DAMAGE)) {
+            // TODO 最后完成后移除这段检测
+            SenDims.LOGGER.error("This Entity Does not have Attribute Attack!");
+            SenDims.LOGGER.error(attacker.getType().toString());
+            SenDims.LOGGER.error(attacker.getMobType().toString());
+            SenDims.LOGGER.error(attacker.toString());
+        }
         MobAttackManager.doManagedAttack((t) -> {
             AttackHelper.attack(attacker, t, comboRatio);
         }, target, forceHit, resetHit);
