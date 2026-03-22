@@ -11,7 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 public class SBSDSpecialEffects {
-    public static final DeferredRegister<SpecialEffect> SE =DeferredRegister.create(SpecialEffect.REGISTRY_KEY, SenDims.MOD_ID);
+    public static final DeferredRegister<SpecialEffect> SE = DeferredRegister.create(SpecialEffect.REGISTRY_KEY, SenDims.MOD_ID);
 
     public static final RegistryObject<SpecialEffect> FRENZIED_FLAME = SE.register("frenzied_flame", FrenziedFlame::new);
     public static final RegistryObject<SpecialEffect> ARCANE_A = SE.register("arcane_a", ArcaneA::new);

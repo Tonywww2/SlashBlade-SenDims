@@ -28,26 +28,28 @@ public class DistantThunder extends SpecialEffect {
 
         LivingEntity self = event.getEntity();
         Entity attacker = damageSource.getEntity();
-
+//        System.out.println(attacker);
         if (!(attacker instanceof LivingEntity attackerLiving)) return;
         ItemStack bladeStack = attackerLiving.getMainHandItem();
-
+//        System.out.println(bladeStack);
         if (!(bladeStack.getItem() instanceof ItemSlashBlade)) return;
         ISlashBladeState state = bladeStack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
 
         int expLevel = attacker instanceof Player player ?
                 player.experienceLevel :
                 30;
-
+//        System.out.println(expLevel);
         if (!(SpecialEffect.isEffective(SBSDSpecialEffects.DISTANT_THUNDER.get(), expLevel) &
                 state.hasSpecialEffect(SBSDSpecialEffects.DISTANT_THUNDER.getId()))) return;
 
         double mDist = manhattanDistance(self.position(), attacker.position());
-        float extraDamage = event.getAmount() * (float) Math.max(1.15f, (1f + (0.01f * Math.sqrt(mDist))));
-
-        DamageSource extraDamageSource = attacker.damageSources().sting(attackerLiving);
+        float extraDamage = (float) (event.getAmount() * Math.min(0.3f, 0.0000175 * mDist * mDist));
+//        System.out.println(mDist);
+//        System.out.println(extraDamage);
+        DamageSource extraDamageSource = attacker.damageSources().sonicBoom(attackerLiving);
+        self.invulnerableTime = 0;
         self.hurt(extraDamageSource, extraDamage);
-
+//        System.out.println(result);
 
     }
 
