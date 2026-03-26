@@ -5,10 +5,16 @@ import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.tracen.umapyoi.api.TargetSelector;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
+
+import java.util.function.Consumer;
 
 public class UmaUtils {
     public static boolean checkSprint(ServerPlayer serverPlayer) {
@@ -35,6 +41,14 @@ public class UmaUtils {
             if (attributeInstance != null) cost = (int) Math.min(0, cost + attributeInstance.getValue());
             UmaSoulUtils.addActionPoint(soul, cost);
             return true;
+        }
+    }
+
+    public static void areaSkill(Level level, LivingEntity user, Consumer<LivingEntity> effect){
+        for(Entity entity : TargetSelector.getTargettableEntitiesWithinAABB(level, user, user.getBoundingBox().inflate((double)25.0F), TargetSelector.getResolvedReach(user) + (double)32.0F)) {
+            if (entity instanceof LivingEntity living) {
+                effect.accept(living);
+            }
         }
     }
 }

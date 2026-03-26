@@ -2,6 +2,7 @@
   "package": "com.tonywww.slashblade_sendims.mixin",
   "compatibilityLevel": "JAVA_17",
   "required": true,
+  "minVersion": "0.8",
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
     "aether_redux.ConstructionRingItemMixin",
@@ -18,7 +19,16 @@
     "tetra.TetraEnchantmentHelperMixin",
     "twilightforest.LichMixin",
     "twilightforest.NagaGoalMixin",
-    "twilightforest.NagaMixin"
+    "twilightforest.NagaMixin",
+    "umapyoi.DivineSpeedSkillMixin",
+    "umapyoi.HealSkillMixin",
+    "umapyoi.LastLegSkillMixin",
+    "umapyoi.LowHealthBuffSkillMixin",
+    "umapyoi.LowHealthHealSkillMixin",
+    "umapyoi.NutritionalSupplementsSkillMixin",
+    "umapyoi.TopUmamusumeSkillMixin"
+  ],
+  "client": [
   ],
   "injectors": {
     "defaultRequire": 1
