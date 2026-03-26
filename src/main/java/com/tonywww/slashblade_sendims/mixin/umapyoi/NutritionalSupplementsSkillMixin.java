@@ -24,10 +24,10 @@ public class NutritionalSupplementsSkillMixin extends UmaSkill {
         int skillLevel = this.getSkillLevel() - 1;
         switch (skillLevel) {
             case 0:
-                user.addEffect(new MobEffectInstance(MobEffects.SATURATION, 40, 0));
+                user.addEffect(new MobEffectInstance(MobEffects.SATURATION, 5, 0));
                 break;
             case 1:
-                user.addEffect(new MobEffectInstance(MobEffects.SATURATION, 80, 1));
+                user.addEffect(new MobEffectInstance(MobEffects.SATURATION, 10, 1));
                 break;
             default:
                 SenDims.LOGGER.error("UMA SKILL WITH wrong level: {}{}", skillLevel, this.getClass());

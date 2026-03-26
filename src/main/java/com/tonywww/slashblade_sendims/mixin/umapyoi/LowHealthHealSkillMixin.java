@@ -6,6 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.registry.skills.LowHealthHealSkill;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,6 +24,9 @@ public class LowHealthHealSkillMixin extends UmaSkill {
     @Inject(method = "applySkill(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)V", at = @At("HEAD"), remap = false, cancellable = true)
     private void injectApplySkill(Level level, LivingEntity user, CallbackInfo ci) {
         int skillLevel = this.getSkillLevel() - 1;
+        if (user.hasEffect(MobEffectRegistry.PANICKING.get())) {
+            user.removeEffect(MobEffectRegistry.PANICKING.get());
+        }
         switch (skillLevel) {
             case 0:
                 user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 1));
