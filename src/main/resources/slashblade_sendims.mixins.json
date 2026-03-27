@@ -26,6 +26,8 @@
     "umapyoi.LowHealthBuffSkillMixin",
     "umapyoi.LowHealthHealSkillMixin",
     "umapyoi.NutritionalSupplementsSkillMixin",
+    "umapyoi.SteelWillSkillMixin",
+    "umapyoi.TetherSkillMixin",
     "umapyoi.TopUmamusumeSkillMixin"
   ],
   "client": [
