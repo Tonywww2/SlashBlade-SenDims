@@ -43,13 +43,13 @@ public class FrenziedFlame extends SpecialEffect {
     public static final DustColorTransitionOptions FRENZY_PARTICLE_1 = new DustColorTransitionOptions(
             new Vector3f(1.0f, 0.6f, 0.0f),
             new Vector3f(1.0f, 0.8f, 0.2f),
-            1.0f
+            0.8f
     );
 
     public static final DustColorTransitionOptions FRENZY_PARTICLE_2 = new DustColorTransitionOptions(
             new Vector3f(0.9f, 0.4f, 0.0f),
             new Vector3f(1.0f, 0.9f, 0.3f),
-            1.2f
+            1.0f
     );
 
     public FrenziedFlame() {

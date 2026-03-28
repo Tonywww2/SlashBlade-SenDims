@@ -2,6 +2,7 @@ package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.sa.FrenziedBurst;
+import com.tonywww.slashblade_sendims.sa.UnendurableFrenzy;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.init.DefaultResources;
@@ -34,6 +35,25 @@ public class SBSDComboRegistry {
                             .put(6, FrenziedBurst::doPreFrenziedBurst)
                             .put(8, FrenziedBurst::doPreFrenziedBurst)
                             .put(12, FrenziedBurst::doFrenziedBurst)
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
+    public static final RegistryObject<ComboState> UNENDURABLE_FRENZY = COMBO_STATES.register("unendurable_frenzy",
+            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(23, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(0, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(2, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(5, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(7, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(10, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(12, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(15, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(17, UnendurableFrenzy::doUnendurableFrenzy)
+                            .put(20, UnendurableFrenzy::doUnendurableFrenzy)
                             .build())
                     .addHitEffect(StunManager::setStun)
                     ::build);
