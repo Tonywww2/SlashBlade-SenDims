@@ -2,6 +2,7 @@ package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.sa.FrenziedBurst;
+import com.tonywww.slashblade_sendims.sa.GoldenCrux;
 import com.tonywww.slashblade_sendims.sa.UnendurableFrenzy;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
@@ -54,6 +55,26 @@ public class SBSDComboRegistry {
                             .put(15, UnendurableFrenzy::doUnendurableFrenzy)
                             .put(17, UnendurableFrenzy::doUnendurableFrenzy)
                             .put(20, UnendurableFrenzy::doUnendurableFrenzy)
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
+    public static final RegistryObject<ComboState> GOLDEN_CRUX = COMBO_STATES.register("golden_crux",
+            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(25, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(2, GoldenCrux::doGoldenCruxStart)
+
+                            .put(4, GoldenCrux::doGoldenCruxHover)
+                            .put(6, GoldenCrux::doGoldenCruxHover)
+                            .put(8, GoldenCrux::doGoldenCruxHover)
+                            .put(10, GoldenCrux::doGoldenCruxHover)
+
+                            .put(12, GoldenCrux::doGoldenCruxDrop)
+                            .put(16, GoldenCrux::doGoldenCruxDrop)
+                            .put(20, GoldenCrux::doGoldenCruxImpact)
                             .build())
                     .addHitEffect(StunManager::setStun)
                     ::build);

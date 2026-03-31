@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath files('libs/ModAccessor-1.2.1.jar')
+    }
+}
+
 plugins {
     id 'eclipse'
     id 'idea'

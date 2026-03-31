@@ -160,7 +160,9 @@ public class EntityMobDrive extends EntityDrive {
         if (!this.leftOwner) {
             this.leftOwner = this.checkLeftOwner();
         }
+
         this.baseTick();
+
         if (this.getHitEntity() != null) {
             Entity hits = this.getHitEntity();
             if (!hits.isAlive()) {
