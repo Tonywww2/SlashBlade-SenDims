@@ -1,6 +1,5 @@
 package com.tonywww.slashblade_sendims.sa;
 
-import com.tonywww.slashblade_sendims.utils.SlashBladeUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +13,7 @@ public class GoldenCruxEX {
 
     private static final String TAG_TARGETS = "GoldenCruxEX_Targets";
     private static final String TAG_START_POS = "GoldenCruxEX_StartPos";
-    private static final double SEARCH_RANGE = 15.0;
+    private static final double SEARCH_RANGE = 8.0;
     private static final int SELECT_NUM = 5;
 
     // 第 0 tick: 搜寻目标，保存起始位置，赋予无敌和移除碰撞
@@ -73,7 +72,7 @@ public class GoldenCruxEX {
                 double offsetZ = Math.sin(randomAngle);
 
                 double tpX = target.getX() + offsetX;
-                double tpY = target.getY(); // 保持与敌人同一高度或稍微调整
+                double tpY = target.getY() + 1.25d; // 保持与敌人同一高度或稍微调整
                 double tpZ = target.getZ() + offsetZ;
 
                 attacker.teleportTo(tpX, tpY, tpZ);

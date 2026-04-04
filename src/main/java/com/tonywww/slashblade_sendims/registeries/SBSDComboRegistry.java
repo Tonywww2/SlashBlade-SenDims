@@ -88,11 +88,11 @@ public class SBSDComboRegistry {
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(1, GoldenCruxEX::doGoldenCruxEXStart)
 
-                            .put(4, GoldenCruxEX::doGoldenCruxEXHit0)
-                            .put(7, GoldenCruxEX::doGoldenCruxEXHit1)
-                            .put(10, GoldenCruxEX::doGoldenCruxEXHit2)
-                            .put(13, GoldenCruxEX::doGoldenCruxEXHit3)
-                            .put(16, GoldenCruxEX::doGoldenCruxEXHit4)
+                            .put(3, GoldenCruxEX::doGoldenCruxEXHit0)
+                            .put(10, GoldenCruxEX::doGoldenCruxEXHit1)
+                            .put(12, GoldenCruxEX::doGoldenCruxEXHit2)
+                            .put(15, GoldenCruxEX::doGoldenCruxEXHit3)
+                            .put(18, GoldenCruxEX::doGoldenCruxEXHit4)
 
                             .put(19, GoldenCruxEX::doGoldenCruxEXEnd)
                             .build())
