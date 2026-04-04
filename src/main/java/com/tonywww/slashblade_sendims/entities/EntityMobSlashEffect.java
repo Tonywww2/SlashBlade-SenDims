@@ -14,6 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -48,7 +49,17 @@ public class EntityMobSlashEffect extends EntitySlashEffect {
 
     @Override
     public void tick() {
-        super.tick();
+        if (!this.hasBeenShot) {
+            this.gameEvent(GameEvent.PROJECTILE_SHOOT, this.getOwner());
+            this.hasBeenShot = true;
+        }
+
+        if (!this.leftOwner) {
+            this.leftOwner = this.checkLeftOwner();
+        }
+
+        this.baseTick();
+
         if (this.tickCount == 2) {
             if (!this.getMute()) {
                 this.playSound(this.getSlashSound(), 0.8F, 0.625F + 0.1F * this.random.nextFloat());
@@ -93,7 +104,7 @@ public class EntityMobSlashEffect extends EntitySlashEffect {
         if (this.getShooter() != null && this.tickCount % 2 == 0) {
             List<Entity> hits;
             if (!this.getIndirect() && this.getShooter() instanceof LivingEntity) {
-//                LivingEntity shooter = (LivingEntity) this.getShooter();
+                LivingEntity shooter = (LivingEntity) this.getShooter();
                 ratio = (float) this.getDamage() * (this.getIsCritical() ? 1.1F : 1.0F);
 //                hits = MobAttackManager.areaAttack(shooter, KnockBacks.smash.action, ratio, forceHit, false, true, this.getAlreadyHits());
                 hits = MobAttackManager.areaAttack(this, KnockBacks.smash.action, this.reach, this.isForceHit(), false, ratio, this.getAlreadyHits());

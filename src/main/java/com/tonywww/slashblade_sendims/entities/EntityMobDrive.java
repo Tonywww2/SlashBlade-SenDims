@@ -38,14 +38,25 @@ import net.minecraftforge.event.ForgeEventFactory;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer; // <--- 新增的引用
 
 public class EntityMobDrive extends EntityDrive {
+
+    public Consumer<LivingEntity> customHitEffect = null;
+
     public EntityMobDrive(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
+    public void setCustomHitEffect(Consumer<LivingEntity> customHitEffect) {
+        this.customHitEffect = customHitEffect;
+    }
+
+    public Consumer<LivingEntity> getCustomHitEffect() {
+        return customHitEffect;
+    }
 
     public static EntityMobDrive doSlash(LivingEntity mobIn, float roll, float yRot, int lifetime, int colorCode, Vec3 centerOffset,
-                                      boolean critical, double damage, KnockBacks knockback, float speed, float size) {
+                                         boolean critical, double damage, KnockBacks knockback, float speed, float size) {
         if (mobIn.level().isClientSide())
             return null;
 
@@ -80,7 +91,6 @@ public class EntityMobDrive extends EntityDrive {
         drive.setRank(7.0f);
 
         mobIn.level().addFreshEntity(drive);
-
 
         return drive;
     }
@@ -122,7 +132,7 @@ public class EntityMobDrive extends EntityDrive {
                 damageValue += (float) this.random.nextInt(Mth.ceil(damageValue) / 2 + 2);
             }
         }
-//        System.out.println(((LivingEntity)targetEntity).getHealth());
+
         if (targetEntity.hurt(damagesource, damageValue)) {
             Entity hits = targetEntity;
             if (targetEntity instanceof PartEntity<?> part) {
@@ -138,6 +148,11 @@ public class EntityMobDrive extends EntityDrive {
                 }
 
                 this.affectEntity(targetLivingEntity, this.getPotionEffects(), 1.0);
+
+                if (this.customHitEffect != null) {
+                    this.customHitEffect.accept(targetLivingEntity);
+                }
+
                 if (targetLivingEntity != shooter && targetLivingEntity instanceof Player && shooter instanceof ServerPlayer) {
                     ((ServerPlayer) shooter).playNotifySound(this.getHitEntityPlayerSound(), SoundSource.PLAYERS, 0.18F, 0.45F);
                 }
