@@ -6,6 +6,7 @@
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
     "aether_redux.ConstructionRingItemMixin",
+    "botania.ManaBurstEntityMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
     "minecraft.NoiseBasedChunkGeneratorMixin",
@@ -16,6 +17,7 @@
     "slashblade.ItemSlashBladeMixin",
     "slashblade.SlayerStyleArtsMixin",
     "slashblade.UntouchableMixin",
+    "sjap.BlisteringTerraSwordsMixin",
     "tetra.TetraEnchantmentHelperMixin",
     "twilightforest.LichMixin",
     "twilightforest.NagaGoalMixin",
