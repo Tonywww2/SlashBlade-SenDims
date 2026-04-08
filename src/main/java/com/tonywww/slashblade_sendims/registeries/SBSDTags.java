@@ -1,15 +1,21 @@
 package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 
 public class SBSDTags {
 
     public static class Blocks {
 
+    }
+
+    public static class EntityTypes {
+        public static final TagKey<EntityType<?>> REFLECT_WHITELIST = TagKey.create(Registries.ENTITY_TYPE, SenDims.prefix("slashblade_reflect_whitelist"));
     }
 
     public static class Items {

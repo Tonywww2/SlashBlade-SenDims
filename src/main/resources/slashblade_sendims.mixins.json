@@ -16,6 +16,7 @@
     "slashblade.ComboStateRegistryMixin",
     "slashblade.EntityAbstractSummonedSwordAccessor",
     "slashblade.ItemSlashBladeMixin",
+    "slashblade.MixinArrowReflector",
     "slashblade.MixinRefineHandler",
     "slashblade.MixinSlashBladeItems",
     "slashblade.SlayerStyleArtsMixin",
