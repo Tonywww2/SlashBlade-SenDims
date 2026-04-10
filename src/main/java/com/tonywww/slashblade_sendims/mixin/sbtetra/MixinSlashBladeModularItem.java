@@ -18,7 +18,7 @@ public abstract class MixinSlashBladeModularItem extends ItemSlashBlade implemen
         super(tier, attackDamageIn, attackSpeedIn, builder);
     }
 
-    @Inject(method = "getName(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/network/chat/Component;", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "getName(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/network/chat/Component;", at = @At("HEAD"), cancellable = true, remap = true)
     private void slashblade_sendims$onGetName(ItemStack stack, CallbackInfoReturnable<Component> cir) {
         String id = this.getDescriptionId(stack);
         cir.setReturnValue(Component.literal(this.getDisplayNamePrefixes(stack)).append(Component.translatable(id)));
