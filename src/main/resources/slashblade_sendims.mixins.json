@@ -13,6 +13,7 @@
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
     "sjap.BlisteringTerraSwordsMixin",
+    "sbtetra.MixinSlashBladeModularItem",
     "slashblade.ComboStateRegistryMixin",
     "slashblade.EntityAbstractSummonedSwordAccessor",
     "slashblade.ItemSlashBladeMixin",
