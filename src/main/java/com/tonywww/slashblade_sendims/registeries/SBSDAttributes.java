@@ -43,6 +43,9 @@ public class SBSDAttributes {
     public static final RegistryObject<Attribute> FRENZY_DAMAGE = ATTRIBUTES.register("frenzy_damage",
             () -> new PercentBasedAttribute("attribute.name.sbsd.frenzy_damage", 0.0d, 0.0d, 512.0d).setSyncable(true));
 
+    public static final RegistryObject<Attribute> MAGIC_RESISTANCE = ATTRIBUTES.register("magic_resistance",
+            () -> new RangedAttribute("attribute.name.sbsd.magic_resistance", 0.0d, -100.0d, 100.0d).setSyncable(true));
+
     @SubscribeEvent
     public static void onEntityAttributeModificationEvent(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, SPRINT_CD.get());
@@ -51,11 +54,14 @@ public class SBSDAttributes {
         event.add(EntityType.PLAYER, AP_REDUCE_AMOUNT.get());
         event.add(EntityType.PLAYER, AP_GAIN_PERCENTAGE.get());
 
-        event.add(EntityType.PLAYER, MADNESS_REDUCE.get());
-        event.add(EntityType.PLAYER, FRENZY_RESISTANCE.get());
         event.add(EntityType.PLAYER, FRENZY_DAMAGE.get());
 
-//        event.add(EntityType.SHULKER, Attributes.ATTACK_DAMAGE);
+        event.getTypes().forEach(type -> {
+            event.add(type, MADNESS_REDUCE.get());
+            event.add(type, FRENZY_RESISTANCE.get());
+            event.add(type, MAGIC_RESISTANCE.get());
+        });
+
     }
 
     public static double getAttributeValue(LivingEntity serverPlayer, Attribute attribute) {
