@@ -180,7 +180,7 @@ dependencies {
     implementation fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
     implementation fg.deobf("curse.maven:umapyoi-776121:7754467")
 
-    implementation fg.deobf("curse.maven:lendercataclysm-551586:6906993")
+    implementation fg.deobf("curse.maven:lendercataclysm-551586:7908487")
 //1.7.56
     implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7234815")
 //    implementation fg.deobf("mods.sbr:slashblade-resharped:1.20.1-1.6.54")
