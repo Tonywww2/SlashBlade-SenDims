@@ -3,6 +3,7 @@ package com.tonywww.slashblade_sendims.events;
 import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -21,8 +22,20 @@ public class AttributeEventListener {
             AttributeInstance magicResistance = entity.getAttribute(SBSDAttributes.MAGIC_RESISTANCE.get());
             if (magicResistance != null) {
                 double resistance = magicResistance.getValue();
-                if (resistance != 0.0) {
-                    double multiplier = 1.0d - (resistance / 100.0d);
+
+                double penetration = 0.0;
+                Entity attacker = damageSource.getEntity();
+                if (attacker instanceof LivingEntity livingAttacker) {
+                    AttributeInstance magicPenetration = livingAttacker.getAttribute(SBSDAttributes.MAGIC_PENETRATION.get());
+                    if (magicPenetration != null) {
+                        penetration = magicPenetration.getValue();
+                    }
+                }
+
+                double effectiveResistance = resistance - penetration;
+
+                if (effectiveResistance != 0.0) {
+                    double multiplier = 1.0d - (effectiveResistance / 100.0d);
                     if (multiplier < 0) {
                         multiplier = 0.0;
                     }
@@ -33,4 +46,3 @@ public class AttributeEventListener {
         }
     }
 }
-

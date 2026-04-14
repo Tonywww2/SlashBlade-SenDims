@@ -8,6 +8,7 @@
     "aether_redux.ConstructionRingItemMixin",
     "botania.ManaBurstEntityMixin",
     "cataclysm.Burning_Arena_StructureMixin",
+    "cataclysm.RuinedCitadelStructureMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
     "minecraft.NoiseBasedChunkGeneratorMixin",

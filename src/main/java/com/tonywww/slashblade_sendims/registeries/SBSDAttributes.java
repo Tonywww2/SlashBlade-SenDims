@@ -46,6 +46,9 @@ public class SBSDAttributes {
     public static final RegistryObject<Attribute> MAGIC_RESISTANCE = ATTRIBUTES.register("magic_resistance",
             () -> new RangedAttribute("attribute.name.sbsd.magic_resistance", 0.0d, -100.0d, 100.0d).setSyncable(true));
 
+    public static final RegistryObject<Attribute> MAGIC_PENETRATION = ATTRIBUTES.register("magic_penetration",
+            () -> new RangedAttribute("attribute.name.sbsd.magic_penetration", 0.0d, 0.0d, 100.0d).setSyncable(true));
+
     @SubscribeEvent
     public static void onEntityAttributeModificationEvent(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, SPRINT_CD.get());
@@ -60,6 +63,7 @@ public class SBSDAttributes {
             event.add(type, MADNESS_REDUCE.get());
             event.add(type, FRENZY_RESISTANCE.get());
             event.add(type, MAGIC_RESISTANCE.get());
+            event.add(type, MAGIC_PENETRATION.get());
         });
 
     }
