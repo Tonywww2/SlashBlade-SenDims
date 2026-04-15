@@ -51,6 +51,8 @@
   "ui.slashblade_sendims.deeprealm_certificate.rank.5": "合金级",
   "ui.slashblade_sendims.deeprealm_certificate.healthprogress": "生命强化进度：",
   "ui.slashblade_sendims.deeprealm_certificate.damageprogress": "伤害强化进度：",
+  "ui.slashblade_sendims.deeprealm_certificate.material": "Upgrade Material",
+  "ui.slashblade_sendims.deeprealm_certificate.breakthrough_material": "Ascension Material",
 
   "ui.slashblade_sendims.estus_flask.base": "基础回复：",
   "ui.slashblade_sendims.estus_flask.percentage": "损失生命回复：",

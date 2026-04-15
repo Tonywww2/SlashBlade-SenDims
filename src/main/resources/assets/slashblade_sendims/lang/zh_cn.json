@@ -1,4 +1,4 @@
-  {
+{
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
   "item.slashblade_sendims.structure_quill": "结构羽毛笔",
   "item.slashblade_sendims.blood_jade": "血玉",
@@ -51,6 +51,8 @@
   "ui.slashblade_sendims.deeprealm_certificate.rank.5": "合金级",
   "ui.slashblade_sendims.deeprealm_certificate.healthprogress": "生命强化进度：",
   "ui.slashblade_sendims.deeprealm_certificate.damageprogress": "伤害强化进度：",
+  "ui.slashblade_sendims.deeprealm_certificate.material": "强化材料",
+  "ui.slashblade_sendims.deeprealm_certificate.breakthrough_material": "突破材料",
 
     "ui.slashblade_sendims.estus_flask.base": "基础回复：",
     "ui.slashblade_sendims.estus_flask.percentage": "损失生命回复：",

@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -178,6 +180,7 @@ public class DeepRealmCertificate extends Item {
         int healthProgressCount = healthProgress / MATERIAL_COUNT_PER_PROGRESS;
 
         MutableComponent health = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.healthprogress");
+        MutableComponent healthMaterial = null;
         health.append(
                 Component.literal("[" + healthProgressCount + "] ")
                         .setStyle(health.getStyle().withColor(COLOR_LIST[healthProgressCount]))
@@ -186,12 +189,16 @@ public class DeepRealmCertificate extends Item {
             health.append(Component.literal("MAX"));
         } else {
             health.append(Component.literal(healthProgress % MATERIAL_COUNT_PER_PROGRESS + "/" + MATERIAL_COUNT_PER_PROGRESS));
+            healthMaterial.append(Component.translatable("ui.slashblade_sendims.deeprealm_certificate.material"));
+            healthMaterial.append(Component.literal(": "));
+            healthMaterial.append(getTagItemsComponent(getHealthTag(healthProgressCount)));
         }
 
         // 伤害
         int damageProgressCount = damageProgress / MATERIAL_COUNT_PER_PROGRESS;
 
         MutableComponent damage = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.damageprogress");
+        MutableComponent damageMaterial = null;
         damage.append(
                 Component.literal("[" + damageProgressCount + "] ")
                         .setStyle(damage.getStyle().withColor(COLOR_LIST[damageProgressCount]))
@@ -200,10 +207,72 @@ public class DeepRealmCertificate extends Item {
             damage.append(Component.literal("MAX"));
         } else {
             damage.append(Component.literal(damageProgress % MATERIAL_COUNT_PER_PROGRESS + "/" + MATERIAL_COUNT_PER_PROGRESS));
+            damageMaterial = Component.literal("  ");
+            damageMaterial.append(Component.translatable("ui.slashblade_sendims.deeprealm_certificate.material"));
+            damageMaterial.append(Component.literal(": "));
+            damageMaterial.append(getTagItemsComponent(getDamageTag(damageProgressCount)));
         }
         toolTips.add(health);
+        if (healthMaterial != null) {
+            toolTips.add(healthMaterial);
+        }
         toolTips.add(damage);
+        if (damageMaterial != null) {
+            toolTips.add(damageMaterial);
+        }
+
+        if (rank < 5) {
+            MutableComponent rankMaterial = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.breakthrough_material");
+            rankMaterial.append(Component.literal(": "));
+            rankMaterial.append(getTagItemsComponent(getRankTag(rank + 1)));
+            toolTips.add(rankMaterial);
+        }
 
         super.appendHoverText(stack, level, toolTips, isAdvanced);
+    }
+
+    private net.minecraft.tags.TagKey<Item> getHealthTag(int rank) {
+        return switch (rank) {
+            case 0 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_0;
+            case 1 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_1;
+            case 2 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_2;
+            case 3 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_3;
+            case 4 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_4;
+            default -> SBSDTags.Items.DRC_HEALTH_MATERIAL_5;
+        };
+    }
+
+    private net.minecraft.tags.TagKey<Item> getDamageTag(int rank) {
+        return switch (rank) {
+            case 0 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_0;
+            case 1 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_1;
+            case 2 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_2;
+            case 3 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_3;
+            case 4 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_4;
+            default -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_5;
+        };
+    }
+
+    private net.minecraft.tags.TagKey<Item> getRankTag(int rank) {
+        return switch (rank) {
+            case 1 -> SBSDTags.Items.DRC_RANK_MATERIAL_1;
+            case 2 -> SBSDTags.Items.DRC_RANK_MATERIAL_2;
+            case 3 -> SBSDTags.Items.DRC_RANK_MATERIAL_3;
+            case 4 -> SBSDTags.Items.DRC_RANK_MATERIAL_4;
+            default -> SBSDTags.Items.DRC_RANK_MATERIAL_5;
+        };
+    }
+
+    private MutableComponent getTagItemsComponent(TagKey<Item> tagKey) {
+        var iter = ForgeRegistries.ITEMS.tags().getTag(tagKey).stream().toList();
+        if (iter.isEmpty()) {
+            return Component.literal("???");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < iter.size(); i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(iter.get(i).getDescription().getString());
+        }
+        return Component.literal(sb.toString());
     }
 }
