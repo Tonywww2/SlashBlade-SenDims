@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.items.BlessingPetals;
 import com.tonywww.slashblade_sendims.items.BloodJade;
 import com.tonywww.slashblade_sendims.items.DeepRealmCertificate;
 import com.tonywww.slashblade_sendims.items.EstusFlask;
@@ -18,6 +19,13 @@ public class SBSDItems {
 
     public static final RegistryObject<Item> DEEPREALM_CERTIFICATE = ITEMS.register("deeprealm_certificate",
             () -> new DeepRealmCertificate(new Item.Properties()
+                    .stacksTo(1)
+                    .fireResistant()
+                    .rarity(Rarity.EPIC)
+            ));
+
+    public static final RegistryObject<Item> BLESSING_PETALS = ITEMS.register("blessing_petals",
+            () -> new BlessingPetals(new Item.Properties()
                     .stacksTo(1)
                     .fireResistant()
                     .rarity(Rarity.EPIC)

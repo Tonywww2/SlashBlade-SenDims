@@ -189,6 +189,7 @@ public class DeepRealmCertificate extends Item {
             health.append(Component.literal("MAX"));
         } else {
             health.append(Component.literal(healthProgress % MATERIAL_COUNT_PER_PROGRESS + "/" + MATERIAL_COUNT_PER_PROGRESS));
+            healthMaterial = Component.literal("  ");
             healthMaterial.append(Component.translatable("ui.slashblade_sendims.deeprealm_certificate.material"));
             healthMaterial.append(Component.literal(": "));
             healthMaterial.append(getTagItemsComponent(getHealthTag(healthProgressCount)));

@@ -6,6 +6,7 @@
     ],
     "slots":
     [
-        "drc"
+        "drc",
+        "blessing_petals"
     ]
 }

@@ -1,5 +1,6 @@
 {
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
+  "item.slashblade_sendims.blessing_petals": "祝福之花",
   "item.slashblade_sendims.structure_quill": "结构羽毛笔",
   "item.slashblade_sendims.blood_jade": "血玉",
   "item.slashblade_sendims.estus_flask_0": "原素瓶 +0",
@@ -54,12 +55,17 @@
   "ui.slashblade_sendims.deeprealm_certificate.material": "强化材料",
   "ui.slashblade_sendims.deeprealm_certificate.breakthrough_material": "突破材料",
 
-    "ui.slashblade_sendims.estus_flask.base": "基础回复：",
-    "ui.slashblade_sendims.estus_flask.percentage": "损失生命回复：",
+  "ui.slashblade_sendims.blessing_petals.counts": "已记录：%s",
+  "ui.slashblade_sendims.blessing_petals.items": "花瓣：",
+  "ui.slashblade_sendims.blessing_petals.shift_for_details": "§8[按住 Shift 查看已记录的花瓣]§r",
+
+  "ui.slashblade_sendims.estus_flask.base": "基础回复：",
+  "ui.slashblade_sendims.estus_flask.percentage": "损失生命回复：",
 
   "text.slashblade_sendims.no_ap": "行动力不足！",
 
+  "curios.identifier.blessing_petals": "祝福之花",
+
   "curios.identifier.drc": "深境证章",
-  "curios.modifiers.drc": "佩戴该深境证章时：",
-  "attribute.name.sbsd.ap_gain_amount": "刀剑行动力恢复"
+  "curios.modifiers.drc": "佩戴该深境证章时："
 }
