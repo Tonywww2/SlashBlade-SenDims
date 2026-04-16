@@ -13,6 +13,7 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.network.chat.Component;
@@ -53,7 +54,7 @@ public class BlessingPetals extends Item {
         }
         CompoundTag tag = getBPTag(self);
         ListTag itemList = tag.getList(ITEM_LIST, Tag.TAG_STRING);
-        String itemId = other.getItem().toString();
+        String itemId = ForgeRegistries.ITEMS.getKey(other.getItem()).toString();
 
         boolean alreadyContains = false;
         for (int i = 0; i < itemList.size(); i++) {
@@ -108,19 +109,8 @@ public class BlessingPetals extends Item {
                     ResourceLocation rl = ResourceLocation.tryParse(itemId);
                     if (rl != null) {
                         Item item = ForgeRegistries.ITEMS.getValue(rl);
-                        if (item != null) {
-                            ItemStack itemStack = new ItemStack(item);
-                            if (itemStack.is(net.minecraft.tags.ItemTags.MUSIC_DISCS)) {
-                                List<Component> lines = itemStack.getTooltipLines(null, TooltipFlag.Default.NORMAL);
-                                if (lines.size() > 1) {
-                                    toolTips.add(Component.literal("- ").append(lines.get(1)).withStyle(net.minecraft.ChatFormatting.GRAY));
-                                } else {
-                                    toolTips.add(Component.literal("- ").append(itemStack.getHoverName()));
-                                }
-                            } else {
-                                toolTips.add(Component.literal("- ").append(itemStack.getHoverName()));
-                            }
-                        }
+                        if (item instanceof RecordItem recordItem)
+                            toolTips.add(Component.literal("- ").append(recordItem.getDisplayName()));
 
                     }
                 }
