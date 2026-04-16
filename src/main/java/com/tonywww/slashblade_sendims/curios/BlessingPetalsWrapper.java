@@ -54,15 +54,22 @@ public class BlessingPetalsWrapper implements ICurio {
         CompoundTag tag = getBPTag(this.getStack());
         int counts = tag.getInt(ITEM_COUNTS);
         if (counts > 0) {
-            double addition = counts * 0.0035d;
+            double atk = counts * 0.003d;
+            double hp = counts * 0.0015d;
             long total = net.minecraftforge.registries.ForgeRegistries.ITEMS.tags()
                     .getTag(SBSDTags.Items.BLESSING_PETALS_ITEMS).stream().count();
             if (total > 0 && counts >= total) {
-                addition += 0.1d;
+                atk += 0.1d;
+                hp += 0.05d;
             }
             atts.put(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(uuid, "blessing_petals_attack_damage",
-                            addition,
+                            atk,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL));
+
+            atts.put(Attributes.MAX_HEALTH,
+                    new AttributeModifier(uuid, "blessing_petals_max_health",
+                            hp,
                             AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
         return atts;
