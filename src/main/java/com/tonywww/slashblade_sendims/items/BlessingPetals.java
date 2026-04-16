@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.network.chat.Component;
@@ -110,10 +109,16 @@ public class BlessingPetals extends Item {
                     if (rl != null) {
                         Item item = ForgeRegistries.ITEMS.getValue(rl);
                         if (item != null) {
-                            if (item instanceof RecordItem recordItem) {
-                                toolTips.add(Component.literal("- ").append(recordItem.getDisplayName()).withStyle(net.minecraft.ChatFormatting.GRAY));
+                            ItemStack itemStack = new ItemStack(item);
+                            if (itemStack.is(net.minecraft.tags.ItemTags.MUSIC_DISCS)) {
+                                List<Component> lines = itemStack.getTooltipLines(null, TooltipFlag.Default.NORMAL);
+                                if (lines.size() > 1) {
+                                    toolTips.add(Component.literal("- ").append(lines.get(1)).withStyle(net.minecraft.ChatFormatting.GRAY));
+                                } else {
+                                    toolTips.add(Component.literal("- ").append(itemStack.getHoverName()));
+                                }
                             } else {
-                                toolTips.add(Component.literal("- ").append(Component.translatable(item.getDescriptionId())));
+                                toolTips.add(Component.literal("- ").append(itemStack.getHoverName()));
                             }
                         }
 
