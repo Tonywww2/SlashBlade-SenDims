@@ -20,6 +20,7 @@ public class SBSDCreativeTabs {
                     .title(Component.translatable("creativetab.slashblade_sendims_tab"))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(SBSDItems.DEEPREALM_CERTIFICATE.get());
+                        pOutput.accept(SBSDItems.BLESSING_PETALS.get());
                         pOutput.accept(SBSDItems.STRUCTURE_QUILL.get());
                         pOutput.accept(StructureQuill.forStructure("minecraft:stronghold"));
 
