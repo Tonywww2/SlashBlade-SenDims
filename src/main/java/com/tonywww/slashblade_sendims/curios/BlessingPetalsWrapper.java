@@ -54,7 +54,7 @@ public class BlessingPetalsWrapper implements ICurio {
         CompoundTag tag = getBPTag(this.getStack());
         int counts = tag.getInt(ITEM_COUNTS);
         if (counts > 0) {
-            double addition = counts * 0.005d;
+            double addition = counts * 0.0035d;
             long total = net.minecraftforge.registries.ForgeRegistries.ITEMS.tags()
                     .getTag(SBSDTags.Items.BLESSING_PETALS_ITEMS).stream().count();
             if (total > 0 && counts >= total) {
