@@ -2,6 +2,7 @@ package com.tonywww.slashblade_sendims.items;
 
 import com.tonywww.slashblade_sendims.curios.BlessingPetalsCapProvider;
 import com.tonywww.slashblade_sendims.registeries.SBSDTags;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -101,6 +102,13 @@ public class BlessingPetals extends Item {
         toolTips.add(Component.translatable("ui.slashblade_sendims.blessing_petals.counts", counts));
 
         if (counts > 0) {
+            long total = ForgeRegistries.ITEMS.tags()
+                    .getTag(SBSDTags.Items.BLESSING_PETALS_ITEMS).stream().count();
+            if (counts >= total) {
+                toolTips.add(Component.translatable("ui.slashblade_sendims.blessing_petals.all_collected")
+                        .withStyle(ChatFormatting.GOLD));
+            }
+
             if (Screen.hasShiftDown()) {
                 toolTips.add(Component.translatable("ui.slashblade_sendims.blessing_petals.items"));
                 ListTag itemList = tag.getList(ITEM_LIST, Tag.TAG_STRING);

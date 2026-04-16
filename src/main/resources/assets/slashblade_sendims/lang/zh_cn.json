@@ -62,6 +62,8 @@
   "ui.slashblade_sendims.estus_flask.base": "基础回复：",
   "ui.slashblade_sendims.estus_flask.percentage": "损失生命回复：",
 
+  "ui.slashblade_sendims.blessing_petals.all_collected": "花无缺",
+
   "text.slashblade_sendims.no_ap": "行动力不足！",
 
   "curios.identifier.blessing_petals": "祝福之花",
