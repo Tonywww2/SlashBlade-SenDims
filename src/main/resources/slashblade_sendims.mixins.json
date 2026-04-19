@@ -14,6 +14,7 @@
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
+    "neat.NeatHealthBarRendererMixin",
     "sjap.BlisteringTerraSwordsMixin",
     "sbtetra.MixinSlashBladeModularItem",
     "slashblade.ComboStateRegistryMixin",
