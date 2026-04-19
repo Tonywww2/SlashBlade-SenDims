@@ -12,6 +12,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import com.tonywww.slashblade_sendims.items.PrincipleOfSwordArts;
 
 public class SBSDItems {
 
@@ -26,6 +27,13 @@ public class SBSDItems {
 
     public static final RegistryObject<Item> BLESSING_PETALS = ITEMS.register("blessing_petals",
             () -> new BlessingPetals(new Item.Properties()
+                    .stacksTo(1)
+                    .fireResistant()
+                    .rarity(Rarity.EPIC)
+            ));
+
+    public static final RegistryObject<Item> PRINCIPLE_OF_SWORD_ARTS = ITEMS.register("principle_of_sword_arts",
+            () -> new PrincipleOfSwordArts(new Item.Properties()
                     .stacksTo(1)
                     .fireResistant()
                     .rarity(Rarity.EPIC)

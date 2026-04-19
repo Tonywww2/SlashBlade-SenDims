@@ -108,7 +108,7 @@ public class DeepRealmCertificate extends Item {
 
     @SafeVarargs
     private boolean processProgressUpgrade(CompoundTag drTag, ItemStack other, Player player, int currentRank,
-                                           String progressType, net.minecraft.tags.TagKey<Item>... materialTags) {
+                                           String progressType, TagKey<Item>... materialTags) {
         int currentTotal = NBTUtils.getSpecificIntField(drTag, progressType);
         int currentProgressRank = currentTotal / MATERIAL_COUNT_PER_PROGRESS;
 
@@ -232,35 +232,38 @@ public class DeepRealmCertificate extends Item {
         super.appendHoverText(stack, level, toolTips, isAdvanced);
     }
 
-    private net.minecraft.tags.TagKey<Item> getHealthTag(int rank) {
+    private TagKey<Item> getHealthTag(int rank) {
         return switch (rank) {
             case 0 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_0;
             case 1 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_1;
             case 2 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_2;
             case 3 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_3;
             case 4 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_4;
-            default -> SBSDTags.Items.DRC_HEALTH_MATERIAL_5;
+            case 5 -> SBSDTags.Items.DRC_HEALTH_MATERIAL_5;
+            default -> null;
         };
     }
 
-    private net.minecraft.tags.TagKey<Item> getDamageTag(int rank) {
+    private TagKey<Item> getDamageTag(int rank) {
         return switch (rank) {
             case 0 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_0;
             case 1 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_1;
             case 2 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_2;
             case 3 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_3;
             case 4 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_4;
-            default -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_5;
+            case 5 -> SBSDTags.Items.DRC_DAMAGE_MATERIAL_5;
+            default -> null;
         };
     }
 
-    private net.minecraft.tags.TagKey<Item> getRankTag(int rank) {
+    private TagKey<Item> getRankTag(int rank) {
         return switch (rank) {
             case 1 -> SBSDTags.Items.DRC_RANK_MATERIAL_1;
             case 2 -> SBSDTags.Items.DRC_RANK_MATERIAL_2;
             case 3 -> SBSDTags.Items.DRC_RANK_MATERIAL_3;
             case 4 -> SBSDTags.Items.DRC_RANK_MATERIAL_4;
-            default -> SBSDTags.Items.DRC_RANK_MATERIAL_5;
+            case 5 -> SBSDTags.Items.DRC_RANK_MATERIAL_5;
+            default -> null;
         };
     }
 

@@ -21,6 +21,7 @@ public class SBSDCreativeTabs {
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(SBSDItems.DEEPREALM_CERTIFICATE.get());
                         pOutput.accept(SBSDItems.BLESSING_PETALS.get());
+                        pOutput.accept(SBSDItems.PRINCIPLE_OF_SWORD_ARTS.get());
                         pOutput.accept(SBSDItems.STRUCTURE_QUILL.get());
                         pOutput.accept(StructureQuill.forStructure("minecraft:stronghold"));
 
