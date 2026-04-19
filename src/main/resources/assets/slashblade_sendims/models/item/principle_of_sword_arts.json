@@ -1,7 +1,7 @@
 {
   "parent": "last_smith:item/smith_guide",
   "textures": {
-    "gushu": "last_smith:item/top",
-    "fendi": "last_smith:item/bottom"
+    "gushu": "slashblade_sendims:item/top",
+    "fendi": "slashblade_sendims:item/bottom"
   }
 }
