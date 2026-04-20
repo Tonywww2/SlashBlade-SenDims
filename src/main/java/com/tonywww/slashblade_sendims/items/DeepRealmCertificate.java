@@ -196,7 +196,7 @@ public class DeepRealmCertificate extends Item {
             if (Screen.hasShiftDown()) {
                 healthMaterial.append(getTagItemsComponent(getHealthTag(healthProgressCount)));
             } else {
-                healthMaterial.append(Component.translatable("ui.slashblade_sendims.blessing_petals.shift_for_details"));
+                healthMaterial.append(Component.translatable("ui.slashblade_sendims.shift_for_details"));
             }
         }
 
