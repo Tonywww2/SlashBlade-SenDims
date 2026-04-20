@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -192,7 +193,11 @@ public class DeepRealmCertificate extends Item {
             healthMaterial = Component.literal("  ");
             healthMaterial.append(Component.translatable("ui.slashblade_sendims.deeprealm_certificate.material"));
             healthMaterial.append(Component.literal(": "));
-            healthMaterial.append(getTagItemsComponent(getHealthTag(healthProgressCount)));
+            if (Screen.hasShiftDown()) {
+                healthMaterial.append(getTagItemsComponent(getHealthTag(healthProgressCount)));
+            } else {
+                healthMaterial.append(Component.translatable("ui.slashblade_sendims.blessing_petals.shift_for_details"));
+            }
         }
 
         // 伤害
@@ -211,7 +216,11 @@ public class DeepRealmCertificate extends Item {
             damageMaterial = Component.literal("  ");
             damageMaterial.append(Component.translatable("ui.slashblade_sendims.deeprealm_certificate.material"));
             damageMaterial.append(Component.literal(": "));
-            damageMaterial.append(getTagItemsComponent(getDamageTag(damageProgressCount)));
+            if (Screen.hasShiftDown()) {
+                damageMaterial.append(getTagItemsComponent(getDamageTag(damageProgressCount)));
+            } else {
+                damageMaterial.append(Component.translatable("ui.slashblade_sendims.shift_for_details"));
+            }
         }
         toolTips.add(health);
         if (healthMaterial != null) {
@@ -225,7 +234,11 @@ public class DeepRealmCertificate extends Item {
         if (rank < 5) {
             MutableComponent rankMaterial = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.breakthrough_material");
             rankMaterial.append(Component.literal(": "));
-            rankMaterial.append(getTagItemsComponent(getRankTag(rank + 1)));
+            if (Screen.hasShiftDown()) {
+                rankMaterial.append(getTagItemsComponent(getRankTag(rank + 1)));
+            } else {
+                rankMaterial.append(Component.translatable("ui.slashblade_sendims.shift_for_details"));
+            }
             toolTips.add(rankMaterial);
         }
 

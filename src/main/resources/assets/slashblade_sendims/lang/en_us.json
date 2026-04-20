@@ -50,6 +50,8 @@
   "ui.slashblade_sendims.deeprealm_certificate.material": "强化材料",
   "ui.slashblade_sendims.deeprealm_certificate.breakthrough_material": "突破材料",
 
+  "ui.slashblade_sendims.shift_for_details": "§8[按住 Shift 查看详情]§r",
+
   "ui.slashblade_sendims.blessing_petals.counts": "已记录：%s",
   "ui.slashblade_sendims.blessing_petals.items": "花瓣：",
   "ui.slashblade_sendims.blessing_petals.shift_for_details": "§8[按住 Shift 查看已记录的花瓣]§r",
