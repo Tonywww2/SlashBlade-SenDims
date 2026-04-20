@@ -33,7 +33,7 @@ public class DeepRealmCertificate extends Item {
 
     public static final String SLOT = "drc";
 
-    public static final int MATERIAL_COUNT_PER_PROGRESS = 30;
+    public static final int MATERIAL_COUNT_PER_PROGRESS = 64;
     public static final ChatFormatting[] COLOR_LIST = new ChatFormatting[]{
             ChatFormatting.GRAY,
             ChatFormatting.GOLD,
