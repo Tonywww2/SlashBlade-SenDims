@@ -9,6 +9,7 @@
     "botania.ManaBurstEntityMixin",
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",
+    "cataclysm.SunkenCityStructureMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
     "minecraft.NoiseBasedChunkGeneratorMixin",
