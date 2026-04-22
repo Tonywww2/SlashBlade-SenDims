@@ -65,7 +65,7 @@ public class NeatHealthBarRendererMixin {
         zShift -= 0.1f;
 
         poseStack.pushPose();
-        double textDx = (double) ((halfSize - iconOffset + 5.5) * globalScale) + NeatConfig.instance.iconOffsetX();
+        double textDx = (double) ((halfSize - iconOffset + 6.5) * globalScale) + NeatConfig.instance.iconOffsetX();
         poseStack.translate(-textDx, dy + NeatConfig.instance.iconOffsetY(), dz);
 
         // Reverse globalScale to make text upright, then apply Neat's text scale

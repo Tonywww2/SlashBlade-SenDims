@@ -14,7 +14,7 @@ public class SunkenCityStructureMixin {
         index = 1
     )
     private static int modifyGenerationHeight(int originalY) {
-        return 40;
+        return 111;
     }
 }
 
