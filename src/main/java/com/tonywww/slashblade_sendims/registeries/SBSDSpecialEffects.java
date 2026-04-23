@@ -17,7 +17,8 @@ public class SBSDSpecialEffects {
     public static final RegistryObject<SpecialEffect> ARCANE_A = SE.register("arcane_a", ArcaneA::new);
     public static final RegistryObject<SpecialEffect> THREE_FINGERS = SE.register("three_fingers", ThreeFingers::new);
     public static final RegistryObject<SpecialEffect> DISTANT_THUNDER = SE.register("distant_thunder", DistantThunder::new);
-
+    public static final RegistryObject<SpecialEffect> MANA_DETONATION = SE.register("mana_detonation", com.tonywww.slashblade_sendims.se.ManaDetonation::new);
+    public static final RegistryObject<SpecialEffect> INVINCIBLE_PIERCE = SE.register("invincible_pierce", com.tonywww.slashblade_sendims.se.InvinciblePierce::new);
 
     public static void register(IEventBus eventBus) {
         SE.register(eventBus);

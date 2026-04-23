@@ -15,10 +15,14 @@
   "slash_art.slashblade_sendims.unendurable_frenzy": "§6难耐癫火",
   "slash_art.slashblade_sendims.golden_crux": "§e黄金穿刺",
   "slash_art.slashblade_sendims.golden_crux_ex": "§l§e黄金穿刺·EX",
+
   "se.slashblade_sendims.frenzied_flame": "§6癫火",
   "se.slashblade_sendims.arcane_a": "§6感应 A",
   "se.slashblade_sendims.three_fingers": "§6三指",
   "se.slashblade_sendims.distant_thunder": "§b远雷",
+  "se.slashblade_sendims.mana_detonation": "§a魔力震爆",
+  "se.slashblade_sendims.invincible_pierce": "§a无敌贯穿",
+
   "message.slashblade_sendims.structure_quill.tooltip": "右键点击以搜索附近的结构并创建地图",
   "message.slashblade_sendims.structure_quill.searching": "正在搜索结构...",
   "message.slashblade_sendims.structure_quill.no_target": "未指定目标结构",

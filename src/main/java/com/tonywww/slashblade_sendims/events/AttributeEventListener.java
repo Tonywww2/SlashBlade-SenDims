@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.events;
 
 import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +18,7 @@ public class AttributeEventListener {
     public static void onLivingHurt(LivingHurtEvent event) {
         DamageSource damageSource = event.getSource();
 
-        if (damageSource.is(DamageTypes.MAGIC) || damageSource.is(DamageTypes.INDIRECT_MAGIC)) {
+        if (damageSource.is(DamageTypeTags.WITCH_RESISTANT_TO)) {
             LivingEntity entity = event.getEntity();
             AttributeInstance magicResistance = entity.getAttribute(SBSDAttributes.MAGIC_RESISTANCE.get());
             if (magicResistance != null) {
