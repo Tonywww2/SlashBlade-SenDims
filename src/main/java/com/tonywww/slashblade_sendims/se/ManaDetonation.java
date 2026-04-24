@@ -69,7 +69,7 @@ public class ManaDetonation extends SpecialEffect {
                 double attackDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
 
                 if (storedDamage >= attackDamage * 2.0) {
-                    float burstDamage = storedDamage * (0.8f + 2 * a);
+                    float burstDamage = storedDamage * (0.8f + a);
 
                     if (!level.isClientSide) {
                         tag.putFloat(STORED_DAMAGE_PATH, 0);
@@ -120,7 +120,7 @@ public class ManaDetonation extends SpecialEffect {
 
         if (!event.getSource().is(DamageTypeTags.WITCH_RESISTANT_TO)) {
             float originalDamage = event.getAmount();
-            event.setAmount(originalDamage * (0.5f + a));
+            event.setAmount(originalDamage * (0.5f + (a / 2f)));
 
             CompoundTag tag = bladeStack.getOrCreateTag();
             float newDamage = tag.getFloat(STORED_DAMAGE_PATH) + originalDamage * 0.5f;

@@ -60,7 +60,7 @@ public class InvinciblePierce extends SpecialEffect {
 
         CompoundTag targetData = target.getPersistentData();
         int hitCount = targetData.getInt(HIT_COUNT_PATH);
-        float x = (float) (Math.min(1d + (a / 2d) + hitCount * 0.1d, 10d + a) / 100d);
+        float x = (float) (Math.min(1d + (a / 4d) + hitCount * 0.1d, 10d + (a / 2d)) / 100d);
         float extraDamage = originalDamage * x;
         if (extraDamage >= 0.5f) {
             int manaCost = (int) (extraDamage * MANA_COST_RATIO); // 暂定比例为附加伤害的 20 倍的魔力
