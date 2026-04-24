@@ -71,8 +71,8 @@
 
   "text.slashblade_sendims.no_ap": "行动力不足！",
 
-  "tetra.stats.force_of_gaia": "盖亚之力",
-  "tetra.stats.force_of_gaia.tooltip": "为一些特殊的SA/SE提供加成",
+  "tetra.stats.mana_resonance": "魔力共振",
+  "tetra.stats.mana_resonance.tooltip": "为一些特殊的SA/SE提供加成",
 
   "curios.identifier.blessing_petals": "祝福之花",
   "curios.modifiers.blessing_petals": "模拟⌈远迹花的灵魂⌋时：",
