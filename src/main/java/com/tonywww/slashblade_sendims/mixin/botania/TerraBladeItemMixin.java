@@ -56,11 +56,9 @@ public class TerraBladeItemMixin {
                                 source = livingEntity.damageSources().mobAttack(livingEntity);
                             }
 
-                            living.hurt(source, damage);
-
                             // 在 hurt 之后执行 AttackManager.doMeleeAttack
-                            if (thrower instanceof LivingEntity liveAttacker) {
-                                AttackManager.doMeleeAttack(liveAttacker, living, true, false, 0.2f);
+                            if (living.hurt(source, damage) && thrower instanceof LivingEntity liveAttacker) {
+                                AttackManager.doMeleeAttack(liveAttacker, living, true, false, 0.15f);
                             }
 
                             entity.discard();
