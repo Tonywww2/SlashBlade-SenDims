@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.se;
 
 import com.tonywww.slashblade_sendims.SBSDValues;
+import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.registeries.SBSDSpecialEffects;
 import com.tonywww.slashblade_sendims.utils.TetraUtils;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -70,7 +71,7 @@ public class ManaDetonation extends SpecialEffect {
 
                 if (storedDamage >= attackDamage * 2.0) {
                     int a = TetraUtils.getEffectLvlTotal(player, SBSDValues.MANA_RESONANCE);
-                    float burstDamage = storedDamage * (0.8f + a);
+                    float burstDamage = storedDamage * (0.8f + (a / 100f));
 
                     if (!level.isClientSide) {
                         tag.putFloat(STORED_DAMAGE_PATH, 0);
@@ -122,7 +123,11 @@ public class ManaDetonation extends SpecialEffect {
         if (!event.getSource().is(DamageTypeTags.WITCH_RESISTANT_TO)) {
             float originalDamage = event.getAmount();
             int a = TetraUtils.getEffectLvlTotal(player, SBSDValues.MANA_RESONANCE);
-            event.setAmount(originalDamage * (0.5f + (a / 2f)));
+            SenDims.LOGGER.debug("Mana detonation: originalDamage {}", originalDamage);
+            SenDims.LOGGER.debug("a value {}", a);
+            SenDims.LOGGER.debug("New amount {}", originalDamage * (0.5f + (a / 2f)));
+
+            event.setAmount(originalDamage * Math.min(1f, 0.5f + (a / 200f)));
 
             CompoundTag tag = bladeStack.getOrCreateTag();
             float newDamage = tag.getFloat(STORED_DAMAGE_PATH) + originalDamage * 0.5f;
