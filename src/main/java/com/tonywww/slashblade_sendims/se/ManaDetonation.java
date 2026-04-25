@@ -1,6 +1,8 @@
 package com.tonywww.slashblade_sendims.se;
 
+import com.tonywww.slashblade_sendims.SBSDValues;
 import com.tonywww.slashblade_sendims.registeries.SBSDSpecialEffects;
+import com.tonywww.slashblade_sendims.utils.TetraUtils;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -35,8 +37,6 @@ public class ManaDetonation extends SpecialEffect {
 
     public static double MANA_DETONATION_RANGE = 8.0D;
 
-    static int a = 0;
-
     public ManaDetonation() {
         super(45, true, false);
         MinecraftForge.EVENT_BUS.addListener(this::onSlashBladeUpdate);
@@ -69,6 +69,7 @@ public class ManaDetonation extends SpecialEffect {
                 double attackDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
 
                 if (storedDamage >= attackDamage * 2.0) {
+                    int a = TetraUtils.getEffectLvlTotal(player, SBSDValues.MANA_RESONANCE);
                     float burstDamage = storedDamage * (0.8f + a);
 
                     if (!level.isClientSide) {
@@ -120,6 +121,7 @@ public class ManaDetonation extends SpecialEffect {
 
         if (!event.getSource().is(DamageTypeTags.WITCH_RESISTANT_TO)) {
             float originalDamage = event.getAmount();
+            int a = TetraUtils.getEffectLvlTotal(player, SBSDValues.MANA_RESONANCE);
             event.setAmount(originalDamage * (0.5f + (a / 2f)));
 
             CompoundTag tag = bladeStack.getOrCreateTag();

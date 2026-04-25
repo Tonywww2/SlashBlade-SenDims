@@ -1,6 +1,8 @@
 package com.tonywww.slashblade_sendims.se;
 
+import com.tonywww.slashblade_sendims.SBSDValues;
 import com.tonywww.slashblade_sendims.registeries.SBSDSpecialEffects;
+import com.tonywww.slashblade_sendims.utils.TetraUtils;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -29,7 +31,6 @@ public class InvinciblePierce extends SpecialEffect {
 
     public static final String HIT_COUNT_PATH = "sbsd.sb.invincible_pierce_hits";
     public static final int MANA_COST_RATIO = 20;
-    public static final int a = 0;
 
     public InvinciblePierce() {
         super(60, true, false);
@@ -60,6 +61,7 @@ public class InvinciblePierce extends SpecialEffect {
 
         CompoundTag targetData = target.getPersistentData();
         int hitCount = targetData.getInt(HIT_COUNT_PATH);
+        int a = TetraUtils.getEffectLvlTotal(player, SBSDValues.MANA_RESONANCE);
         float x = (float) (Math.min(1d + (a / 4d) + hitCount * 0.1d, 10d + (a / 2d)) / 100d);
         float extraDamage = originalDamage * x;
         if (extraDamage >= 0.5f) {
