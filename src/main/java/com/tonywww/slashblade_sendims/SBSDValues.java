@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
+import se.mickelus.tetra.effect.ItemEffect;
 
 import java.util.*;
 
@@ -29,6 +30,9 @@ public class SBSDValues {
         COMBO_COST_MAP.put(ComboStateRegistry.RAPID_SLASH.getId(), -800);
         COMBO_COST_MAP.put(ComboStateRegistry.UPPERSLASH.getId(), -400);
     }
+
+    // Tetra
+    public static final ItemEffect MANA_RESONANCE = ItemEffect.get("mana_resonance");
 
 //    public static final Map<ResourceLocation, Integer> SA_COST_MAP = new HashMap<>();
 //    static {
