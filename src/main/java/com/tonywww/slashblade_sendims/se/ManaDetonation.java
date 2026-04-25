@@ -123,9 +123,9 @@ public class ManaDetonation extends SpecialEffect {
         if (!event.getSource().is(DamageTypeTags.WITCH_RESISTANT_TO)) {
             float originalDamage = event.getAmount();
             int a = TetraUtils.getEffectLvlTotal(player, SBSDValues.MANA_RESONANCE);
-            SenDims.LOGGER.debug("Mana detonation: originalDamage {}", originalDamage);
-            SenDims.LOGGER.debug("a value {}", a);
-            SenDims.LOGGER.debug("New amount {}", originalDamage * (0.5f + (a / 2f)));
+//            SenDims.LOGGER.debug("Mana detonation: originalDamage {}", originalDamage);
+//            SenDims.LOGGER.debug("a value {}", a);
+//            SenDims.LOGGER.debug("New amount {}", originalDamage * (0.5f + (a / 2f)));
 
             event.setAmount(originalDamage * Math.min(1f, 0.5f + (a / 200f)));
 
