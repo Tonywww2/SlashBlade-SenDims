@@ -181,9 +181,8 @@ dependencies {
     implementation fg.deobf("curse.maven:umapyoi-776121:7754467")
 
     implementation fg.deobf("curse.maven:lendercataclysm-551586:7908487")
-//1.7.56
-    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7234815")
-//    implementation fg.deobf("mods.sbr:slashblade-resharped:1.20.1-1.6.54")
+
+    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7363505")
 
     implementation fg.deobf("curse.maven:zeta-968868:6432578")
     implementation fg.deobf("curse.maven:quark-243121:6427817")
