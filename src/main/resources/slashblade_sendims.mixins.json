@@ -12,6 +12,7 @@
     "cataclysm.SunkenCityStructureMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
+    "legendreliclib.ArmorPiercingUtilMixin",
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
     "nc.NCFluidsMixin",
