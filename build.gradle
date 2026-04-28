@@ -236,6 +236,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:neat-238372:5838485")
 
+    implementation fg.deobf("curse.maven:pseudo-edge-dawnbreaker-1348865:7006562")
     implementation fg.deobf("curse.maven:legendreliclib-1307366:7998650")
 
 //    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1"))

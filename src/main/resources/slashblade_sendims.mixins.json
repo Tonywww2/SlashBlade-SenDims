@@ -18,6 +18,7 @@
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
     "neat.NeatHealthBarRendererMixin",
+    "pseudoedge.PbdComboStateMixin",
     "sbtetra.MixinSlashBladeModularItem",
     "sjap.BlisteringTerraSwordsMixin",
     "slashblade.ComboStateRegistryMixin",
