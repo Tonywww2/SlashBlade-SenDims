@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
+    "aether.ShieldOfRepulsionAccessoryMixin",
     "aether_redux.ConstructionRingItemMixin",
     "botania.ManaBurstEntityMixin",
     "cataclysm.Burning_Arena_StructureMixin",
