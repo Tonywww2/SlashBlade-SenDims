@@ -7,18 +7,20 @@
   "mixins": [
     "aether.ShieldOfRepulsionAccessoryMixin",
     "aether_redux.ConstructionRingItemMixin",
-    "botania.ManaBurstEntityMixin",
+    "botania.TerraBladeItemMixin",
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",
     "cataclysm.SunkenCityStructureMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
+    "legendreliclib.ArmorPiercingUtilMixin",
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
     "neat.NeatHealthBarRendererMixin",
-    "sbtetra.MixinSlashBladeModularItem",
+    "pseudoedge.PbdComboStateMixin",
+    "redtassel.RTComboAndSAMixin",
     "sjap.BlisteringTerraSwordsMixin",
     "slashblade.ComboStateRegistryMixin",
     "slashblade.EntityAbstractSummonedSwordAccessor",
@@ -43,6 +45,7 @@
     "umapyoi.TopUmamusumeSkillMixin"
   ],
   "client": [
+    "sbtetra.MixinSlashBladeModularItem"
   ],
   "injectors": {
     "defaultRequire": 1
