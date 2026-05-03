@@ -161,10 +161,6 @@ repositories {
         url = "https://api.modrinth.com/maven"
     }
 
-    mavenLocal()
-    maven {
-        url = "file://C:/Users/12044/Documents/EX/IDEA_PROJECT/maven-repo"
-    }
 }
 
 dependencies {
@@ -183,6 +179,7 @@ dependencies {
     implementation fg.deobf("curse.maven:lendercataclysm-551586:7908487")
 
     implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7363505")
+//    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:8018222")
 
     implementation fg.deobf("curse.maven:zeta-968868:6432578")
     implementation fg.deobf("curse.maven:quark-243121:6427817")
