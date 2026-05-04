@@ -23,7 +23,7 @@ public class TheGreatRipMixin {
             }
 
             if (attacker != null && attacker != victim) {
-                int healMultiply = (effect.getAmplifier() + 1) * 5 + 10;
+                int healMultiply = effect.getAmplifier() * 5 + 10;
                 attacker.heal((attacker.getMaxHealth() - attacker.getHealth()) * healMultiply / 1000);
             }
 
