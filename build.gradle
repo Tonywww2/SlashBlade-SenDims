@@ -111,11 +111,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     maven { url = "https://raw.github.com/0999312/MMMaven/main/repository" }
     maven {
-        // location of the maven that hosts JEI files before January 2023
-        name = "Progwml6's maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
         // location of the maven that hosts JEI files since January 2023
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
@@ -167,7 +162,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation fg.deobf("cn.mcmod_mmf.mysterious_mountain_lib:MMLib:1.6.34-1.20.1")
-    implementation fg.deobf("curse.maven:curios-309927:6418456")
+//    implementation fg.deobf("curse.maven:curios-309927:6418456")
     implementation fg.deobf("curse.maven:lionfish-api-1001614:5922047")
     implementation fg.deobf("curse.maven:playeranimator-658587:4587214")
     implementation fg.deobf("curse.maven:citadel-331936:6702068")
@@ -180,6 +175,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7363505")
 //    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:8018222")
+    implementation fg.deobf("curse.maven:the-last-smith-306385:7564978")
 
     implementation fg.deobf("curse.maven:zeta-968868:6432578")
     implementation fg.deobf("curse.maven:quark-243121:6427817")
