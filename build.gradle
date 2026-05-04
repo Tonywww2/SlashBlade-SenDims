@@ -109,12 +109,22 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    maven { url = "https://raw.github.com/0999312/MMMaven/main/repository" }
+
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
+
     maven {
         // location of the maven that hosts JEI files since January 2023
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
+
     maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
@@ -122,13 +132,15 @@ repositories {
     }
 
     maven {
-        name = "Illusive Soulworks maven"
-        url = "https://maven.theillusivec4.top/"
-    }
-
-    maven {
         name "Modding Legacy Maven"
         url "https://maven.moddinglegacy.com/maven"
+    }
+
+    maven { url = "https://raw.github.com/0999312/MMMaven/main/repository" }
+
+    maven {
+        name = "Illusive Soulworks maven"
+        url = "https://maven.theillusivec4.top/"
     }
 
     maven { url = "https://maven.bawnorton.com/releases" }
@@ -148,12 +160,9 @@ repositories {
     }
 
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
-
-    maven {
-        url = "https://api.modrinth.com/maven"
+        // location of the maven that hosts JEI files before January 2023
+        name = "Progwml6's maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
     }
 
 }
@@ -173,8 +182,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:lendercataclysm-551586:7908487")
 
-    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7363505")
-//    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:8018222")
+    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:8018222")
     implementation fg.deobf("curse.maven:the-last-smith-306385:7564978")
 
     implementation fg.deobf("curse.maven:zeta-968868:6432578")
@@ -192,7 +200,7 @@ dependencies {
     implementation 'org.spongepowered:mixin:0.8.5' // Check for the latest version appropriate for your Forge version
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor' // This is for the annotation processors
 
-    implementation  fg.deobf("dev.shadowsoffire:Placebo:${minecraft_version}-${placeboVersion}")
+    implementation fg.deobf("dev.shadowsoffire:Placebo:${minecraft_version}-${placeboVersion}")
     implementation fg.deobf("dev.shadowsoffire:ApothicAttributes:${minecraft_version}-${attributeslibVersion}")
     implementation fg.deobf("dev.shadowsoffire:Apotheosis:${minecraft_version}-${apothVersion}")
 
