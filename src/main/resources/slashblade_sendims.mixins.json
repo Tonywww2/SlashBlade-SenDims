@@ -14,6 +14,7 @@
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
     "legendreliclib.ArmorPiercingUtilMixin",
+    "legendreliclib.TheGreatRipMixin",
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
     "nc.NCFluidsMixin",
