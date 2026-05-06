@@ -354,7 +354,14 @@ public class SBSDLeader {
     public static void initializeLeader(LivingEntity living, CompoundTag persistentData) {
         AttributeInstance instance = living.getAttribute(Attributes.MAX_HEALTH);
         if (instance != null && !persistentData.contains(SBSDValues.IS_INITIALIZED)) {
-            instance.addPermanentModifier(new AttributeModifier("sbsd.leader.health", SBSDValues.LEADER_HP_SCALE, AttributeModifier.Operation.MULTIPLY_TOTAL));
+
+            double scale = SBSDValues.LEADER_HP_SCALE;
+            ResourceLocation rl = net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(living.getType());
+            // TODO 等修
+            if (rl != null && "terra_entity".equals(rl.getNamespace())) {
+                scale = SBSDValues.LEADER_HP_SCALE_RT;
+            }
+            instance.addPermanentModifier(new AttributeModifier("sbsd.leader.health", scale, AttributeModifier.Operation.MULTIPLY_TOTAL));
             persistentData.putBoolean(SBSDValues.IS_INITIALIZED, true);
         }
         living.setHealth(living.getMaxHealth());

@@ -45,7 +45,8 @@
     "umapyoi.NutritionalSupplementsSkillMixin",
     "umapyoi.SteelWillSkillMixin",
     "umapyoi.TetherSkillMixin",
-    "umapyoi.TopUmamusumeSkillMixin"
+    "umapyoi.TopUmamusumeSkillMixin",
+    "apothicattributes.AttributeEventsMixin"
   ],
   "client": [
     "sbtetra.MixinSlashBladeModularItem"
