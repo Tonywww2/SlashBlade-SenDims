@@ -21,37 +21,7 @@
     "nc.NCFluidsMixin$FluidEntryMixin",
     "neat.NeatHealthBarRendererMixin",
     "pseudoedge.PbdComboStateMixin",
-    "redtassel.RTComboAndSAMixin",
-    "sjap.BlisteringTerraSwordsMixin",
-    "sjap.ClearMindMixin",
-    "sjap.FateBondMixin",
-    "slashblade.ComboStateRegistryMixin",
-    "slashblade.EntityAbstractSummonedSwordAccessor",
-    "slashblade.ItemSlashBladeMixin",
-    "slashblade.MixinArrowReflector",
-    "slashblade.MixinRefineHandler",
-    "slashblade.MixinSlashBladeItems",
-    "slashblade.SlayerStyleArtsMixin",
-    "slashblade.TargetSelectorMixin",
-    "slashblade.UntouchableMixin",
-    "tetra.TetraEnchantmentHelperMixin",
-    "tls.ItemRegistryMixin",
-    "twilightforest.LichMixin",
-    "twilightforest.NagaGoalMixin",
-    "twilightforest.NagaMixin",
-    "umapyoi.DivineSpeedSkillMixin",
-    "umapyoi.HealSkillMixin",
-    "umapyoi.LastLegSkillMixin",
-    "umapyoi.LowHealthBuffSkillMixin",
-    "umapyoi.LowHealthHealSkillMixin",
-    "umapyoi.NutritionalSupplementsSkillMixin",
-    "umapyoi.SteelWillSkillMixin",
-    "umapyoi.TetherSkillMixin",
-    "umapyoi.TopUmamusumeSkillMixin",
-    "apothicattributes.AttributeEventsMixin"
-  ],
-  "client": [
-    "sbtetra.MixinSlashBladeModularItem"
+    "sjap_adder.SjaComboStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1
