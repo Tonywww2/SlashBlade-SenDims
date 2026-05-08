@@ -23,6 +23,8 @@
     "pseudoedge.PbdComboStateMixin",
     "redtassel.RTComboAndSAMixin",
     "sjap.BlisteringTerraSwordsMixin",
+    "sjap.ClearMindMixin",
+    "sjap.FateBondMixin",
     "slashblade.ComboStateRegistryMixin",
     "slashblade.EntityAbstractSummonedSwordAccessor",
     "slashblade.ItemSlashBladeMixin",

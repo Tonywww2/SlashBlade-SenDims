@@ -26,6 +26,7 @@ public class SBSDValues {
     // HIT
     public static final int HIT_LEADER_AP = 20;
     public static final Map<ResourceLocation, Integer> COMBO_COST_MAP = new HashMap<>();
+
     static {
         COMBO_COST_MAP.put(ComboStateRegistry.RAPID_SLASH.getId(), -800);
         COMBO_COST_MAP.put(ComboStateRegistry.UPPERSLASH.getId(), -400);
@@ -42,7 +43,7 @@ public class SBSDValues {
     public static final int PARRY_TICK = 15;
     public static final int END_PARRIED_TICK = 180;
     public static final double LEADER_HP_SCALE = 5.0d;
-    public static final double LEADER_HP_SCALE_RT = Math.floor(Math.sqrt(LEADER_HP_SCALE));
+    public static final double LEADER_HP_SCALE_RT = Math.floor(Math.sqrt(LEADER_HP_SCALE)) - 0.5d;
     public static final float PARRIED_DAMAGE_SCALE = 5.0f;
 
     public static final String BOSS_LEADER = "sbsd.boss";
@@ -55,11 +56,14 @@ public class SBSDValues {
     public static final String LEADER_TEAM_NAME = "sbsd_leaders";
 
     public static Set<ResourceLocation> PARRY_COMBOS = new HashSet<>();
+
     static {
         PARRY_COMBOS.add(ComboStateRegistry.RAPID_SLASH.getId());
         PARRY_COMBOS.add(ComboStateRegistry.UPPERSLASH.getId());
     }
+
     public static final List<SBSDLeader.SAFunction> ALL_LEADER_SA = new ArrayList<>(10);
+
     static {
         ALL_LEADER_SA.add(SBSDLeader::doLeaderSAWideSLash);
         ALL_LEADER_SA.add(SBSDLeader::doLeaderSATripleSlash);

@@ -240,6 +240,7 @@ dependencies {
     implementation fg.deobf("curse.maven:redtassel-1281295:7639810")
     implementation fg.deobf("curse.maven:pseudo-edge-dawnbreaker-1348865:7006562")
     implementation fg.deobf("curse.maven:legendreliclib-1307366:7998650")
+    implementation fg.deobf("curse.maven:slashblade-japanese-addon-pack-adder-1349409:8016974")
 
 //    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1"))
 //    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.7-beta.1")) {
