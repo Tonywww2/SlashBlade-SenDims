@@ -1,4 +1,4 @@
-package com.tonywww.slashblade_sendims.mixin.sjap;
+package com.tonywww.slashblade_sendims.mixin.sjap_adder;
 
 import com.dinzeer.legendreliclib.lib.util.FastMakeEntityUtil;
 import com.dinzeer.legendreliclib.lib.util.slashblade.AbstractSpecialEffect;
@@ -6,8 +6,6 @@ import com.dinzeer.sjapadder.se.slashblade.FateBond;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
