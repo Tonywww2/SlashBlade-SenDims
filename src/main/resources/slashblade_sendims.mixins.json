@@ -23,7 +23,6 @@
     "neat.NeatHealthBarRendererMixin",
     "pseudoedge.PbdComboStateMixin",
     "redtassel.RTComboAndSAMixin",
-    "sbtetra.MixinSlashBladeModularItem",
     "sjap.BlisteringTerraSwordsMixin",
     "sjap.ClearMindMixin",
     "sjap.FateBondMixin",
@@ -51,6 +50,9 @@
     "umapyoi.SteelWillSkillMixin",
     "umapyoi.TetherSkillMixin",
     "umapyoi.TopUmamusumeSkillMixin"
+  ],
+  "client": [
+    "sbtetra.MixinSlashBladeModularItem"
   ],
   "injectors": {
     "defaultRequire": 1
