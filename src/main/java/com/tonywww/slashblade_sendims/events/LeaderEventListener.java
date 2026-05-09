@@ -79,15 +79,18 @@ public class LeaderEventListener {
     public static void HtiEventListener(SlashBladeEvent.HitEvent event) {
         LivingEntity target = event.getTarget();
         CompoundTag persistentData = target.getPersistentData();
+
+        if (!(event.getUser() instanceof ServerPlayer serverPlayer)) return;
+        ItemStack soul = UmapyoiAPI.getUmaSoul(serverPlayer);
+
+        if (soul == null || soul.isEmpty()) return;
+
         if (persistentData.contains(SBSDValues.APOTH_BOSS)) {
             if (SBSDLeader.handleParryActions(event, target, persistentData)) {
                 StunManager.setStun(target, 80);
             }
-            if (event.getUser() instanceof ServerPlayer serverPlayer) {
-                ItemStack soul = UmapyoiAPI.getUmaSoul(serverPlayer);
-                if (soul == null || soul.isEmpty()) return;
-                gainAPbyHit(serverPlayer, soul);
-            }
+            gainAPbyHit(serverPlayer, soul, 1d);
+            
         } else if (persistentData.contains(SBSDValues.BOSS_LEADER)) {
             if (target instanceof Naga naga) {
                 if (SBSDLeader.handleParryActions(event, naga, persistentData)) {
@@ -96,21 +99,19 @@ public class LeaderEventListener {
                     StunManager.setStun(target, 60);
                 }
             }
+            gainAPbyHit(serverPlayer, soul, 1d);
 
-            if (event.getUser() instanceof ServerPlayer serverPlayer) {
-                ItemStack soul = UmapyoiAPI.getUmaSoul(serverPlayer);
-                if (soul == null || soul.isEmpty()) return;
-                gainAPbyHit(serverPlayer, soul);
-            }
+        } else {
+            gainAPbyHit(serverPlayer, soul, 0.25d);
         }
 
     }
 
-    private static void gainAPbyHit(ServerPlayer serverPlayer, ItemStack soul) {
-        int gain = SBSDValues.HIT_LEADER_AP;
+    private static void gainAPbyHit(ServerPlayer serverPlayer, ItemStack soul, double ratio) {
+        double gain = SBSDValues.HIT_LEADER_AP * ratio;
         AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_GAIN_PERCENTAGE.get());
-        if (attributeInstance != null) gain = (int) (gain * attributeInstance.getValue());
-        UmaSoulUtils.addActionPoint(soul, gain);
+        if (attributeInstance != null) gain *= attributeInstance.getValue();
+        UmaSoulUtils.addActionPoint(soul, (int) gain);
 
     }
 

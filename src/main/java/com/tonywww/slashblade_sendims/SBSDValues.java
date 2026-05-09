@@ -24,7 +24,7 @@ public class SBSDValues {
     public static final int SPRINT_SUCCESS_AP = 300;
 
     // HIT
-    public static final int HIT_LEADER_AP = 20;
+    public static final double HIT_LEADER_AP = 30d;
     public static final Map<ResourceLocation, Integer> COMBO_COST_MAP = new HashMap<>();
 
     static {
