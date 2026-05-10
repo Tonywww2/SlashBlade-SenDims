@@ -37,7 +37,6 @@
     "slashblade.SuperSlashArtsMixin",
     "slashblade.TargetSelectorMixin",
     "slashblade.UntouchableMixin",
-    "tetra.TetraEnchantmentHelperMixin",
     "tls.ItemRegistryMixin",
     "twilightforest.LichMixin",
     "twilightforest.NagaGoalMixin",
