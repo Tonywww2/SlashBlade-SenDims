@@ -34,6 +34,7 @@
     "slashblade.MixinRefineHandler",
     "slashblade.MixinSlashBladeItems",
     "slashblade.SlayerStyleArtsMixin",
+    "slashblade.SuperSlashArtsMixin",
     "slashblade.TargetSelectorMixin",
     "slashblade.UntouchableMixin",
     "tetra.TetraEnchantmentHelperMixin",
