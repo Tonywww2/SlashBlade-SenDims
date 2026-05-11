@@ -23,13 +23,11 @@ public class TetherSkillMixin extends UmaSkill {
     private void injectApplySkill(Level level, LivingEntity user, CallbackInfo ci) {
         int skillLevel = this.getSkillLevel() - 1;
         UmaUtils.areaSkill(level, user, (living -> {
-            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 3));
+            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 3));
         }));
-        if (skillLevel >= 1) {
-            UmaUtils.areaSkill(level, user, (living -> {
-                living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 3));
-            }));
-        }
+        UmaUtils.areaSkill(level, user, (living -> {
+            living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 300, 1 + skillLevel * 2));
+        }));
         ci.cancel();
     }
 }

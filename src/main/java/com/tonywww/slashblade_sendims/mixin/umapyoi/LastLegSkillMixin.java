@@ -36,13 +36,13 @@ public class LastLegSkillMixin extends UmaSkill {
                 if (UmaSoulUtils.getProperty(soul)[2] >= 10) {
                     user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 160, 3));
                     UmaUtils.areaSkill(level, user, (living -> {
-                        living.addEffect(new MobEffectInstance(ALObjects.MobEffects.SUNDERING.get(), 80, 0));
+                        living.addEffect(new MobEffectInstance(ALObjects.MobEffects.SUNDERING.get(), 200, 0));
                     }));
 
                 } else {
                     user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 160, 2));
                     UmaUtils.areaSkill(level, user, (living -> {
-                        living.addEffect(new MobEffectInstance(ALObjects.MobEffects.SUNDERING.get(), 20, 0));
+                        living.addEffect(new MobEffectInstance(ALObjects.MobEffects.SUNDERING.get(), 100, 0));
                     }));
 
                 }

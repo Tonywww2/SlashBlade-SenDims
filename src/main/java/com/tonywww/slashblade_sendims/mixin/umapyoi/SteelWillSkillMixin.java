@@ -30,9 +30,9 @@ public class SteelWillSkillMixin extends UmaSkill {
                 user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
                 break;
             case 1:
-                user.addEffect(new MobEffectInstance(ALObjects.MobEffects.KNOWLEDGE.get(), 200, 0));
-                user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
-                user.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 200, 1));
+                user.addEffect(new MobEffectInstance(ALObjects.MobEffects.KNOWLEDGE.get(), 400, 0));
+                user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 400, 1));
+                user.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 400, 1));
                 UmaStatusUtils.addMotivation(user);
                 break;
             default:

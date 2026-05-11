@@ -21,8 +21,8 @@ public abstract class DivineSpeedSkillMixin extends UmaSkill {
     @Inject(method = "applySkill(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)V", at = @At("HEAD"), remap = false, cancellable = true)
     private void injectApplySkill(Level level, LivingEntity user, CallbackInfo ci) {
         int skillLevel = this.getSkillLevel() - 1;
-        user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100 + (skillLevel * 60), skillLevel + 1));
-        user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100 + (skillLevel * 60), skillLevel));
+        user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100 + (skillLevel * 100), skillLevel + 1));
+        user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100 + (skillLevel * 100), skillLevel));
         ci.cancel();
     }
 

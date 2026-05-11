@@ -38,7 +38,7 @@ public class LowHealthBuffSkillMixin extends UmaSkill {
                 }));
                 break;
             case 1:
-                boolean lowHealth = (double)(user.getHealth() / user.getMaxHealth()) < 0.6;
+                boolean lowHealth = (double)(user.getHealth() / user.getMaxHealth()) < 0.6d;
                 UmaStatusUtils.addMotivation(user);
 
                 UmaUtils.areaSkill(level, user, (living -> {
