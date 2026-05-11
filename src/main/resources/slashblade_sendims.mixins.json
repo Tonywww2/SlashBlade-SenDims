@@ -16,6 +16,7 @@
     "classicbar.HungerBarMixin",
     "legendreliclib.ArmorPiercingUtilMixin",
     "legendreliclib.TheGreatRipMixin",
+    "minecraft.MixinShulkerAttackGoal",
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
     "nc.NCFluidsMixin",
