@@ -30,6 +30,7 @@
     "sjap_adder.SjaComboStateMixin",
     "slashblade.ComboStateRegistryMixin",
     "slashblade.EntityAbstractSummonedSwordAccessor",
+    "slashblade.EntityDriveMixin",
     "slashblade.ItemSlashBladeMixin",
     "slashblade.MixinArrowReflector",
     "slashblade.MixinRefineHandler",
