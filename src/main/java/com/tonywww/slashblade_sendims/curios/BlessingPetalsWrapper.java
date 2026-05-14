@@ -56,9 +56,7 @@ public class BlessingPetalsWrapper implements ICurio {
         if (counts > 0) {
             double atk = counts * 0.003d;
             double hp = counts * 0.0015d;
-            long total = net.minecraftforge.registries.ForgeRegistries.ITEMS.tags()
-                    .getTag(SBSDTags.Items.BLESSING_PETALS_ITEMS).stream().count();
-            if (total > 0 && counts >= total) {
+            if (TOTAL_DISC > 0 && counts >= TOTAL_DISC) {
                 atk += 0.1d;
                 hp += 0.05d;
             }

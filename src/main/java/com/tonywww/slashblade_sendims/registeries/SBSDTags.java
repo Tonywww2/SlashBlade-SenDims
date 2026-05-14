@@ -21,6 +21,7 @@ public class SBSDTags {
     public static class Items {
 
         public static final TagKey<Item> BLESSING_PETALS_ITEMS = createTag("blessing_petals_items");
+        public static final TagKey<Item> THE_NECTAR_QUEST_ITEMS = createTag("the_nectar_quest_items");
 
         public static final TagKey<Item> DRC_RANK_MATERIALS = createTag("drc_rank_materials");
         public static final TagKey<Item> DRC_RANK_MATERIAL_1 = createTag("drc_rank_material_1");
