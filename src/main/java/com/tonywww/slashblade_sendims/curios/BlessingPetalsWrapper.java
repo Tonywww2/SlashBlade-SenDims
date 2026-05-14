@@ -54,7 +54,7 @@ public class BlessingPetalsWrapper implements ICurio {
         CompoundTag tag = getBPTag(this.getStack());
         int counts = tag.getInt(ITEM_COUNTS);
         if (counts > 0) {
-            double atk = counts * 0.003d;
+            double atk = counts * 0.002d + 0.08d;
             double hp = counts * 0.0015d;
             if (TOTAL_DISC > 0 && counts >= TOTAL_DISC) {
                 atk += 0.1d;

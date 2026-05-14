@@ -53,7 +53,7 @@ public class PrincipleOfSwordArtsWrapper implements ICurio {
         CompoundTag tag = getPSATag(this.getStack());
         int counts = tag.getInt(ITEM_COUNTS);
         if (counts > 0) {
-            double atk = counts * 0.005d;
+            double atk = counts * 0.004d + 0.07d;
             if (TOTAL_SA > 0 && counts >= TOTAL_SA) {
                 atk += 0.1d;
             }
