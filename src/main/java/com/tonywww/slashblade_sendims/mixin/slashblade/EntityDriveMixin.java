@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(EntityDrive.class)
 public class EntityDriveMixin {
-    @Redirect(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lmods/flammpfeil/slashblade/util/KnockBacks;ordinal()I"))
+    @Redirect(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lmods/flammpfeil/slashblade/util/KnockBacks;ordinal()I"), remap = false)
     private int onGetKnockbackOrdinal(KnockBacks instance) {
         if (instance == null) {
             return 0;
