@@ -10,7 +10,6 @@
     "apothicattributes.AttributeEventsMixin",
     "apotheosis.GemCuttingRarityUpgradeMixin",
     "apotheosis.GemCuttingScreenMixin",
-    "apotheosis.SalvageItemMixin",
     "botania.TerraBladeItemMixin",
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",
@@ -57,7 +56,8 @@
     "umapyoi.TopUmamusumeSkillMixin"
   ],
   "client": [
-    "sbtetra.MixinSlashBladeModularItem"
+    "sbtetra.MixinSlashBladeModularItem",
+    "apotheosis.SalvageItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
