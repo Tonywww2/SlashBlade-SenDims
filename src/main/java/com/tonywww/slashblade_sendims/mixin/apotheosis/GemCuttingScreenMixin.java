@@ -34,6 +34,23 @@ public abstract class GemCuttingScreenMixin extends AdventureContainerScreen<Gem
     @Shadow
     protected abstract void addMatTooltip(DynamicHolder<LootRarity> rarity, int cost, List<Component> list);
 
+    @Shadow
+    protected ItemStack displayMat;
+
+    /**
+     * 修改更新按钮状态时的幽灵材料显示为高级材料
+     */
+    @Inject(method = "updateBtnStatus", at = @At("TAIL"), remap = false)
+    private void afterUpdateBtnStatus(CallbackInfo ci) {
+        ItemStack gemStack = this.getMenu().getSlot(0).getItem();
+        GemInstance gem = GemInstance.unsocketed(gemStack);
+        if (gem.isValidUnsocketed() && !gem.isMaxRarity()) {
+            this.displayMat = new ItemStack(RarityRegistry.next(gem.rarity()).get().getMaterial());
+        } else {
+            this.displayMat = ItemStack.EMPTY;
+        }
+    }
+
     /**
      * 修改渲染工具提示的逻辑，使其仅显示“高级材料”且数量为 2。
      */

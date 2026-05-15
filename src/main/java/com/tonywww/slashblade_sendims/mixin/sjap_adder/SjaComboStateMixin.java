@@ -73,7 +73,7 @@ public class SjaComboStateMixin {
                                 .clickAction((entityIn) -> AttackManager.doSlash(entityIn, 157.5F, Vec3.ZERO, false, true, Config.sakuraDriveRightComboRatio))
                                 .addTickAction(UserPoseOverrider::resetRot)
                                 .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                                        .put(1, (entityIn) -> Drive.doSlash(entityIn, -22.5F, 20, Vec3.ZERO, true, 2.5D, 0.2F)).build())
+                                        .put(1, (entityIn) -> Drive.doSlash(entityIn, -22.5F, 20, Vec3.ZERO, true, 1.5D, 0.2F)).build())
                                 .addHitEffect((t, a) -> StunManager.setStun(t, 36L))
                                 .build()
                 );
