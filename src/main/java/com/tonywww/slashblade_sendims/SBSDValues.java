@@ -69,6 +69,8 @@ public class SBSDValues {
         ALL_LEADER_SA.add(SBSDLeader::doLeaderSATripleSlash);
     }
 
+    public static int GEM_UPGRADE_COST = 2;
+
     public static void notifyPlayer(Player player, MutableComponent translatable) {
         player.sendSystemMessage(translatable);
 
