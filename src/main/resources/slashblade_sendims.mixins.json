@@ -9,7 +9,6 @@
     "aether_redux.ConstructionRingItemMixin",
     "apothicattributes.AttributeEventsMixin",
     "apotheosis.GemCuttingRarityUpgradeMixin",
-    "apotheosis.GemCuttingScreenMixin",
     "botania.TerraBladeItemMixin",
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",
@@ -27,6 +26,7 @@
     "pseudoedge.PbdComboStateMixin",
     "redtassel.RTComboAndSAMixin",
     "sjap.BlisteringTerraSwordsMixin",
+    "sjap.BurstDriveMixin",
     "sjap_adder.ClearMindMixin",
     "sjap_adder.FateBondMixin",
     "sjap_adder.SjaComboStateMixin",
@@ -57,6 +57,7 @@
   ],
   "client": [
     "sbtetra.MixinSlashBladeModularItem",
+    "apotheosis.GemCuttingScreenMixin",
     "apotheosis.SalvageItemMixin"
   ],
   "injectors": {

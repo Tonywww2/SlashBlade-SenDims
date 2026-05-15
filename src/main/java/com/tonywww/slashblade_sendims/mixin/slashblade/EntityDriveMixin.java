@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(EntityDrive.class)
 public class EntityDriveMixin {
 
-    @Redirect(method = "addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", at = @At(value = "INVOKE", target = "Lmods/flammpfeil/slashblade/entity/EntityDrive;getKnockBack()Lmods/flammpfeil/slashblade/util/KnockBacks;"))
+    @Redirect(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lmods/flammpfeil/slashblade/entity/EntityDrive;getKnockBack()Lmods/flammpfeil/slashblade/util/KnockBacks;", remap = false))
     private KnockBacks onGetKnockback(EntityDrive instance) {
         KnockBacks kb = instance.getKnockBack();
         if (kb == null) {

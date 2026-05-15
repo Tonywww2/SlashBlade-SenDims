@@ -37,7 +37,7 @@ public abstract class GemCuttingScreenMixin extends AdventureContainerScreen<Gem
     /**
      * 修改渲染工具提示的逻辑，使其仅显示“高级材料”且数量为 2。
      */
-    @Inject(method = "renderTooltip", at = @At("HEAD"), cancellable = true)
+    @Inject(method = { "renderTooltip", "m_280072_" }, at = @At("HEAD"), cancellable = true, remap = false)
     private void onRenderTooltip(GuiGraphics gfx, int pX, int pY, CallbackInfo ci) {
         GemCuttingScreen screen = (GemCuttingScreen) (Object) this;
         ItemStack gemStack = screen.getMenu().getSlot(0).getItem();
