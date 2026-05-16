@@ -5,6 +5,7 @@ import com.tonywww.slashblade_sendims.se.ArcaneA;
 import com.tonywww.slashblade_sendims.se.DistantThunder;
 import com.tonywww.slashblade_sendims.se.FrenziedFlame;
 import com.tonywww.slashblade_sendims.se.ThreeFingers;
+import com.tonywww.slashblade_sendims.se.Aftershock;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,6 +20,7 @@ public class SBSDSpecialEffects {
     public static final RegistryObject<SpecialEffect> DISTANT_THUNDER = SE.register("distant_thunder", DistantThunder::new);
     public static final RegistryObject<SpecialEffect> MANA_DETONATION = SE.register("mana_detonation", com.tonywww.slashblade_sendims.se.ManaDetonation::new);
     public static final RegistryObject<SpecialEffect> INVINCIBLE_PIERCE = SE.register("invincible_pierce", com.tonywww.slashblade_sendims.se.InvinciblePierce::new);
+    public static final RegistryObject<SpecialEffect> AFTERSHOCK = SE.register("aftershock", Aftershock::new);
 
     public static void register(IEventBus eventBus) {
         SE.register(eventBus);

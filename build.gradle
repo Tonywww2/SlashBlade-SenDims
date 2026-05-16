@@ -236,7 +236,7 @@ dependencies {
     implementation fg.deobf("curse.maven:slashbladetetra-1294523:7395760")
 
     implementation fg.deobf("curse.maven:neat-238372:5838485")
-    implementation fg.deobf("curse.maven:tofucraftreload-317469:7788417")
+//    implementation fg.deobf("curse.maven:tofucraftreload-317469:7788417")
 
     implementation fg.deobf("curse.maven:redtassel-1281295:7639810")
     implementation fg.deobf("curse.maven:pseudo-edge-dawnbreaker-1348865:7006562")

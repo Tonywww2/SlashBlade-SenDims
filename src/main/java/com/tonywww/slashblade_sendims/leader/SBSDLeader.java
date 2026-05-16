@@ -300,17 +300,20 @@ public class SBSDLeader {
         double yPos = boundBox.getYsize() / 2 + entity.getY();
         double zPos = entity.getZ();
 
-        float intensity = (float) tickBeforeAttack / SBSDValues.PARRY_TICK;
-        Vector3f toColor = new Vector3f(0.5f * intensity, 0.05f * intensity, 0.05f * intensity);
+        float ratio = Math.min(1f, (float) tickBeforeAttack / (SBSDValues.PARRY_TICK));
+        float r = PARRY_INDICATOR_FROM_COLOR.x() + (1.0f - PARRY_INDICATOR_FROM_COLOR.x()) * ratio;
+        float g = PARRY_INDICATOR_FROM_COLOR.y() + (1.0f - PARRY_INDICATOR_FROM_COLOR.y()) * ratio;
+        float b = PARRY_INDICATOR_FROM_COLOR.z() + (1.0f - PARRY_INDICATOR_FROM_COLOR.z()) * ratio;
+        Vector3f color = new Vector3f(r, g, b);
 
-        DustColorTransitionOptions dustOptions = new DustColorTransitionOptions(PARRY_INDICATOR_FROM_COLOR, toColor, 1.0f);
+        DustColorTransitionOptions dustOptions = new DustColorTransitionOptions(color, PARRY_INDICATOR_FROM_COLOR, 1.0f);
 
         spawnIndicatorParticles(serverLevel, dustOptions, xPos, yPos, zPos, 2, 10d);
     }
 
     public static void spawnIndicatorParticles(ServerLevel serverLevel, ParticleOptions particle, double xPos, double yPos, double zPos, int count, double speed) {
         int points = 16;
-        double radius = 1.5d;
+        double radius = 2.0d;
         for (int i = 0; i < points; i++) {
             double angle = 2 * Math.PI * i / points;
             double px = xPos + radius * Math.cos(angle);

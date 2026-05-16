@@ -39,8 +39,8 @@ public class SBSDValues {
     public static final int MIN_SPECIAL_ATTACK_TICK = 100;
     public static final int MAX_SPECIAL_ATTACK_TICK = 200;
     public static final int PRE_N_ATTACK_TICK = 60;
-    public static final int PRE_PARRY_TICK = 30;
-    public static final int PARRY_TICK = 15;
+    public static final int PRE_PARRY_TICK = 40;
+    public static final int PARRY_TICK = 20;
     public static final int END_PARRIED_TICK = 180;
     public static final double LEADER_HP_SCALE = 5.0d;
     public static final double LEADER_HP_SCALE_RT = Math.floor(Math.sqrt(LEADER_HP_SCALE)) - 0.5d;

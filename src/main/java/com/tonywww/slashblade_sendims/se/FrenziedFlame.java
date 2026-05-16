@@ -7,8 +7,6 @@ import com.tonywww.slashblade_sendims.registeries.SBSDSpecialEffects;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.event.SlashBladeEvent;
-import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.util.AttackManager;
 import net.minecraft.core.particles.DustColorTransitionOptions;
@@ -19,14 +17,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
-@Mod.EventBusSubscriber
 public class FrenziedFlame extends SpecialEffect {
 
     public static final String MADNESS_PATH = "sbsd.sb.madness";
@@ -56,16 +49,7 @@ public class FrenziedFlame extends SpecialEffect {
         super(30);
     }
 
-    public static double calcFernRatio(int level) {
-        return Math.min(5d, Math.sqrt(level) / 5d);
-    }
-
-    @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
-        LivingEntity livingEntity = event.getEntity();
-        if (livingEntity.level().isClientSide()) return;
-        if (livingEntity.level().getGameTime() % 10 != 5) return;
-
+    public static void onLivingTick(LivingEntity livingEntity) {
         CompoundTag data = livingEntity.getPersistentData();
         if (data.contains(MADNESS_PATH)) {
             int currentMadness = data.getInt(MADNESS_PATH);
@@ -73,63 +57,27 @@ public class FrenziedFlame extends SpecialEffect {
                 if (!data.contains(MADNESS_REGIN_CD_PATH) || data.getInt(MADNESS_REGIN_CD_PATH) <= 0) {
                     int madnessRegen = (int) (livingEntity.getMaxHealth() * 0.1f) + 5;
                     addMadness(livingEntity, livingEntity, -madnessRegen);
-
                 } else {
                     data.putInt(MADNESS_REGIN_CD_PATH, data.getInt(MADNESS_REGIN_CD_PATH) - 1);
-
                 }
-
             }
-
         }
-
     }
 
-    @SubscribeEvent
-    public static void onDoSlash(SlashBladeEvent.DoSlashEvent event) {
-        LivingEntity livingEntity = event.getUser();
-        if (livingEntity.level().isClientSide()) return;
-        if (!(livingEntity instanceof ServerPlayer serverPlayer)) return;
-
-        int expLevel = serverPlayer.experienceLevel;
-        if (!SpecialEffect.isEffective(SBSDSpecialEffects.FRENZIED_FLAME.get(), expLevel)) return;
-        ItemStack bladeStack = serverPlayer.getMainHandItem();
-
-        if (!(bladeStack.getItem() instanceof ItemSlashBlade)) return;
-        ISlashBladeState state = event.getSlashBladeState();
-
-        if (!state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId())) return;
-
-        boolean withThreeFingers = SpecialEffect.isEffective(SBSDSpecialEffects.THREE_FINGERS.get(), expLevel) &
-                state.hasSpecialEffect(SBSDSpecialEffects.THREE_FINGERS.getId());
-
+    public static void onDoSlash(ServerPlayer serverPlayer, ISlashBladeState state, int expLevel) {
+        boolean withThreeFingers = SEEventHandlers.isSEActive(state, expLevel, SBSDSpecialEffects.THREE_FINGERS);
         addMadness(serverPlayer, serverPlayer, (int) (BASE_MADNESS + (serverPlayer.getHealth() * (withThreeFingers ? 0.035d : 0.015d))));
-
     }
 
-    @SubscribeEvent
-    public static void onHit(SlashBladeEvent.HitEvent event) {
-        LivingEntity livingEntity = event.getUser();
-        if (livingEntity.level().isClientSide()) return;
-        if (!(livingEntity instanceof ServerPlayer serverPlayer)) return;
-
-        int expLevel = serverPlayer.experienceLevel;
-        if (!SpecialEffect.isEffective(SBSDSpecialEffects.FRENZIED_FLAME.get(), expLevel)) return;
-        ItemStack bladeStack = serverPlayer.getMainHandItem();
-
-        if (!(bladeStack.getItem() instanceof ItemSlashBlade)) return;
-        ISlashBladeState state = event.getSlashBladeState();
-
-        if (!state.hasSpecialEffect(SBSDSpecialEffects.FRENZIED_FLAME.getId())) return;
-        boolean withArcane = SpecialEffect.isEffective(SBSDSpecialEffects.ARCANE_A.get(), expLevel) &
-                state.hasSpecialEffect(SBSDSpecialEffects.ARCANE_A.getId());
-
-        boolean withThreeFingers = SpecialEffect.isEffective(SBSDSpecialEffects.THREE_FINGERS.get(), expLevel) &
-                state.hasSpecialEffect(SBSDSpecialEffects.THREE_FINGERS.getId());
-
+    public static void onHit(ServerPlayer serverPlayer, LivingEntity target, ISlashBladeState state, int expLevel) {
+        boolean withArcane = SEEventHandlers.isSEActive(state, expLevel, SBSDSpecialEffects.ARCANE_A);
+        boolean withThreeFingers = SEEventHandlers.isSEActive(state, expLevel, SBSDSpecialEffects.THREE_FINGERS);
         int finalMadness = getFinalMadness(serverPlayer, expLevel, withArcane, withThreeFingers);
-        addMadness(event.getTarget(), serverPlayer, finalMadness);
+        addMadness(target, serverPlayer, finalMadness);
+    }
 
+    public static double calcFernRatio(int level) {
+        return Math.min(5d, Math.sqrt(level) / 5d);
     }
 
     public static int getFinalMadness(LivingEntity attacker, int expLevel, boolean withArcane, boolean withThreeFingers) {
