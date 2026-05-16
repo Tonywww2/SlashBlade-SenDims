@@ -66,15 +66,17 @@ public class SEEventHandlers {
 
         // FrenziedFlame logic
         if (isSEActive(state, expLevel, SBSDSpecialEffects.FRENZIED_FLAME)) {
-            boolean withArcane = isSEActive(state, expLevel, SBSDSpecialEffects.ARCANE_A);
-            boolean withThreeFingers = isSEActive(state, expLevel, SBSDSpecialEffects.THREE_FINGERS);
-            int finalMadness = FrenziedFlame.getFinalMadness(serverPlayer, expLevel, withArcane, withThreeFingers);
-            FrenziedFlame.addMadness(event.getTarget(), serverPlayer, finalMadness);
+            FrenziedFlame.onHit(serverPlayer, event.getTarget(), state, expLevel);
         }
 
         // Aftershock logic
         if (isSEActive(state, expLevel, SBSDSpecialEffects.AFTERSHOCK)) {
             Aftershock.onHit(serverPlayer, event.getTarget());
+        }
+
+        // ArmorMelt logic
+        if (isSEActive(state, expLevel, SBSDSpecialEffects.ARMOR_MELT)) {
+            ArmorMelt.onHit(serverPlayer, event.getTarget());
         }
     }
 
@@ -112,25 +114,23 @@ public class SEEventHandlers {
 
         int a = TetraUtils.getEffectLvlTotal(player, SBSDValues.MANA_RESONANCE);
         boolean isMagic = source.is(DamageTypeTags.WITCH_RESISTANT_TO);
+        int experienceLevel = player.experienceLevel;
 
         // ManaDetonation logic
-        if (isSEActive(state, player.experienceLevel, SBSDSpecialEffects.MANA_DETONATION)) {
+        if (isSEActive(state, experienceLevel, SBSDSpecialEffects.MANA_DETONATION)) {
             ManaDetonation.onLivingHurt(event, bladeStack, isMagic, a);
         }
 
         // InvinciblePierce logic
-        if (isSEActive(state, player.experienceLevel, SBSDSpecialEffects.INVINCIBLE_PIERCE)) {
+        if (isSEActive(state, experienceLevel, SBSDSpecialEffects.INVINCIBLE_PIERCE)) {
             if (!source.is(DamageTypes.SONIC_BOOM)) {
                 InvinciblePierce.onLivingHurt(player, target, originalDamage, isMagic, a);
             }
         }
 
         // DistantThunder logic
-        if (source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC)) {
-            int expLevel = player.experienceLevel;
-            if (isSEActive(state, expLevel, SBSDSpecialEffects.DISTANT_THUNDER)) {
-                DistantThunder.onLivingHurt(player, target, originalDamage);
-            }
+        if (isSEActive(state, experienceLevel, SBSDSpecialEffects.DISTANT_THUNDER)) {
+            DistantThunder.onLivingHurt(player, target, originalDamage, isMagic);
         }
     }
 }

@@ -11,12 +11,15 @@ public class DistantThunder extends SpecialEffect {
         super(75);
     }
 
-    public static void onLivingHurt(ServerPlayer player, LivingEntity target, float originalDamage) {
-        double mDist = manhattanDistance(target.position(), player.position());
-        float extraDamage = (float) (originalDamage * Math.min(0.3f, 0.0000175 * mDist * mDist));
-        DamageSource extraDamageSource = player.damageSources().sonicBoom(player);
-        target.invulnerableTime = 0;
-        target.hurt(extraDamageSource, extraDamage);
+    public static void onLivingHurt(ServerPlayer player, LivingEntity target, float originalDamage, boolean isMagic) {
+        if (isMagic) {
+            double mDist = manhattanDistance(target.position(), player.position());
+            float extraDamage = (float) (originalDamage * Math.min(0.3f, 0.0000175 * mDist * mDist));
+            DamageSource extraDamageSource = player.damageSources().sonicBoom(player);
+            target.invulnerableTime = 0;
+            target.hurt(extraDamageSource, extraDamage);
+        }
+
     }
 
     public static double manhattanDistance(Vec3 self, Vec3 other) {
