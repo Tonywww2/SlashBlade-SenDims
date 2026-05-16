@@ -52,6 +52,11 @@ public class SEEventHandlers {
         if (isSEActive(state, expLevel, SBSDSpecialEffects.FRENZIED_FLAME)) {
             FrenziedFlame.onDoSlash(serverPlayer, state, expLevel);
         }
+
+        // BlessingAndBane logic
+        if (isSEActive(state, expLevel, SBSDSpecialEffects.BLESSING_AND_BANE)) {
+            BlessingAndBane.onDoSlash(serverPlayer);
+        }
     }
 
     @SubscribeEvent
@@ -78,6 +83,11 @@ public class SEEventHandlers {
         if (isSEActive(state, expLevel, SBSDSpecialEffects.ARMOR_MELT)) {
             ArmorMelt.onHit(serverPlayer, event.getTarget());
         }
+
+        // Mahakala logic
+        if (isSEActive(state, expLevel, SBSDSpecialEffects.MAHAKALA)) {
+            Mahakala.onHit(serverPlayer, event.getTarget());
+        }
     }
 
     @SubscribeEvent
@@ -94,6 +104,11 @@ public class SEEventHandlers {
         if (isSEActive(state, expLevel, SBSDSpecialEffects.MANA_DETONATION)) {
             ManaDetonation.onSlashBladeUpdate(player, event);
         }
+
+        // Mahakala logic
+        if (isSEActive(state, expLevel, SBSDSpecialEffects.MAHAKALA)) {
+            Mahakala.onSlashBladeUpdate(player, event);
+        }
     }
 
     @SubscribeEvent
@@ -102,6 +117,9 @@ public class SEEventHandlers {
         LivingEntity target = event.getEntity();
         float originalDamage = event.getAmount();
         Entity attackerEntity = source.getEntity();
+
+        // Mahakala logic
+        Mahakala.onLivingHurt(event, attackerEntity, target, originalDamage);
 
         if (!(attackerEntity instanceof ServerPlayer player)) {
             return;

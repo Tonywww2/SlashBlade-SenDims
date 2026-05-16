@@ -18,6 +18,8 @@ public class SBSDSpecialEffects {
     public static final RegistryObject<SpecialEffect> INVINCIBLE_PIERCE = SE.register("invincible_pierce", InvinciblePierce::new);
     public static final RegistryObject<SpecialEffect> AFTERSHOCK = SE.register("aftershock", Aftershock::new);
     public static final RegistryObject<SpecialEffect> ARMOR_MELT = SE.register("armor_melt", ArmorMelt::new);
+    public static final RegistryObject<SpecialEffect> BLESSING_AND_BANE = SE.register("blessing_and_bane", BlessingAndBane::new);
+    public static final RegistryObject<SpecialEffect> MAHAKALA = SE.register("mahakala", Mahakala::new);
 
     public static void register(IEventBus eventBus) {
         SE.register(eventBus);
