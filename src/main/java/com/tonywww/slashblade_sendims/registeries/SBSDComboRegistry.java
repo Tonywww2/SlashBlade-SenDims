@@ -1,10 +1,7 @@
 package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
-import com.tonywww.slashblade_sendims.sa.FrenziedBurst;
-import com.tonywww.slashblade_sendims.sa.GoldenCrux;
-import com.tonywww.slashblade_sendims.sa.GoldenCruxEX;
-import com.tonywww.slashblade_sendims.sa.UnendurableFrenzy;
+import com.tonywww.slashblade_sendims.sa.*;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.init.DefaultResources;
@@ -95,6 +92,22 @@ public class SBSDComboRegistry {
                             .put(18, GoldenCruxEX::doGoldenCruxEXHit4)
 
                             .put(19, GoldenCruxEX::doGoldenCruxEXEnd)
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
+    public static final RegistryObject<ComboState> MAHAKALA = COMBO_STATES.register("mahakala",
+            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(25, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(4, Mahakala::doTick4)
+                            .put(7, Mahakala::doTick7)
+                            .put(10, Mahakala::doTick10)
+                            .put(13, Mahakala::doTick13)
+                            .put(16, Mahakala::doTick16)
+                            .put(17, Mahakala::doTickFinal)
                             .build())
                     .addHitEffect(StunManager::setStun)
                     ::build);

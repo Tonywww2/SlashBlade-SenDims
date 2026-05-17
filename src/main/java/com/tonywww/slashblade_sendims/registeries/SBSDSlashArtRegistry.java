@@ -15,6 +15,7 @@ public class SBSDSlashArtRegistry {
     public static final RegistryObject<SlashArts> UNENDURABLE_FRENZY = register("unendurable_frenzy", SBSDComboRegistry.UNENDURABLE_FRENZY.getId());
     public static final RegistryObject<SlashArts> GOLDEN_CRUX = register("golden_crux", SBSDComboRegistry.GOLDEN_CRUX.getId());
     public static final RegistryObject<SlashArts> GOLDEN_CRUX_EX = register("golden_crux_ex", SBSDComboRegistry.GOLDEN_CRUX_EX.getId());
+    public static final RegistryObject<SlashArts> MAHAKALA = register("mahakala", SBSDComboRegistry.MAHAKALA.getId());
 
     public static RegistryObject<SlashArts> register(String name, ResourceLocation resourceLocation) {
         return SLASH_ARTS.register(name, () -> new SlashArts((e) -> resourceLocation));
