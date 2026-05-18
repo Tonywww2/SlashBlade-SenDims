@@ -12,6 +12,7 @@ public class ClientSetupEvents {
     @SubscribeEvent
     public static void registerGuiOverlay(RegisterGuiOverlaysEvent event) {
         event.registerBelowAll("slashblade_sendims.madness", MadnessOverlay.INSTANCE);
+        event.registerBelowAll("slashblade_sendims.ammo", com.tonywww.slashblade_sendims.client.overlay.AmmoSAOverlay.INSTANCE);
 
     }
 }

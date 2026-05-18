@@ -17,6 +17,11 @@ public class SBSDSlashArtRegistry {
     public static final RegistryObject<SlashArts> GOLDEN_CRUX_EX = register("golden_crux_ex", SBSDComboRegistry.GOLDEN_CRUX_EX.getId());
     public static final RegistryObject<SlashArts> MAHAKALA = register("mahakala", SBSDComboRegistry.MAHAKALA.getId());
 
+    public static final RegistryObject<SlashArts> EXPLOSIVE_DAWN_AMMO = register("explosive_dawn_ammo", SBSDComboRegistry.EXPLOSIVE_DAWN_AMMO.getId());
+    public static final RegistryObject<SlashArts> WAVE_EDGE_AMMO = register("wave_edge_ammo", SBSDComboRegistry.WAVE_EDGE_AMMO.getId());
+    public static final RegistryObject<SlashArts> VOID_SLASH_AMMO = register("void_slash_ammo", SBSDComboRegistry.VOID_SLASH_AMMO.getId());
+    public static final RegistryObject<SlashArts> SAKURA_END_AMMO = register("sakura_end_ammo", SBSDComboRegistry.SAKURA_END_AMMO.getId());
+
     public static RegistryObject<SlashArts> register(String name, ResourceLocation resourceLocation) {
         return SLASH_ARTS.register(name, () -> new SlashArts((e) -> resourceLocation));
     }

@@ -77,7 +77,7 @@ public class Mahakala {
         MahakalaData data = DATA_MAP.get(attacker.getUUID());
         if (data == null) return;
 
-        double radius = 3d + phase * 1d;
+        double radius = 3d + phase * 0.5d;
         int shellParticles = 80 + phase * 20;
 
         double phi = Math.PI * (3.0 - Math.sqrt(5.0));

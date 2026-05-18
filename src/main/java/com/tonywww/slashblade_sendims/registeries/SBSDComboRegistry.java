@@ -112,6 +112,50 @@ public class SBSDComboRegistry {
                     .addHitEffect(StunManager::setStun)
                     ::build);
 
+    public static final RegistryObject<ComboState> EXPLOSIVE_DAWN_AMMO = COMBO_STATES.register("explosive_dawn_ammo",
+            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(18, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(1, ExplosiveDawnAmmo::onInit)
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
+    public static final RegistryObject<ComboState> WAVE_EDGE_AMMO = COMBO_STATES.register("wave_edge_ammo",
+            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(18, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(1, WaveEdgeAmmo::onInit)
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
+    public static final RegistryObject<ComboState> VOID_SLASH_AMMO = COMBO_STATES.register("void_slash_ammo",
+            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(18, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(1, VoidSlashAmmo::onInit)
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
+    public static final RegistryObject<ComboState> SAKURA_END_AMMO = COMBO_STATES.register("sakura_end_ammo",
+            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(18, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(1, SakuraEndAmmo::onInit)
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
     public static void register(IEventBus bus) {
         COMBO_STATES.register(bus);
 
