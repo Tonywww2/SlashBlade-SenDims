@@ -10,13 +10,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 import org.apache.commons.lang3.tuple.Triple;
 
+@Mod.EventBusSubscriber
 public class SakuraEndAmmo extends AmmoSA {
 
-    public static int maxAmmo = 24;
+    public static int maxAmmo = 36;
     public static int cdAfterSlash = 0;
 
     public static final String HIT_COUNT_PATH = "sdbf.sea.hit";
@@ -38,7 +40,7 @@ public class SakuraEndAmmo extends AmmoSA {
             int newAmmo = currentAmmo - 1;
             int timesUsed = maxAmmo - newAmmo;
 
-            if (timesUsed % 4 == 0) {
+            if (timesUsed % 6 == 0) {
 
                 // 袈裟斩
                 SakuraEnd.doSlash(attacker, 45f, Vec3.ZERO, false, false, 0.4f);
@@ -49,7 +51,7 @@ public class SakuraEndAmmo extends AmmoSA {
             if (newAmmo <= 0) {
                 int hitCount = tag.getInt(HIT_COUNT_PATH);
                 if (hitCount > 0) {
-                    float ratio = Math.min(hitCount / 3, 24) * 0.005f;
+                    float ratio = Math.min(hitCount / 5, 18) * 0.01f;
                     attacker.heal(attacker.getMaxHealth() * ratio);
 
                     ItemStack soul = UmapyoiAPI.getUmaSoul(attacker);

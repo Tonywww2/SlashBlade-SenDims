@@ -1,4 +1,4 @@
-package com.tonywww.slashblade_sendims.overlay;
+package com.tonywww.slashblade_sendims.client.overlay;
 
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.se.FrenziedFlame;

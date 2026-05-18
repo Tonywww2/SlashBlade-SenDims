@@ -1,6 +1,6 @@
 package com.tonywww.slashblade_sendims.events;
 
-import com.tonywww.slashblade_sendims.overlay.MadnessOverlay;
+import com.tonywww.slashblade_sendims.client.overlay.MadnessOverlay;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -36,20 +36,29 @@ public class AmmoSAOverlay implements IGuiOverlay {
                     int iconWidth = 4;
                     int iconHeight = 8;
                     int spacing = 6;
+                    int maxPerRow = 12;
+                    int rowSpacing = 10;
 
-                    int totalWidth = maxAmmo * spacing - (spacing - iconWidth);
-                    int xInit = (screenWidth - totalWidth) / 2;
-                    int yInit = screenHeight / 2 + 30; // Just below the crosshair
+                    int yInit = screenHeight / 2 + 15; // Just below the crosshair
 
                     for (int i = 0; i < maxAmmo; i++) {
-                        int xStart = xInit + i * spacing;
+                        int row = i / maxPerRow;
+                        int col = i % maxPerRow;
+
+                        int itemsInThisRow = Math.min(maxPerRow, maxAmmo - row * maxPerRow);
+                        int totalWidth = itemsInThisRow * spacing - (spacing - iconWidth);
+                        int xInit = (screenWidth - totalWidth) / 2;
+
+                        int xStart = xInit + col * spacing;
+                        int yStart = yInit + row * rowSpacing;
+
                         // Draw empty shell
-                        guiGraphics.blit(HUD, xStart, yInit,
+                        guiGraphics.blit(HUD, xStart, yStart,
                                 0, 0, iconWidth, iconHeight, 8, 8);
 
                         // Draw full ammo if current > i
                         if (currentAmmo > i) {
-                            guiGraphics.blit(HUD, xStart, yInit,
+                            guiGraphics.blit(HUD, xStart, yStart,
                                     iconWidth, 0, iconWidth, iconHeight, 8, 8);
                         }
                     }
