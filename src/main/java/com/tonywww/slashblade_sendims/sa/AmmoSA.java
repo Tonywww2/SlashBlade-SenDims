@@ -50,7 +50,7 @@ public class AmmoSA {
         int ammo = tag.getInt(AMMO_PATH);
         if (ammo > 0 && ammo <= maxAmmoO) {
             int newAmmo = ammo - 1;
-            tag.putInt(AMMO_PATH, ammo - 1);
+            tag.putInt(AMMO_PATH, newAmmo);
             if (cdAfterSlashO > 0) {
                 attacker.getCooldowns().addCooldown(stack.getItem(), cdAfterSlashO);
             }
