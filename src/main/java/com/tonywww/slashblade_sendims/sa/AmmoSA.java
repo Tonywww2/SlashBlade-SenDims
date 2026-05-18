@@ -54,7 +54,7 @@ public class AmmoSA {
             if (cdAfterSlashO > 0) {
                 attacker.getCooldowns().addCooldown(stack.getItem(), cdAfterSlashO);
             }
-            if (newAmmo == 0) {
+            if (newAmmo <= 0) {
                 tag.remove(AMMO_PATH);
                 tag.remove(MAX_AMMO_PATH);
             }
@@ -85,6 +85,28 @@ public class AmmoSA {
             SakuraEndAmmo.onSlashEffects(serverPlayer, event.getBlade(), state);
         }
 
+    }
+
+    @SubscribeEvent
+    public static void onHit(SlashBladeEvent.HitEvent event) {
+        LivingEntity livingEntity = event.getUser();
+        if (livingEntity == null || livingEntity.level().isClientSide()) return;
+        if (!(livingEntity instanceof ServerPlayer serverPlayer)) return;
+
+        ISlashBladeState state = event.getSlashBladeState();
+        if (state == null) return;
+
+        if (state.getSlashArts() == SBSDSlashArtRegistry.SAKURA_END_AMMO.get()) {
+            ItemStack stack = event.getBlade();
+            CompoundTag tag = stack.getOrCreateTag();
+            if (tag.contains(AmmoSA.AMMO_PATH)) {
+                int ammo = tag.getInt(AmmoSA.AMMO_PATH);
+                if (ammo > 0) {
+                    int hc = tag.getInt(SakuraEndAmmo.HIT_COUNT_PATH);
+                    tag.putInt(SakuraEndAmmo.HIT_COUNT_PATH, hc + 1);
+                }
+            }
+        }
     }
 
 }

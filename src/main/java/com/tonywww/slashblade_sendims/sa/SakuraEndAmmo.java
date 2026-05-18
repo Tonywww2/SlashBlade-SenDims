@@ -15,7 +15,7 @@ import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 import org.apache.commons.lang3.tuple.Triple;
 
-@Mod.EventBusSubscriber
+
 public class SakuraEndAmmo extends AmmoSA {
 
     public static int maxAmmo = 36;
@@ -66,25 +66,4 @@ public class SakuraEndAmmo extends AmmoSA {
         return false;
     }
 
-    @SubscribeEvent
-    public static void onHit(SlashBladeEvent.HitEvent event) {
-        LivingEntity livingEntity = event.getUser();
-        if (livingEntity == null || livingEntity.level().isClientSide()) return;
-        if (!(livingEntity instanceof ServerPlayer serverPlayer)) return;
-
-        ISlashBladeState state = event.getSlashBladeState();
-        if (state == null) return;
-
-        if (state.getSlashArts() == SBSDSlashArtRegistry.SAKURA_END_AMMO.get()) {
-            ItemStack stack = event.getBlade();
-            CompoundTag tag = stack.getOrCreateTag();
-            if (tag.contains(AmmoSA.AMMO_PATH)) {
-                int ammo = tag.getInt(AmmoSA.AMMO_PATH);
-                if (ammo > 0) {
-                    int hc = tag.getInt(HIT_COUNT_PATH);
-                    tag.putInt(HIT_COUNT_PATH, hc + 1);
-                }
-            }
-        }
-    }
 }
