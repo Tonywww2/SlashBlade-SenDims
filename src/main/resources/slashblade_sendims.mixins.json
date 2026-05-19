@@ -27,6 +27,7 @@
     "redtassel.RTComboAndSAMixin",
     "sjap.BlisteringTerraSwordsMixin",
     "sjap.BurstDriveMixin",
+    "sjap_adder.BladeExEventMixin",
     "sjap_adder.ClearMindMixin",
     "sjap_adder.FateBondMixin",
     "sjap_adder.SjaComboStateMixin",
