@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.tonywww.slashblade_sendims.SBSDValues;
+import dev.latvian.mods.kubejs.stages.Stages;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,8 @@ public class HorizontalWorldBorderRenderer {
 
         ResourceLocation dimId = level.dimension().location();
         if (!SBSDValues.HEIGHT_BOARDER_Y.containsKey(dimId)) return;
+
+        if (mc.player != null && Stages.get(mc.player).has(SBSDValues.DISABLE_RENDER_BOARDER_STAGE)) return;
 
         Camera camera = event.getCamera();
         double camX = camera.getPosition().x;

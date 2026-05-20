@@ -72,6 +72,7 @@ public class SBSDValues {
 
     // Miscs
     public static int GEM_UPGRADE_COST = 2;
+    public static String DISABLE_RENDER_BOARDER_STAGE = "sdbf.world_lock";
     public static final Map<ResourceLocation, Integer> HEIGHT_BOARDER_Y = new HashMap<>();
 
     static {
