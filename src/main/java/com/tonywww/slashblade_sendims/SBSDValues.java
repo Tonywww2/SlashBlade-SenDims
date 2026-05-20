@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import se.mickelus.tetra.effect.ItemEffect;
 
 import java.util.*;
@@ -69,7 +70,13 @@ public class SBSDValues {
         ALL_LEADER_SA.add(SBSDLeader::doLeaderSATripleSlash);
     }
 
+    // Miscs
     public static int GEM_UPGRADE_COST = 2;
+    public static final Map<ResourceLocation, Integer> HEIGHT_BOARDER_Y = new HashMap<>();
+
+    static {
+        HEIGHT_BOARDER_Y.put(Level.OVERWORLD.location(), 280);
+    }
 
     public static void notifyPlayer(Player player, MutableComponent translatable) {
         player.sendSystemMessage(translatable);
