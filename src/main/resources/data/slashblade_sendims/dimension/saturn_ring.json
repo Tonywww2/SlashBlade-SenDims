@@ -1,0 +1,16 @@
+{
+  "type": "slashblade_sendims:saturn_ring_type",
+  "generator": {
+    "type": "slashblade_sendims:saturn_ring_chunk_generator",
+    "biome_source": {
+      "type": "slashblade_sendims:saturn_ring_biome_source",
+      "void_ring": "slashblade_sendims:void_ring",
+      "inner_fading_ring": "slashblade_sendims:inner_fading_ring",
+      "inner_sparse_ring": "slashblade_sendims:inner_sparse_ring",
+      "base_ring": "slashblade_sendims:base_ring",
+      "high_density_ring": "slashblade_sendims:high_density_ring",
+      "outer_sparse_ring": "slashblade_sendims:outer_sparse_ring",
+      "transition_wall_ring": "slashblade_sendims:transition_wall_ring"
+    }
+  }
+}
