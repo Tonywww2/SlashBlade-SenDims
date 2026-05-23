@@ -20,7 +20,7 @@ public class MixinShulkerAttackGoal {
             Entity owner = ((ShulkerBullet) entity).getOwner();
             if (owner instanceof Shulker) {
                 MobAttackManager.doSlash((Shulker) owner, 2.0F, 7d, 1f, 0xc163ff, Vec3.ZERO,
-                        true, false, true, 1.0f, KnockBacks.toss);
+                        true, false, true, 0.65f, KnockBacks.toss);
             }
         }
         return instance.addFreshEntity(entity);
