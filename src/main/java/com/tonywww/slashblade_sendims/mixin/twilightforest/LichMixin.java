@@ -93,10 +93,16 @@ public abstract class LichMixin extends Monster {
     @Inject(method = "launchProjectileAt(Lnet/minecraft/world/entity/projectile/ThrowableProjectile;)V", at = @At("RETURN"), remap = false)
     private void injectLaunchProjectileAt(ThrowableProjectile projectile, CallbackInfo ci) {
         if (projectile instanceof LichBolt bolt && bolt.getOwner() instanceof Lich lich) {
-            SBSDLeader.doLeaderSAMagicSLash(lich, null);
+            if (!lich.isShadowClone()) {
+                SBSDLeader.doLeaderSAMagicSLash(lich, null);
+
+            }
 
         } else if (projectile instanceof LichBomb bomb && bomb.getOwner() instanceof Lich lich) {
-            SBSDLeader.doLeaderSAMagicDrive(lich, null);
+            if (!lich.isShadowClone()) {
+                SBSDLeader.doLeaderSAMagicDrive(lich, null);
+
+            }
         }
 
     }

@@ -1,15 +1,20 @@
 package com.tonywww.slashblade_sendims;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
+import com.tonywww.slashblade_sendims.utils.MobAttackManager;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import se.mickelus.tetra.effect.ItemEffect;
 
 import java.util.*;
@@ -37,14 +42,23 @@ public class SBSDValues {
     public static final ItemEffect MANA_RESONANCE = ItemEffect.get("mana_resonance");
 
     // LEADER
+    /** 首领（Leader）触发特殊攻击（Special Attack）的最小随机 Tick 间隔 */
     public static final int MIN_SPECIAL_ATTACK_TICK = 100;
+    /** 首领（Leader）触发特殊攻击（Special Attack）的最大随机 Tick 间隔 */
     public static final int MAX_SPECIAL_ATTACK_TICK = 200;
+    /** 攻击前摇总阶段的 Tick 临界值（距离攻击仅剩 n tick 时开始进入预警流程） */
     public static final int PRE_N_ATTACK_TICK = 60;
+    /** 准备招架阶段的 Tick 临界值（距离攻击仅剩 n tick 时触发普通前摇，并接近招架窗口） */
     public static final int PRE_PARRY_TICK = 40;
+    /** 可被招架的窗口 Tick 长度（距离攻击仅剩 n tick 内时） */
     public static final int PARRY_TICK = 20;
+    /** 首领被击破（Parried）后处于瘫痪状态的总 Tick 时间 */
     public static final int END_PARRIED_TICK = 180;
+    /** 普通首领的初始最大生命值加成倍率 */
     public static final double LEADER_HP_SCALE = 5.0d;
+    /** 针对特定实体首领（Terra）的生命值加成倍率*/
     public static final double LEADER_HP_SCALE_RT = Math.floor(Math.sqrt(LEADER_HP_SCALE)) - 0.5d;
+    /** 首领处于招架击破（Parried）状态时，所承受的伤害放大倍率 */
     public static final float PARRIED_DAMAGE_SCALE = 5.0f;
 
     public static final String BOSS_LEADER = "sbsd.boss";
@@ -66,8 +80,58 @@ public class SBSDValues {
     public static final List<SBSDLeader.SAFunction> ALL_LEADER_SA = new ArrayList<>(10);
 
     static {
-        ALL_LEADER_SA.add(SBSDLeader::doLeaderSAWideSLash);
-        ALL_LEADER_SA.add(SBSDLeader::doLeaderSATripleSlash);
+        ALL_LEADER_SA.add((LivingEntity entity, ServerLevel serverLevel) -> {
+            // Wide Slash
+            MobAttackManager.doSlash(entity, 2.0F, 13d, 2f, 0xff9b9b, Vec3.ZERO,
+                    true, false, true, 1.0f, KnockBacks.toss);
+        });
+        ALL_LEADER_SA.add((LivingEntity entity, ServerLevel serverLevel) -> {
+            // Triple Slash
+            MobAttackManager.doSlash(entity, -30.0F, 7.5d, 0.25f, 0x8B0000, Vec3.ZERO,
+                    true, false, true, 0.3f, KnockBacks.meteor);
+            SenDims.serverScheduler.schedule(5, () -> {
+                MobAttackManager.doSlash(entity, 15.0F, 9d, 1.25f, 0x6d0000, Vec3.ZERO,
+                        true, false, true, 0.5f, KnockBacks.cancel);
+            });
+            SenDims.serverScheduler.schedule(7, () -> {
+                MobAttackManager.doSlash(entity, -15.0F, 9d, 1.25f, 0x6d0000, Vec3.ZERO,
+                        true, false, true, 1.1f, KnockBacks.smash);
+            });
+
+        });
+        ALL_LEADER_SA.add((LivingEntity entity, ServerLevel serverLevel) -> {
+            // Fang Slash
+            MobAttackManager.doSlash(entity, -30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                    true, false, true, 0.3f, KnockBacks.smash);
+            MobAttackManager.doSlash(entity, 30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                    true, false, true, 0.3f, KnockBacks.smash);
+
+            SenDims.serverScheduler.schedule(3, () -> {
+                MobAttackManager.doSlash(entity, -25.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.cancel);
+                MobAttackManager.doSlash(entity, 25.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.cancel);
+            });
+            SenDims.serverScheduler.schedule(5, () -> {
+                MobAttackManager.doSlash(entity, -15.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.smash);
+                MobAttackManager.doSlash(entity, 15.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.smash);
+            });
+            SenDims.serverScheduler.schedule(7, () -> {
+                MobAttackManager.doSlash(entity, -30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.cancel);
+                MobAttackManager.doSlash(entity, 30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.cancel);
+            });
+            SenDims.serverScheduler.schedule(9, () -> {
+                MobAttackManager.doSlash(entity, -45.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.smash);
+                MobAttackManager.doSlash(entity, 45.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
+                        true, false, true, 0.3f, KnockBacks.smash);
+            });
+
+        });
     }
 
     // Miscs

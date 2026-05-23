@@ -93,8 +93,9 @@ public class SBSDLeader {
             setLeaderParried(target, persistentData);
             // TODO 招架追加攻击做成饰品
             LivingEntity user = event.getUser();
-            AttackManager.doSlash(user, 45.0F, 0x6cf243, Vec3.ZERO, false, false, 1.25f, KnockBacks.meteor);
+            AttackManager.doSlash(user, 45.0F, 0x6cf243, Vec3.ZERO, false, false, 1.25f, KnockBacks.smash);
             float amount = (float) SBSDAttributes.getAttributeValue(event.getUser(), SBSDAttributes.PARRY_HEAL_AMOUNT.get());
+            amount += user.getMaxHealth() * 0.2f;
             user.heal(amount);
             return true;
         }
@@ -228,26 +229,7 @@ public class SBSDLeader {
     }
 
     // 首领SA
-    public static void doLeaderSAWideSLash(LivingEntity entity, ServerLevel serverLevel) {
-        MobAttackManager.doSlash(entity, 2.0F, 13d, 2f, 0xff9b9b, Vec3.ZERO,
-                true, false, true, 1.0f, KnockBacks.toss);
-
-    }
-
-    public static void doLeaderSATripleSlash(LivingEntity entity, ServerLevel serverLevel) {
-        MobAttackManager.doSlash(entity, -30.0F, 7.5d, 0.75f, 0x8B0000, Vec3.ZERO,
-                true, false, true, 0.3f, KnockBacks.meteor);
-        SenDims.serverScheduler.schedule(5, () -> {
-            MobAttackManager.doSlash(entity, 15.0F, 9d, 1.5f, 0x6d0000, Vec3.ZERO,
-                    true, false, true, 0.5f, KnockBacks.cancel);
-        });
-        SenDims.serverScheduler.schedule(7, () -> {
-            MobAttackManager.doSlash(entity, -15.0F, 9d, 1.5f, 0x6d0000, Vec3.ZERO,
-                    true, false, true, 1.1f, KnockBacks.smash);
-        });
-
-    }
-
+    // Boss
     public static void doLeaderSAMagicSLash(LivingEntity entity, ServerLevel serverLevel) {
         MobAttackManager.doSlash(entity, 90, 3d, 0.75f, 0xb16cc4, Vec3.ZERO,
                 true, false, true, 0.2f, KnockBacks.cancel);
