@@ -7,8 +7,8 @@
   "mixins": [
     "aether.AccessoryAbilityListenerMixin",
     "aether_redux.ConstructionRingItemMixin",
-    "apothicattributes.AttributeEventsMixin",
     "apotheosis.GemCuttingRarityUpgradeMixin",
+    "apothicattributes.AttributeEventsMixin",
     "botania.TerraBladeItemMixin",
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",
@@ -17,6 +17,7 @@
     "classicbar.HungerBarMixin",
     "legendreliclib.ArmorPiercingUtilMixin",
     "legendreliclib.TheGreatRipMixin",
+    "lsp.MixinBloodAccumulationEvent",
     "minecraft.MixinShulkerAttackGoal",
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
@@ -57,9 +58,9 @@
     "umapyoi.TopUmamusumeSkillMixin"
   ],
   "client": [
-    "sbtetra.MixinSlashBladeModularItem",
     "apotheosis.GemCuttingScreenMixin",
-    "apotheosis.SalvageItemMixin"
+    "apotheosis.SalvageItemMixin",
+    "sbtetra.MixinSlashBladeModularItem"
   ],
   "injectors": {
     "defaultRequire": 1
