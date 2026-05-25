@@ -31,12 +31,12 @@ public abstract class MixinRefineHandler {
     @Unique
     private int slashBlade_SenDims$getRefineProudsoulCount(int level, ISlashBladeState state, RefineSettlementEvent e2) {
         int refineDiff = e2.getRefineResult() - state.getRefine();
-        // x ^ 2
-        int refineSoul = refineDiff * level * 5;
-        // x
-        int baseSoul = e2.getMaterialCost() * 75;
+        return refineDiff * level * 5;
 
-        return baseSoul + refineSoul;
+    }
+    @Unique
+    private int slashBlade_SenDims$getBaseProudsoulCount(int level, ISlashBladeState state, RefineSettlementEvent e2) {
+        return e2.getMaterialCost() * 75;
 
     }
 
@@ -96,10 +96,10 @@ public abstract class MixinRefineHandler {
                                         } else if (state.getRefine() < 200) {
                                             state.setMaxDamage(state.getMaxDamage() + Math.min(state.getRefine() + e2.getRefineResult(), 200) - state.getRefine());
                                         }
-
+                                        state.setProudSoulCount(state.getProudSoulCount() + slashBlade_SenDims$getRefineProudsoulCount(level, state, e2));
                                         state.setRefine(e2.getRefineResult());
                                     }
-                                    state.setProudSoulCount(state.getProudSoulCount() + slashBlade_SenDims$getRefineProudsoulCount(level, state, e2));
+                                    state.setProudSoulCount(state.getProudSoulCount() + slashBlade_SenDims$getBaseProudsoulCount(level, state, e2));
 
                                     result.setDamageValue(result.getDamageValue() - Math.max(result.getDamageValue(), materialCost * Math.max(1, level / 2)));
                                     result.getOrCreateTag().put("bladeState", state.serializeNBT());
