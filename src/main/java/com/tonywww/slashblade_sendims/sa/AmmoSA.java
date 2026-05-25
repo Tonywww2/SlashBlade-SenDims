@@ -8,6 +8,7 @@ import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,6 +43,10 @@ public class AmmoSA {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt(AMMO_PATH, maxAmmo);
         tag.putInt(MAX_AMMO_PATH, maxAmmo);
+
+        attacker.playNotifySound(SoundEvents.AMETHYST_BLOCK_RESONATE, net.minecraft.sounds.SoundSource.PLAYERS, 3.0F, 1.0F);
+        attacker.playNotifySound(SoundEvents.LEVER_CLICK, net.minecraft.sounds.SoundSource.PLAYERS, 3.0F, 1.0F);
+        attacker.playNotifySound(SoundEvents.LEVER_CLICK, net.minecraft.sounds.SoundSource.PLAYERS, 3.0F, 0.8F);
 
     }
 
