@@ -18,7 +18,11 @@ public class ProductiveBeesBeeCageMixin {
     private static void onCaptureEntity(Bee target, ItemStack cageStack, CallbackInfo ci) {
         CompoundTag nbt = cageStack.getTag();
         if (nbt != null && !target.hasCustomName()) {
-            nbt.putString("name", target.getType().getDescriptionId());
+            if (target instanceof cy.jdkdigital.productivebees.common.entity.bee.ConfigurableBee configurableBee) {
+                nbt.putString("name", "entity.productivebees." + configurableBee.getBeeName() + "_bee");
+            } else {
+                nbt.putString("name", target.getType().getDescriptionId());
+            }
             nbt.putBoolean("is_localized_name", true);
         }
     }
