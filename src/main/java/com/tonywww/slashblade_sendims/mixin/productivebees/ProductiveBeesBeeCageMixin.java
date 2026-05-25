@@ -23,7 +23,7 @@ public class ProductiveBeesBeeCageMixin {
         }
     }
 
-    @Inject(method = { "getName", "m_41466_", "getName(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/network/chat/Component;" }, at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = { "getName", "m_7626_", "getName(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/network/chat/Component;" }, at = @At("HEAD"), cancellable = true, remap = false)
     private void onGetName(ItemStack stack, CallbackInfoReturnable<Component> cir) {
         if (BeeCage.isFilled(stack)) {
             CompoundTag tag = stack.getTag();
@@ -38,4 +38,3 @@ public class ProductiveBeesBeeCageMixin {
         }
     }
 }
-
