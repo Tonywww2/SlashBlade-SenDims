@@ -24,6 +24,7 @@
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
     "neat.NeatHealthBarRendererMixin",
+    "productivebees.ProductiveBeesBeeCageMixin",
     "pseudoedge.PbdComboStateMixin",
     "redtassel.RTComboAndSAMixin",
     "sjap.BlisteringTerraSwordsMixin",
