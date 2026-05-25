@@ -18,6 +18,7 @@
     "legendreliclib.ArmorPiercingUtilMixin",
     "legendreliclib.TheGreatRipMixin",
     "lsp.MixinBloodAccumulationEvent",
+    "minecraft.DamageSourceMixin",
     "minecraft.MixinShulkerAttackGoal",
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
