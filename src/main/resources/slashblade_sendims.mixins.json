@@ -9,6 +9,7 @@
     "aether_redux.ConstructionRingItemMixin",
     "apotheosis.GemCuttingRarityUpgradeMixin",
     "apothicattributes.AttributeEventsMixin",
+    "botania.GaiaGuardianEntityMixin",
     "botania.TerraBladeItemMixin",
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",

@@ -3,7 +3,6 @@ package com.tonywww.slashblade_sendims;
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
 import com.tonywww.slashblade_sendims.utils.MobAttackManager;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
-import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.MutableComponent;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import se.mickelus.tetra.effect.ItemEffect;
 import twilightforest.init.TFEntities;
-import vazkii.botania.common.entity.BotaniaEntities;
 
 import java.util.*;
 
