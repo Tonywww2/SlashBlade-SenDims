@@ -32,15 +32,6 @@ import java.util.HashSet;
 @Mod.EventBusSubscriber
 public class LeaderEventListener {
 
-    public static HashSet<EntityType<?>> DEFAULT_LEADER_SET =  new HashSet<>();
-
-    static {
-        DEFAULT_LEADER_SET.add(TFEntities.MINOSHROOM.get());
-        DEFAULT_LEADER_SET.add(TFEntities.KNIGHT_PHANTOM.get());
-        DEFAULT_LEADER_SET.add(TFEntities.ALPHA_YETI.get());
-        DEFAULT_LEADER_SET.add(BotaniaEntities.DOPPLEGANGER);
-    }
-
     @SubscribeEvent
     public static void LivingTickEventListener(LivingEvent.LivingTickEvent event) {
         LivingEntity living = event.getEntity();
@@ -69,7 +60,7 @@ public class LeaderEventListener {
     public static void EntityJoinLevelEventListener(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof LivingEntity living) {
             CompoundTag persistentData = living.getPersistentData();
-            if (DEFAULT_LEADER_SET.contains(living.getType())) {
+            if (SBSDValues.DEFAULT_LEADER_SET.contains(living.getType())) {
                 persistentData.putBoolean(SBSDValues.BOSS_LEADER, true);
                 persistentData.putBoolean(SBSDValues.APOTH_BOSS, true);
             }
