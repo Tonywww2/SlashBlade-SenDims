@@ -8,6 +8,7 @@ import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.ItemStack;
@@ -24,9 +25,21 @@ import twilightforest.entity.boss.KnightPhantom;
 import twilightforest.entity.boss.Minoshroom;
 import twilightforest.entity.boss.Naga;
 import twilightforest.init.TFEntities;
+import vazkii.botania.common.entity.BotaniaEntities;
+
+import java.util.HashSet;
 
 @Mod.EventBusSubscriber
 public class LeaderEventListener {
+
+    public static HashSet<EntityType<?>> DEFAULT_LEADER_SET =  new HashSet<>();
+
+    static {
+        DEFAULT_LEADER_SET.add(TFEntities.MINOSHROOM.get());
+        DEFAULT_LEADER_SET.add(TFEntities.KNIGHT_PHANTOM.get());
+        DEFAULT_LEADER_SET.add(TFEntities.ALPHA_YETI.get());
+        DEFAULT_LEADER_SET.add(BotaniaEntities.DOPPLEGANGER);
+    }
 
     @SubscribeEvent
     public static void LivingTickEventListener(LivingEvent.LivingTickEvent event) {
@@ -56,7 +69,7 @@ public class LeaderEventListener {
     public static void EntityJoinLevelEventListener(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof LivingEntity living) {
             CompoundTag persistentData = living.getPersistentData();
-            if (living instanceof Minoshroom || living instanceof KnightPhantom || living instanceof AlphaYeti) {
+            if (DEFAULT_LEADER_SET.contains(living.getType())) {
                 persistentData.putBoolean(SBSDValues.BOSS_LEADER, true);
                 persistentData.putBoolean(SBSDValues.APOTH_BOSS, true);
             }
