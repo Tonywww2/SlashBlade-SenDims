@@ -27,7 +27,7 @@ public abstract class GaiaGuardianEntityMixin extends Mob {
         super(pEntityType, pLevel);
     }
 
-    @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), cancellable = true, remap = true)
     private void injectActuallyHurt(DamageSource source, float amount, CallbackInfo ci) {
         super.actuallyHurt(source, amount);
         Entity attacker = source.getDirectEntity();
