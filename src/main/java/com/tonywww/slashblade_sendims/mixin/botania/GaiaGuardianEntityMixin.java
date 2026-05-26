@@ -9,13 +9,19 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import vazkii.botania.common.entity.GaiaGuardianEntity;
+import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.helper.VecHelper;
+
+import java.util.List;
+import java.util.UUID;
 
 @Mixin(value = GaiaGuardianEntity.class)
 public abstract class GaiaGuardianEntityMixin extends Mob {
@@ -26,13 +32,41 @@ public abstract class GaiaGuardianEntityMixin extends Mob {
     @Shadow(remap = false)
     private boolean spawnPixies;
 
+    @Shadow(remap = false)
+    @Final
+    private List<UUID> playersWhoAttacked;
+
+    @Shadow(remap = false)
+    public abstract int getInvulTime();
+
+    @Inject(method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z", at = @At("HEAD"), cancellable = true, remap = true)
+    private void injectHurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        Entity entity = source.getEntity();
+        if (entity instanceof net.minecraft.world.entity.player.Player player) {
+            if (PlayerHelper.isTruePlayer(entity)) {
+                if (this.getInvulTime() == 0) {
+                    if (!this.playersWhoAttacked.contains(player.getUUID())) {
+                        this.playersWhoAttacked.add(player.getUUID());
+                    }
+                    cir.setReturnValue(super.hurt(source, amount));
+                    return;
+                }
+            }
+        }
+        cir.setReturnValue(false);
+    }
+
+    @Inject(method = "getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F", at = @At("HEAD"), cancellable = true, remap = true)
+    private void injectGetDamageAfterArmorAbsorb(DamageSource source, float amount, CallbackInfoReturnable<Float> cir) {
+        cir.setReturnValue(super.getDamageAfterArmorAbsorb(source, amount));
+    }
+
     protected GaiaGuardianEntityMixin(EntityType<? extends Mob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
     @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), cancellable = true, remap = true)
     private void injectActuallyHurt(DamageSource source, float amount, CallbackInfo ci) {
-
         if (!this.isInvulnerableTo(source)) {
             amount = net.minecraftforge.common.ForgeHooks.onLivingHurt(this, source, amount);
             if (amount <= 0) return;
@@ -43,8 +77,7 @@ public abstract class GaiaGuardianEntityMixin extends Mob {
             float f = amount - f1;
             if (f > 0.0F && f < 3.4028235E37F) {
                 Entity entity = source.getEntity();
-                if (entity instanceof ServerPlayer) {
-                    ServerPlayer serverplayer = (ServerPlayer)entity;
+                if (entity instanceof ServerPlayer serverplayer) {
                     serverplayer.awardStat(Stats.DAMAGE_DEALT_ABSORBED, Math.round(f * 10.0F));
                 }
             }
