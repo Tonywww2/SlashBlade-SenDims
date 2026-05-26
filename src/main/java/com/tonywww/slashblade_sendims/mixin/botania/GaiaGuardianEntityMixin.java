@@ -1,10 +1,13 @@
 package com.tonywww.slashblade_sendims.mixin.botania;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,7 +32,32 @@ public abstract class GaiaGuardianEntityMixin extends Mob {
 
     @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), cancellable = true, remap = true)
     private void injectActuallyHurt(DamageSource source, float amount, CallbackInfo ci) {
-        super.actuallyHurt(source, amount);
+
+        if (!this.isInvulnerableTo(source)) {
+            amount = net.minecraftforge.common.ForgeHooks.onLivingHurt(this, source, amount);
+            if (amount <= 0) return;
+            amount = this.getDamageAfterArmorAbsorb(source, amount);
+            amount = this.getDamageAfterMagicAbsorb(source, amount);
+            float f1 = Math.max(amount - this.getAbsorptionAmount(), 0.0F);
+            this.setAbsorptionAmount(this.getAbsorptionAmount() - (amount - f1));
+            float f = amount - f1;
+            if (f > 0.0F && f < 3.4028235E37F) {
+                Entity entity = source.getEntity();
+                if (entity instanceof ServerPlayer) {
+                    ServerPlayer serverplayer = (ServerPlayer)entity;
+                    serverplayer.awardStat(Stats.DAMAGE_DEALT_ABSORBED, Math.round(f * 10.0F));
+                }
+            }
+
+            f1 = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, source, f1);
+            if (f1 != 0.0F) {
+                this.getCombatTracker().recordDamage(source, f1);
+                this.setHealth(this.getHealth() - f1);
+                this.setAbsorptionAmount(this.getAbsorptionAmount() - f1);
+                this.gameEvent(GameEvent.ENTITY_DAMAGE);
+            }
+        }
+
         Entity attacker = source.getDirectEntity();
         if (attacker != null) {
             Vec3 thisVector = VecHelper.fromEntityCenter(this);
