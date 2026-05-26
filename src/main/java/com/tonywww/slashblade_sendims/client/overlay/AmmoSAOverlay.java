@@ -39,7 +39,7 @@ public class AmmoSAOverlay implements IGuiOverlay {
                     int maxPerRow = 12;
                     int rowSpacing = 10;
 
-                    int yInit = screenHeight / 2 + 15; // Just below the crosshair
+                    int yInit = screenHeight / 2 + 45; // Just below the crosshair
 
                     for (int i = 0; i < maxAmmo; i++) {
                         int row = i / maxPerRow;
