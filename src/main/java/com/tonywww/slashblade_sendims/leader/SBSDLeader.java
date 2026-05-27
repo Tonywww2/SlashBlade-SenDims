@@ -17,18 +17,24 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.joml.Vector3f;
+import dev.shadowsoffire.attributeslib.api.ALObjects;
 import twilightforest.entity.ai.goal.NagaMovementPattern;
 import twilightforest.entity.boss.Naga;
+
+import java.util.List;
 
 public class SBSDLeader {
 
@@ -226,6 +232,13 @@ public class SBSDLeader {
 
     public static void doLeaderSA(LivingEntity entity, ServerLevel serverLevel) {
         SBSDValues.ALL_LEADER_SA.get(serverLevel.getRandom().nextInt(SBSDValues.ALL_LEADER_SA.size())).apply(entity, serverLevel);
+
+        List<Player> entities = serverLevel.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(6.0D));
+        for (Player player : entities) {
+            if (player.isAlive() && !(player instanceof FakePlayer)) {
+                player.addEffect(new MobEffectInstance(ALObjects.MobEffects.GRIEVOUS.get(), 200, 1));
+            }
+        }
     }
 
     // 首领SA
