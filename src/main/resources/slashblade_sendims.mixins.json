@@ -46,7 +46,6 @@
     "slashblade.SuperSlashArtsMixin",
     "slashblade.TargetSelectorMixin",
     "slashblade.UntouchableMixin",
-    "tetra.MixinIModularItem",
     "tls.ItemRegistryMixin",
     "twilightforest.LichMixin",
     "twilightforest.NagaGoalMixin",
