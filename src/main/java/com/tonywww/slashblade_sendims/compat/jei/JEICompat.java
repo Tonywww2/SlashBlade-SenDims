@@ -5,6 +5,8 @@ import com.tonywww.slashblade_sendims.items.StructureQuill;
 import com.tonywww.slashblade_sendims.registeries.SBSDItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +20,16 @@ public class JEICompat implements IModPlugin {
     @Override
     public @NotNull ResourceLocation getPluginUid() {
         return SenDims.prefix(SenDims.MOD_ID);
+    }
+
+    @Override
+    public void registerRecipes(IRecipeRegistration registration) {
+        registration.addRecipes(StackRecipeCategory.stackDataRecipeType, StackData.AllData);
+    }
+
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(new StackRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
