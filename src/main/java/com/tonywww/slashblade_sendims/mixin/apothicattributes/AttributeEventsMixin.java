@@ -7,6 +7,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
 import dev.shadowsoffire.attributeslib.AttributesLib;
 import dev.shadowsoffire.attributeslib.util.AttributesUtil;
@@ -17,6 +21,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.resources.ResourceKey;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(value = AttributeEvents.class, remap = false)
 public class AttributeEventsMixin {
@@ -67,5 +72,22 @@ public class AttributeEventsMixin {
         }
         noRecurse = false;
         ci.cancel();
+    }
+
+    @Inject(method = "lifeStealOverheal", at = @At("HEAD"), cancellable = true)
+    private void takeOverLifeStealOverheal(LivingHurtEvent e, CallbackInfo ci) {
+        ci.cancel();
+    }
+
+    @Unique
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void sendims$onLivingDeathLifesteal(LivingDeathEvent e) {
+        if (e.getSource().getDirectEntity() instanceof LivingEntity attacker && AttributesUtil.isPhysicalDamage(e.getSource())) {
+            float lifesteal = (float) attacker.getAttributeValue(ALObjects.Attributes.LIFE_STEAL.get());
+            float amount = e.getEntity().getMaxHealth() * lifesteal;
+            if (amount > 0) {
+                attacker.heal(Math.min(1, amount));
+            }
+        }
     }
 }

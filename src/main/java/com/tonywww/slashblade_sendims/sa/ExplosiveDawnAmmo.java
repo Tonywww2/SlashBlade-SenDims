@@ -56,7 +56,7 @@ public class ExplosiveDawnAmmo extends AmmoSA {
 
                         CompoundTag shadowOfRevenantTag = nbt.getCompound("slashblade_shadow_of_revenant");
 
-                        for(int i = 0; i < 3; ++i) {
+                        for (int i = 0; i < 3; ++i) {
                             shadowOfRevenantTag.putInt(ShadowOfRevenant.REVENANT_KEYS[i], 5);
                         }
                     }
@@ -69,6 +69,8 @@ public class ExplosiveDawnAmmo extends AmmoSA {
                 CompoundTag tag = stack.getOrCreateTag();
                 tag.putInt(AmmoSA.AMMO_PATH, tag.getInt(AmmoSA.AMMO_PATH) + 1);
                 tag.putInt(AmmoSA.MAX_AMMO_PATH, maxAmmo);
+
+                attacker.getCooldowns().removeCooldown(stack.getItem());
                 return false;
             }
 
