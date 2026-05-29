@@ -1,6 +1,4 @@
 {
-  "debug_jei_info": "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
   "item.slashblade_sendims.blessing_petals": "祝福之花",
   "item.slashblade_sendims.the_nectar_quest": "流金滴萃",
@@ -33,6 +31,7 @@
   "slash_art.slashblade_sendims.void_slash_ammo.desc": "获得3枚弹药。\n斩击后，消耗1枚弹药并向前方斩出强力的一刀，随后进入短暂的冷却。",
   "slash_art.slashblade_sendims.sakura_end_ammo": "终焉樱·弹药",
   "slash_art.slashblade_sendims.sakura_end_ammo.desc": "获得36枚弹药。\n斩击后，消耗1枚弹药。每消耗6枚弹药，下次斩击时会额外斩出两刀，同时额外消耗2枚弹药。消耗完全部弹药之后，依据期间命中的敌人数量恢复百分比最大生命值与百分比最大行动力。",
+
   "se.slashblade_sendims.frenzied_flame": "§6癫火",
   "se.slashblade_sendims.frenzied_flame.desc": "挥刀时，为自身添加一定的§6发狂值§r，依据最大生命值提升。\n攻击命中时，对目标施加攻击力一定比例的§6发狂值§r，基于经验等级提升，可被§6发狂抗性§r降低。\n当目标的§6发狂值§r大于目标的最大生命值时，使目标陷入§6发狂§r状态。\n\n§6发狂§r：获得击晕，重伤效果，火焰引爆效果。持续受到百分比最大生命值的声波伤害，这个伤害可以被§r癫火伤害§r提升，可以被§6癫火抗性§r降低。\n\n重伤：降低受到的治疗量。\n火焰引爆：在效果结束后，如果目标处于燃烧状态，引爆目标。",
   "se.slashblade_sendims.arcane_a": "§6感应 A",
@@ -53,6 +52,7 @@
   "se.slashblade_sendims.blessing_and_bane.desc": "挥刀时，额外释放一道攻击力一定比例的斩击。\n有一定概率消耗自身的经验值，基于经验等级提升。",
   "se.slashblade_sendims.mahakala": "§l大黑天",
   "se.slashblade_sendims.mahakala.desc": "攻击命中时，有一定概率击晕目标并恢复少量最大生命值。\n自身对非自身的目标造成的非物理伤害被转化为物理伤害，并提供一定的增幅。",
+
   "message.slashblade_sendims.structure_quill.tooltip": "右键点击以搜索附近的结构并创建地图",
   "message.slashblade_sendims.structure_quill.searching": "正在搜索结构...",
   "message.slashblade_sendims.structure_quill.no_target": "未指定目标结构",
@@ -83,24 +83,32 @@
   "ui.slashblade_sendims.deeprealm_certificate.damageprogress": "伤害强化进度：",
   "ui.slashblade_sendims.deeprealm_certificate.material": "强化材料",
   "ui.slashblade_sendims.deeprealm_certificate.breakthrough_material": "突破材料",
+
   "ui.slashblade_sendims.shift_for_details": "§8[按住 Shift 查看详情]§r",
+
   "ui.slashblade_sendims.blessing_petals.counts": "已记录：%s",
   "ui.slashblade_sendims.blessing_petals.items": "花瓣：",
   "ui.slashblade_sendims.blessing_petals.shift_for_details": "§8[按住 Shift 查看已记录的花瓣]§r",
   "ui.slashblade_sendims.blessing_petals.all_collected": "花无缺",
+
   "ui.slashblade_sendims.principle_of_sword_arts.counts": "已吸收SA：%s",
   "ui.slashblade_sendims.principle_of_sword_arts.items": "SA：",
   "ui.slashblade_sendims.principle_of_sword_arts.shift_for_details": "§8[按住 Shift 查看已吸收的SA]§r",
   "ui.slashblade_sendims.principle_of_sword_arts.all_collected": "全部交代",
+
   "ui.slashblade_sendims.the_nectar_quest.counts": "已记录： %s",
   "ui.slashblade_sendims.the_nectar_quest.items": "精华：",
   "ui.slashblade_sendims.the_nectar_quest.shift_for_details": "§8[按住 Shift 查看已记录的精华]§r",
   "ui.slashblade_sendims.the_nectar_quest.all_collected": "满溢",
+
   "ui.slashblade_sendims.estus_flask.base": "基础回复：",
   "ui.slashblade_sendims.estus_flask.percentage": "损失生命回复：",
+
   "text.slashblade_sendims.no_ap": "行动力不足！",
+
   "tetra.stats.mana_resonance": "魔力共振",
   "tetra.stats.mana_resonance.tooltip": "为一些特殊的SA/SE提供加成",
+
   "curios.identifier.blessing_petals": "祝福之花",
   "curios.modifiers.blessing_petals": "模拟⌈远迹花的灵魂⌋时：",
   "curios.identifier.drc": "深境证章",
@@ -108,5 +116,16 @@
   "curios.identifier.principle_of_sword_arts": "剑技绝艺总纲",
   "curios.modifiers.principle_of_sword_arts": "佩戴时：",
   "curios.identifier.the_nectar_quest": "流金滴萃",
-  "curios.modifiers.the_nectar_quest": "佩戴时："
+  "curios.modifiers.the_nectar_quest": "佩戴时：",
+
+  "debug_jei_info": "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
+  "jei.recipe.stacking": "物品堆叠",
+
+  "jei.stacking.drc_ranking": "突破深境证章的阶级",
+  "jei.stacking.drc_health": "强化深境证章的生命值加成",
+  "jei.stacking.drc_damage": "强化深境证章的拔刀剑伤害加成",
+  "jei.stacking.blessing_petals": "为祝福之花添加收集品",
+  "jei.stacking.principle_of_sword_arts": "为剑技绝艺总纲添加SA",
+  "jei.stacking.the_nectar_quest": "为流金滴萃纪录精华",
+  "jei.stacking.blood_jade": "使用血玉"
 }

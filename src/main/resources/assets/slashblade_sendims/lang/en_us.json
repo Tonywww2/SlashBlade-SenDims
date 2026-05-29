@@ -116,5 +116,16 @@
   "curios.identifier.principle_of_sword_arts": "剑技绝艺总纲",
   "curios.modifiers.principle_of_sword_arts": "佩戴时：",
   "curios.identifier.the_nectar_quest": "流金滴萃",
-  "curios.modifiers.the_nectar_quest": "佩戴时："
+  "curios.modifiers.the_nectar_quest": "佩戴时：",
+
+  "debug_jei_info": "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
+  "jei.recipe.stacking": "物品堆叠",
+
+  "jei.stacking.drc_ranking": "突破深境证章的阶级",
+  "jei.stacking.drc_health": "强化深境证章的生命值加成",
+  "jei.stacking.drc_damage": "强化深境证章的拔刀剑伤害加成",
+  "jei.stacking.blessing_petals": "为祝福之花添加收集品",
+  "jei.stacking.principle_of_sword_arts": "为剑技绝艺总纲添加SA",
+  "jei.stacking.the_nectar_quest": "为流金滴萃纪录精华",
+  "jei.stacking.blood_jade": "使用血玉"
 }

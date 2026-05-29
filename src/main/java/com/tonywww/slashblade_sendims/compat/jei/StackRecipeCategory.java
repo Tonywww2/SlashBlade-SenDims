@@ -18,7 +18,7 @@ public class StackRecipeCategory extends AbstractRecipeCategory<StackData> {
     public StackRecipeCategory(IGuiHelper guiHelper) {
         super(
                 stackDataRecipeType,
-                Component.literal("aaa"),
+                Component.translatable("jei.recipe.stacking"),
                 guiHelper.createDrawableItemLike(Items.PAPER),
                 128, 64
         );
@@ -33,7 +33,7 @@ public class StackRecipeCategory extends AbstractRecipeCategory<StackData> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, StackData recipe, IFocusGroup focuses) {
         builder.addInputSlot(25, 5)
-                .addItemStacks(recipe.putItem());
+                .addIngredients(recipe.putIngredient());
         builder.addInputSlot(5, 42)
                 .addItemStack(recipe.targetItem());
     }
