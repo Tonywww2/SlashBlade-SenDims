@@ -6,6 +6,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import net.minecraft.network.chat.Component;
@@ -35,6 +36,9 @@ public class StackRecipeCategory extends AbstractRecipeCategory<StackData> {
         builder.addInputSlot(25, 5)
                 .addIngredients(recipe.putIngredient());
         builder.addInputSlot(5, 42)
+                .addItemStack(recipe.targetItem());
+
+        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
                 .addItemStack(recipe.targetItem());
     }
 
