@@ -15,8 +15,8 @@ public record StackData(String lang, Ingredient putIngredient, ItemStack targetI
     public static List<StackData> AllData = new ObjectArrayList<>();
 
     static {
-        if (FMLEnvironment.production)
-            register("debug_jei_info", Ingredient.of(Items.ANDESITE.getDefaultInstance()), Items.ALLIUM.getDefaultInstance());
+//        if (FMLEnvironment.production)
+//            register("debug_jei_info", Ingredient.of(Items.ANDESITE.getDefaultInstance()), Items.ALLIUM.getDefaultInstance());
 
         register("jei.stacking.drc_ranking", Ingredient.of(SBSDTags.Items.DRC_RANK_MATERIALS), SBSDItems.DEEPREALM_CERTIFICATE.get().getDefaultInstance());
         register("jei.stacking.drc_health", Ingredient.of(SBSDTags.Items.DRC_HEALTH_MATERIALS), SBSDItems.DEEPREALM_CERTIFICATE.get().getDefaultInstance());

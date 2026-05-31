@@ -16,6 +16,7 @@
     "cataclysm.SunkenCityStructureMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
+    "ftbquests.ChapterMixin",
     "legendreliclib.ArmorPiercingUtilMixin",
     "legendreliclib.TheGreatRipMixin",
     "lsp.MixinBloodAccumulationEvent",
