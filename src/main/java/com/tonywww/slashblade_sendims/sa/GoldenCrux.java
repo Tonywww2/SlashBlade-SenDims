@@ -74,7 +74,7 @@ public class GoldenCrux {
                     attacker.getZ()
             );
 
-            slashEffect.setDamage(0.3f);
+            slashEffect.setDamage(0.2f);
             slashEffect.setRank(7);
             slashEffect.setBaseSize(1.75f);
 
@@ -101,7 +101,7 @@ public class GoldenCrux {
                     attacker.getZ()
             );
 
-            slashEffect.setDamage(0.4f);
+            slashEffect.setDamage(0.3f);
             slashEffect.setRank(7);
             slashEffect.setBaseSize(1f);
 

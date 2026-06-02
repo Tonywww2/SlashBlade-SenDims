@@ -1,5 +1,6 @@
 package com.tonywww.slashblade_sendims.compat.jei;
 
+import com.tonywww.slashblade_sendims.items.BloodJade;
 import com.tonywww.slashblade_sendims.registeries.SBSDItems;
 import com.tonywww.slashblade_sendims.registeries.SBSDTags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -26,7 +27,7 @@ public record StackData(String lang, Ingredient putIngredient, ItemStack targetI
         register("jei.stacking.principle_of_sword_arts", Ingredient.of(SlashBladeItems.PROUDSOUL_SPHERE.get()), SBSDItems.PRINCIPLE_OF_SWORD_ARTS.get().getDefaultInstance());
         register("jei.stacking.the_nectar_quest", Ingredient.of(SBSDTags.Items.THE_NECTAR_QUEST_ITEMS), SBSDItems.THE_NECTAR_QUEST.get().getDefaultInstance());
 
-        register("jei.stacking.blood_jade", Ingredient.of(SBSDItems.BLOOD_JADE.get()), SlashBladeItems.SLASHBLADE.get().getDefaultInstance());
+        register("jei.stacking.blood_jade", Ingredient.of(BloodJade.withKillCount(10)), SlashBladeItems.SLASHBLADE.get().getDefaultInstance());
     }
 
     public static void clear() {

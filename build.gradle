@@ -23,7 +23,8 @@ base {
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+// but we need java 21 for minecraft-mcp-1.20.6-forge.jar
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -187,6 +188,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:zeta-968868:6432578")
     implementation fg.deobf("curse.maven:quark-243121:6427817")
+    implementation fg.deobf("curse.maven:quark-oddities-301051:5070502")
 
     implementation fg.deobf("curse.maven:nuclearcraft-neoteric-840010:7043527")
 
@@ -221,6 +223,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
     runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:6807424")
     implementation fg.deobf("curse.maven:ftb-quests-forge-289412:8078538")
+    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:7499810")
 
     runtimeOnly fg.deobf("curse.maven:selene-499980:6023899")
     runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:5737040")
@@ -246,6 +249,10 @@ dependencies {
 
     implementation fg.deobf("curse.maven:lethalsteelproject-1295263:6776224")
     implementation fg.deobf("curse.maven:productivebees-377897:5566102")
+
+    implementation fg.deobf("curse.maven:mouse-tweaks-60089:5338457")
+
+    implementation fg.deobf(files('libs/minecraft-mcp-1.20.6-forge.jar'))
 
 //    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1"))
 //    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.7-beta.1")) {

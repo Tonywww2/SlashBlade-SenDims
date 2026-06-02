@@ -26,9 +26,13 @@ public class SBSDValues {
     public static final int SPRINT_CD = 50;
     public static final String SPRINT_CD_PATH = "sbsd.sprint.cd";
     public static final String SPRINT_SUCCESSED_PATH = "sbsd.sprint.cd_success";
-    public static final int SPRINT_COST = -150;
+    /** 闪避的行动力消耗 */
+    public static final int SPRINT_COST = 100;
+    public static final double SPRINT_COST_PERC = 0.05;
+    /** 闪避成功恢复的无敌时间 */
     public static final int UNTOUCHABLE_TICK = 10;
-    public static final int SPRINT_SUCCESS_AP = 300;
+    /** 闪避成功恢复的行动力 */
+    public static final int SPRINT_SUCCESS_AP = 200;
 
     // HIT
     public static final double HIT_LEADER_AP = 64d;

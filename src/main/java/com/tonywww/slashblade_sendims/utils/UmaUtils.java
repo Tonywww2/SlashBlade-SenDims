@@ -24,8 +24,11 @@ public class UmaUtils {
             return false;
         }
         int ap = UmaSoulUtils.getActionPoint(soul);
+        int maxAp = UmaSoulUtils.getMaxActionPoint(soul);
         CompoundTag data = serverPlayer.getPersistentData();
-        if (ap + SBSDValues.SPRINT_COST < 0) {
+        int cost = (int) (SBSDValues.SPRINT_COST + maxAp * SBSDValues.SPRINT_COST_PERC);
+
+        if (ap - cost < 0) {
             SBSDValues.notifyPlayer(serverPlayer, Component.translatable("text.slashblade_sendims.no_ap"));
             return false;
         } else if (data.contains(SBSDValues.SPRINT_CD_PATH) &&
@@ -33,19 +36,22 @@ public class UmaUtils {
             return false;
         } else {
             // Success
-            double scale = 1 - SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD.get());
+            double scale = Math.max(0.02, 1 - SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD.get()));
+
             data.putInt(SBSDValues.SPRINT_CD_PATH, (int) (SBSDValues.SPRINT_CD * scale + 0.5d));
             data.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, false);
-            int cost = SBSDValues.SPRINT_COST;
+
             AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
-            if (attributeInstance != null) cost = (int) Math.min(0, cost + attributeInstance.getValue());
+
+            if (attributeInstance != null) cost = (int) Math.min(SBSDValues.SPRINT_COST, cost - attributeInstance.getValue());
+
             UmaSoulUtils.addActionPoint(soul, cost);
             return true;
         }
     }
 
-    public static void areaSkill(Level level, LivingEntity user, Consumer<LivingEntity> effect){
-        for(Entity entity : TargetSelector.getTargettableEntitiesWithinAABB(level, user, user.getBoundingBox().inflate((double)25.0F), TargetSelector.getResolvedReach(user) + (double)32.0F)) {
+    public static void areaSkill(Level level, LivingEntity user, Consumer<LivingEntity> effect) {
+        for (Entity entity : TargetSelector.getTargettableEntitiesWithinAABB(level, user, user.getBoundingBox().inflate((double) 25.0F), TargetSelector.getResolvedReach(user) + (double) 32.0F)) {
             if (entity instanceof LivingEntity living) {
                 effect.accept(living);
             }
