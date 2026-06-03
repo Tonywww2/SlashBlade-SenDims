@@ -1,175 +1,156 @@
 package com.tonywww.slashblade_sendims.mixin.twilightforest;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.ITeleporter;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import twilightforest.TwilightForestMod;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import twilightforest.init.custom.Restrictions;
+import twilightforest.util.LandmarkUtil;
+import twilightforest.util.LegacyLandmarkPlacements;
 import twilightforest.world.TFTeleporter;
+import twilightforest.world.registration.TFGenerationSettings;
 
-import java.util.function.Predicate;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 @Mixin(TFTeleporter.class)
-public abstract class TFTeleporterMixin implements ITeleporter {
+public abstract class TFTeleporterMixin {
 
-    @Shadow(remap = false)
-    protected abstract BlockPos makePortalAt(net.minecraft.world.level.Level world, BlockPos pos);
+    @Unique
+    private static final int EXTENDED_CHECK_DISTANCE = 24;
 
+    /**
+     * 拦截 isSafeAround 方法，扩大检查范围
+     */
     @Inject(
-            method = "makePortal(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;)V",
+            method = "isSafeAround(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;Z)Z",
             at = @At("HEAD"),
             cancellable = true,
             remap = false
     )
-    private void slashBlade_SenDims$makePortal(Entity entity, ServerLevel world, Vec3 pos, CallbackInfo ci) {
-        Level var6 = entity.level();
-        ServerLevel var10000;
-        if (var6 instanceof ServerLevel serverLevel) {
-            var10000 = serverLevel;
+    private static void expandPortalSafetyCheck(
+            Level world,
+            BlockPos pos,
+            Entity entity,
+            boolean checkProgression,
+            CallbackInfoReturnable<Boolean> cir
+    ) {
+        if (!slashBlade_SenDims$isSafeAround(world, pos, entity, checkProgression)) {
+            cir.setReturnValue(false);
+            return;
+        }
+
+        // 检查扩展范围
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            BlockPos checkedPos = pos.relative(direction, EXTENDED_CHECK_DISTANCE);
+            if (!slashBlade_SenDims$isSafeAround(world, checkedPos, entity, checkProgression)) {
+                cir.setReturnValue(false);
+                return;
+            }
+        }
+
+        cir.setReturnValue(true);
+    }
+
+    @Unique
+    private static boolean slashBlade_SenDims$isSafeAround(Level world, BlockPos pos, Entity entity, boolean checkProgression) {
+        if (!slashBlade_SenDims$isSafe(world, pos, entity, checkProgression)) {
+            return false;
         } else {
-            var10000 = null;
-        }
-
-        ServerLevel src = var10000;
-        slashBlade_SenDims$loadSurroundingArea(world, pos);
-        BlockPos spot = slashBlade_SenDims$findPortalCoords(world, pos, (blockPos) -> slashBlade_SenDims$isPortalAt(world, blockPos));
-        String name = entity.getName().getString();
-        if (spot != null) {
-            TwilightForestMod.LOGGER.debug("Found existing portal for {} at {}", name, spot);
-            slashBlade_SenDims$cacheNewPortalCoords(src, spot, entity.blockPosition());
-        } else {
-            spot = slashBlade_SenDims$findPortalCoords(world, pos, (blockpos) -> slashBlade_SenDims$isIdealForPortal(world, blockpos));
-            if (spot != null) {
-                TwilightForestMod.LOGGER.debug("Found ideal portal spot for {} at {}", name, spot);
-                slashBlade_SenDims$cacheNewPortalCoords(src, this.makePortalAt(world, spot), entity.blockPosition());
-            } else {
-                TwilightForestMod.LOGGER.debug("Did not find ideal portal spot, shooting for okay one for {}", name);
-                spot = slashBlade_SenDims$findPortalCoords(world, pos, (blockPos) -> slashBlade_SenDims$isOkayForPortal(world, blockPos));
-                if (spot != null) {
-                    TwilightForestMod.LOGGER.debug("Found okay portal spot for {} at {}", name, spot);
-                    slashBlade_SenDims$cacheNewPortalCoords(src, this.makePortalAt(world, spot), entity.blockPosition());
-                } else {
-                    TwilightForestMod.LOGGER.debug("Did not even find an okay portal spot, just making a random one for {}", name);
-                    slashBlade_SenDims$cacheNewPortalCoords(src, this.makePortalAt(world, BlockPos.containing(entity.getX(), 63, entity.getZ())), entity.blockPosition());
+            for (Direction facing : Direction.Plane.HORIZONTAL) {
+                if (!slashBlade_SenDims$isSafe(world, pos.relative(facing, 16), entity, checkProgression)) {
+                    return false;
                 }
             }
+
+            return true;
         }
-        ci.cancel();
     }
 
     @Unique
-    private static @Nullable BlockPos slashBlade_SenDims$findPortalCoords(ServerLevel world, Vec3 loc, Predicate<BlockPos> predicate) {
-        double yFactor = slashBlade_SenDims$getYFactor(world);
-        int entityX = Mth.floor(loc.x);
-        int entityZ = Mth.floor(loc.z);
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        double spotWeight = (double) -1.0F;
-        BlockPos spot = null;
-        int range = 16;
+    private static boolean slashBlade_SenDims$isSafe(Level world, BlockPos pos, Entity entity, boolean checkProgression) {
+        boolean outsideLandmarkRange = !LegacyLandmarkPlacements.blockNearLandmarkCenter(pos.getX(), pos.getZ(), 5);
 
-        for (int rx = entityX - range; rx <= entityX + range; ++rx) {
-            double xWeight = (double) rx + (double) 0.5F - loc.x;
+        Optional<StructureStart> possibleNearLandmark = LandmarkUtil.locateNearestLandmarkStart(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
 
-            for (int rz = entityZ - range; rz <= entityZ + range; ++rz) {
-                double zWeight = (double) rz + (double) 0.5F - loc.z;
+        boolean checkStructure = outsideLandmarkRange && (possibleNearLandmark.isEmpty() || (possibleNearLandmark.get()).getBoundingBox().isInside(pos));
 
-                for (int ry = slashBlade_SenDims$getScanHeight(world, rx, rz); ry >= world.getMinBuildHeight(); --ry) {
-                    if (world.isEmptyBlock(pos.set(rx, ry, rz))) {
-                        while (ry > world.getMinBuildHeight() && world.isEmptyBlock(pos.set(rx, ry - 1, rz))) {
-                            --ry;
-                        }
+        return !world.dimension().equals(TFGenerationSettings.DIMENSION_KEY)
+                || world.getWorldBorder().isWithinBounds(pos)
+                && (!checkProgression || Restrictions.isBiomeSafeFor(world.getBiome(pos).value(), entity))
+                && checkStructure;
+    }
 
-                        double yWeight = (double) ry + (double) 0.5F - loc.y * yFactor;
-                        double rPosWeight = xWeight * xWeight + yWeight * yWeight + zWeight * zWeight;
-                        if ((spotWeight < (double) 0.0F || rPosWeight < spotWeight) && predicate.test(pos)) {
-                            spotWeight = rPosWeight;
-                            spot = pos.immutable();
-                        }
-                    }
+    /**
+     * 拦截 findSafeCoords 方法，改进高度选择
+     */
+    @Inject(
+            method = "findSafeCoords(Lnet/minecraft/server/level/ServerLevel;ILnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;Z)Lnet/minecraft/core/BlockPos;",
+            at = @At("HEAD"),
+            cancellable = true,
+            remap = false
+    )
+    private static void improvedFindSafeCoords(
+            ServerLevel world,
+            int range,
+            BlockPos pos,
+            Entity entity,
+            boolean checkProgression,
+            CallbackInfoReturnable<BlockPos> cir
+    ) {
+        int attempts = range / 8;
+
+        for (int x = 0; x < attempts; x++) {
+            for (int z = 0; z < attempts; z++) {
+                int xCoord = pos.getX() + (x * attempts) - (range / 2);
+                int zCoord = pos.getZ() + (z * attempts) - (range / 2);
+
+                // 不使用固定的 Y=100，而是扫描找最佳高度
+                BlockPos safePortalPos = slashBlade_SenDims$findBestHeightForPortal(world, xCoord, zCoord, entity, checkProgression);
+
+                if (safePortalPos != null) {
+                    cir.setReturnValue(safePortalPos);
+                    return;
                 }
             }
         }
 
-        return spot;
+        cir.setReturnValue(null);
     }
 
-
+    /**
+     * 找到最佳传送门高度
+     * 优先选择安全群系中地面较低的位置
+     */
     @Unique
-    @SuppressWarnings("removal")
-    private static int slashBlade_SenDims$getScanHeight(ServerLevel world, int x, int z) {
-        int worldHeight = world.getMaxBuildHeight() - 1;
-        int chunkHeight = world.getChunk(x >> 4, z >> 4).getHighestSectionPosition() + 15;
-        return Math.min(worldHeight, chunkHeight);
-    }
+    @Nullable
+    private static BlockPos slashBlade_SenDims$findBestHeightForPortal(ServerLevel world, int x, int z, Entity entity, boolean checkProgression) {
+        int maxHeight = world.getMaxBuildHeight();
+        int minHeight = world.getMinBuildHeight();
 
-    @Unique
-    private void slashBlade_SenDims$loadSurroundingArea(ServerLevel world, Vec3 pos) {
-        int x = (int) Math.floor(pos.x) >> 4;
-        int z = (int) Math.floor(pos.z) >> 4;
+        // 从顶部往下扫描
+        for (int y = Math.min(maxHeight - 1, 120); y >= minHeight + 10; y--) {
+            BlockPos checkPos = new BlockPos(x, y, z);
+            BlockPos groundPos = new BlockPos(x, y - 1, z);
 
-        for (int dx = -2; dx <= 2; dx++) {
-            for (int dz = -2; dz <= 2; dz++) {
-                world.getChunk(x + dx, z + dz);
-            }
-        }
-    }
-
-    @Unique
-    private boolean slashBlade_SenDims$isPortalAt(ServerLevel world, BlockPos pos) {
-        return world.getBlockState(pos).is(twilightforest.init.TFBlocks.TWILIGHT_PORTAL.get());
-    }
-
-    @Unique
-    private boolean slashBlade_SenDims$isIdealForPortal(ServerLevel world, BlockPos pos) {
-        for (int potentialZ = 0; potentialZ < 4; potentialZ++) {
-            for (int potentialX = 0; potentialX < 4; potentialX++) {
-                for (int potentialY = 0; potentialY < 4; potentialY++) {
-                    BlockPos tPos = pos.offset(potentialX - 1, potentialY, potentialZ - 1);
-                    var state = world.getBlockState(tPos);
-                    if (potentialY == 0 && !state.is(net.minecraft.tags.BlockTags.DIRT) || potentialY >= 1 && !state.canBeReplaced()) {
-                        return false;
-                    }
+            // 检查该位置及周围是否安全
+            if (TFTeleporter.isSafeAround(world, checkPos, entity, checkProgression)) {
+                // 检查下方是否是固体（防止传送到悬崖边上）
+                if (world.getBlockState(groundPos).isSolid()) {
+                    return checkPos;
                 }
             }
         }
-        return true;
-    }
 
-    @Unique
-    private boolean slashBlade_SenDims$isOkayForPortal(ServerLevel world, BlockPos pos) {
-        for (int potentialZ = 0; potentialZ < 4; potentialZ++) {
-            for (int potentialX = 0; potentialX < 4; potentialX++) {
-                for (int potentialY = 0; potentialY < 4; potentialY++) {
-                    BlockPos tPos = pos.offset(potentialX - 1, potentialY, potentialZ - 1);
-                    var state = world.getBlockState(tPos);
-                    if (potentialY == 0 && !state.isSolid() && !state.liquid() || potentialY >= 1 && !state.canBeReplaced()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    @Unique
-    private void slashBlade_SenDims$cacheNewPortalCoords(ServerLevel srcDim, BlockPos pos, BlockPos srcPos) {
-        // 这里保持原类行为：把新门坐标缓存起来，供下次复用
-        // 如果你要 100% 复刻原代码，建议把 TFTeleporter 里的 cacheNewPortalCoords 逻辑也完整搬过来
-        TwilightForestMod.LOGGER.debug("Cache portal coords: src={}, dest={}", srcPos, pos);
-    }
-
-    @Unique
-    private static double slashBlade_SenDims$getYFactor(ServerLevel world) {
-        return world.dimension().location().equals(Level.OVERWORLD.location()) ? (double) 2.0F : (double) 0.5F;
+        return null;
     }
 }
