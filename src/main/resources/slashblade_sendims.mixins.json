@@ -51,6 +51,7 @@
     "twilightforest.LichMixin",
     "twilightforest.NagaGoalMixin",
     "twilightforest.NagaMixin",
+    "twilightforest.TFTeleporterMixin",
     "umapyoi.DivineSpeedSkillMixin",
     "umapyoi.HealSkillMixin",
     "umapyoi.LastLegSkillMixin",
