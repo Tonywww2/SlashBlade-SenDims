@@ -148,6 +148,9 @@ public class SBSDValues {
 //        DEFAULT_LEADER_SET.add(BotaniaEntities.DOPPLEGANGER);
     }
 
+    // Kubejs
+        public static final Set<ResourceLocation> REMOVED_RECIPE_IDS = new HashSet<>();
+
     // Miscs
     public static int GEM_UPGRADE_COST = 2;
     public static String DISABLE_RENDER_BOARDER_STAGE = "sdbf.world_lock";

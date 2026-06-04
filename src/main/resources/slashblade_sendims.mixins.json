@@ -17,6 +17,7 @@
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
     "ftbquests.ChapterMixin",
+    "kubejs.RecipesEventJSMixin",
     "legendreliclib.ArmorPiercingUtilMixin",
     "legendreliclib.TheGreatRipMixin",
     "lsp.MixinBloodAccumulationEvent",

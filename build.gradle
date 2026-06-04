@@ -24,7 +24,8 @@ base {
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 // but we need java 21 for minecraft-mcp-1.20.6-forge.jar
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+//java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -252,7 +253,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:mouse-tweaks-60089:5338457")
 
-    implementation fg.deobf(files('libs/minecraft-mcp-1.20.6-forge.jar'))
+//    implementation fg.deobf(files('libs/minecraft-mcp-1.20.6-forge.jar'))
 
 //    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1"))
 //    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:0.3.7-beta.1")) {
