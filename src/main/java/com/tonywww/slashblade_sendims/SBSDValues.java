@@ -88,19 +88,19 @@ public class SBSDValues {
         ALL_LEADER_SA.add((LivingEntity entity, ServerLevel serverLevel) -> {
             // Wide Slash
             MobAttackManager.doSlash(entity, 2.0F, 13d, 2f, 0xff9b9b, Vec3.ZERO,
-                    true, false, true, 1.25f, KnockBacks.toss);
+                    true, false, true, 1.75f, KnockBacks.toss);
         });
         ALL_LEADER_SA.add((LivingEntity entity, ServerLevel serverLevel) -> {
             // Triple Slash
             MobAttackManager.doSlash(entity, -30.0F, 7.5d, 0.25f, 0x8B0000, Vec3.ZERO,
-                    true, false, true, 0.3f, KnockBacks.meteor);
+                    true, false, true, 0.4f, KnockBacks.meteor);
             SenDims.serverScheduler.schedule(5, () -> {
                 MobAttackManager.doSlash(entity, 15.0F, 9d, 1.25f, 0x6d0000, Vec3.ZERO,
-                        true, false, true, 0.5f, KnockBacks.cancel);
+                        true, false, true, 0.6f, KnockBacks.cancel);
             });
             SenDims.serverScheduler.schedule(7, () -> {
                 MobAttackManager.doSlash(entity, -15.0F, 9d, 1.25f, 0x6d0000, Vec3.ZERO,
-                        true, false, true, 1.1f, KnockBacks.smash);
+                        true, false, true, 1.2f, KnockBacks.smash);
             });
 
         });
@@ -109,11 +109,11 @@ public class SBSDValues {
             MobAttackManager.doSlash(entity, -30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
                     true, false, true, 0.3f, KnockBacks.smash);
             MobAttackManager.doSlash(entity, 30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
-                    true, false, true, 0.3f, KnockBacks.smash);
+                    true, false, true, 0.4f, KnockBacks.smash);
 
             SenDims.serverScheduler.schedule(3, () -> {
                 MobAttackManager.doSlash(entity, -25.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
-                        true, false, true, 0.3f, KnockBacks.cancel);
+                        true, false, true, 0.4f, KnockBacks.cancel);
                 MobAttackManager.doSlash(entity, 25.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
                         true, false, true, 0.3f, KnockBacks.cancel);
             });
@@ -121,11 +121,11 @@ public class SBSDValues {
                 MobAttackManager.doSlash(entity, -15.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
                         true, false, true, 0.3f, KnockBacks.smash);
                 MobAttackManager.doSlash(entity, 15.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
-                        true, false, true, 0.3f, KnockBacks.smash);
+                        true, false, true, 0.4f, KnockBacks.smash);
             });
             SenDims.serverScheduler.schedule(7, () -> {
                 MobAttackManager.doSlash(entity, -30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
-                        true, false, true, 0.3f, KnockBacks.cancel);
+                        true, false, true, 0.4f, KnockBacks.cancel);
                 MobAttackManager.doSlash(entity, 30.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
                         true, false, true, 0.3f, KnockBacks.cancel);
             });
@@ -133,7 +133,7 @@ public class SBSDValues {
                 MobAttackManager.doSlash(entity, -45.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
                         true, false, true, 0.3f, KnockBacks.smash);
                 MobAttackManager.doSlash(entity, 45.0F, 6.5d, 0.4f, 0x8B0000, Vec3.ZERO,
-                        true, false, true, 0.3f, KnockBacks.smash);
+                        true, false, true, 0.4f, KnockBacks.smash);
             });
 
         });

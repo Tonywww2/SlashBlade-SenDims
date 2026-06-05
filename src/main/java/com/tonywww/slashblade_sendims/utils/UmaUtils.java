@@ -45,7 +45,7 @@ public class UmaUtils {
 
             if (attributeInstance != null) cost = (int) Math.min(SBSDValues.SPRINT_COST, cost - attributeInstance.getValue());
 
-            UmaSoulUtils.addActionPoint(soul, cost);
+            UmaSoulUtils.addActionPoint(soul, -cost);
             return true;
         }
     }
