@@ -19,12 +19,12 @@ public class RenderAmount {
     public boolean render(GuiGraphics guiGraphics, Font font) {
         int alpha;
         if (life < 40) {
-            alpha = (int) (life / 40 * 255);
+            alpha = (int) ((life+1) / 41 * 255);
         } else {
             alpha = 255;
         }
         int color = (alpha << 24) | 0x00FF0000;
         guiGraphics.drawString(font, amount, x - font.width(amount), y, color);
-        return (life -= Minecraft.getInstance().getPartialTick()) <= 0.05;
+        return (life -= Minecraft.getInstance().getDeltaFrameTime()) <= 0;
     }
 }
