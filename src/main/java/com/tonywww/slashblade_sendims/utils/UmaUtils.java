@@ -43,7 +43,7 @@ public class UmaUtils {
 
             AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_REDUCE_AMOUNT.get());
 
-            if (attributeInstance != null) cost = (int) Math.min(SBSDValues.SPRINT_COST, cost - attributeInstance.getValue());
+            if (attributeInstance != null) cost = (int) Math.max(SBSDValues.SPRINT_COST, cost - attributeInstance.getValue());
 
             UmaSoulUtils.addActionPoint(soul, -cost);
             return true;
