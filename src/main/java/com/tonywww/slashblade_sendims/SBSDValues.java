@@ -88,7 +88,7 @@ public class SBSDValues {
         ALL_LEADER_SA.add((LivingEntity entity, ServerLevel serverLevel) -> {
             // Wide Slash
             MobAttackManager.doSlash(entity, 2.0F, 13d, 2f, 0xff9b9b, Vec3.ZERO,
-                    true, false, true, 1.0f, KnockBacks.toss);
+                    true, false, true, 1.25f, KnockBacks.toss);
         });
         ALL_LEADER_SA.add((LivingEntity entity, ServerLevel serverLevel) -> {
             // Triple Slash
