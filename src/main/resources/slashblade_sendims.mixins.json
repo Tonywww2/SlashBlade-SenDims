@@ -61,12 +61,14 @@
     "umapyoi.NutritionalSupplementsSkillMixin",
     "umapyoi.SteelWillSkillMixin",
     "umapyoi.TetherSkillMixin",
-    "umapyoi.TopUmamusumeSkillMixin"
+    "umapyoi.TopUmamusumeSkillMixin",
+    "umapyoi.UmaSoulItemMixin"
   ],
   "client": [
     "apotheosis.GemCuttingScreenMixin",
     "apotheosis.SalvageItemMixin",
-    "sbtetra.MixinSlashBladeModularItem"
+    "sbtetra.MixinSlashBladeModularItem",
+    "umapyoi.ActionBarOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1

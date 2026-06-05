@@ -118,6 +118,8 @@
   "curios.identifier.the_nectar_quest": "流金滴萃",
   "curios.modifiers.the_nectar_quest": "佩戴时：",
 
+  "tooltip.umapyoi.uma_soul.action_point_details": "最大行动力: %s",
+
   "debug_jei_info": "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
   "jei.recipe.stacking": "物品堆叠",
 
