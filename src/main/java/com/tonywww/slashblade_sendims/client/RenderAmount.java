@@ -25,6 +25,6 @@ public class RenderAmount {
         }
         int color = (alpha << 24) | 0x00FF0000;
         guiGraphics.drawString(font, amount, x - font.width(amount), y, color);
-        return (life -= Minecraft.getInstance().getPartialTick()) <= 0.05;
+        return (life -= Minecraft.getInstance().getDeltaFrameTime()) <= 0.05;
     }
 }
