@@ -62,7 +62,7 @@ public class SBSDValues {
     /** 普通首领的初始最大生命值加成倍率 */
     public static final double LEADER_HP_SCALE = 5.0d;
     /** 针对特定实体首领（Terra）的生命值加成倍率*/
-    public static final double LEADER_HP_SCALE_RT = Math.floor(Math.sqrt(LEADER_HP_SCALE)) - 0.5d;
+    public static final double LEADER_HP_SCALE_RT = Math.floor(Math.sqrt(LEADER_HP_SCALE));
     /** 首领处于招架击破（Parried）状态时，所承受的伤害放大倍率 */
     public static final float PARRIED_DAMAGE_SCALE = 5.0f;
 
