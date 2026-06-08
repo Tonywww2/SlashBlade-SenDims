@@ -11,8 +11,8 @@ import se.mickelus.tetra.module.schematic.OutcomeDefinition;
 
 @Mixin(MaterialOutcomeDefinition.class)
 public class MaterialOutcomeDefinitionMixin {
-    @Inject(method = "combine", at = @At("RETURN"))
+    @Inject(method = "combine", at = @At("RETURN"), remap = false)
     private void injectMaterialFactor(MaterialData materialData, CallbackInfoReturnable<OutcomeDefinition> cir) {
-        cir.getReturnValue().material.count = (int) (cir.getReturnValue().material.count * IMaterialData.cast(materialData).getCountFactor());
+        cir.getReturnValue().material.count = (int) (cir.getReturnValue().material.count * IMaterialData.cast(materialData).slashBlade_SenDims$getCountFactor());
     }
 }

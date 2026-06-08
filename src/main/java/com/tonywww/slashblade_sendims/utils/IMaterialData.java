@@ -6,6 +6,6 @@ public interface IMaterialData {
     static IMaterialData cast(MaterialData data) {
         return (IMaterialData) data;
     }
-    float getCountFactor();
-    void setCountFactor(float factor);
+    float slashBlade_SenDims$getCountFactor();
+    void slashBlade_SenDims$setCountFactor(float factor);
 }

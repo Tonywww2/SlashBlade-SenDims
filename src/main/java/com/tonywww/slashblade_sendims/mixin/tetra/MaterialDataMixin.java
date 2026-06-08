@@ -16,26 +16,26 @@ import java.lang.reflect.Type;
 @Mixin(MaterialData.class)
 public class MaterialDataMixin implements IMaterialData {
     @Unique
-    private float countFactor = 1;
+    private float slashBlade_SenDims$countFactor = 1;
 
     @Override
-    public float getCountFactor() {
-        return countFactor;
+    public float slashBlade_SenDims$getCountFactor() {
+        return slashBlade_SenDims$countFactor;
     }
 
     @Override
-    public void setCountFactor(float factor) {
-        countFactor = factor;
+    public void slashBlade_SenDims$setCountFactor(float factor) {
+        slashBlade_SenDims$countFactor = factor;
     }
 
     @Mixin(MaterialData.Deserializer.class)
     public static class DeserializerMixin {
-        @Inject(method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lse/mickelus/tetra/module/data/MaterialData;", at = @At("RETURN"))
+        @Inject(method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lse/mickelus/tetra/module/data/MaterialData;", at = @At("RETURN"), remap = false)
         private void injectCountFactor(JsonElement json, Type typeOfT, JsonDeserializationContext context, CallbackInfoReturnable<MaterialData> cir) {
             JsonObject jsonObject = json.getAsJsonObject();
             if (jsonObject.has("countFactor")) {
                 IMaterialData.cast(cir.getReturnValue())
-                        .setCountFactor(jsonObject.get("countFactor").getAsFloat());
+                        .slashBlade_SenDims$setCountFactor(jsonObject.get("countFactor").getAsFloat());
             }
         }
     }
