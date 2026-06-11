@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
+    "adastra.EtrionicBlastFurnaceBlockEntityMixin",
     "aether.AccessoryAbilityListenerMixin",
     "aether_redux.ConstructionRingItemMixin",
     "apotheosis.GemCuttingRarityUpgradeMixin",
