@@ -25,4 +25,17 @@ public class BlandStandEventHandlerMixin {
     private static Map<Enchantment, Integer> redirectBladeGetAllEnchantments(ItemStack blade) {
         return EnchantmentHelper.getEnchantments(blade);
     }
+
+    @Redirect(
+            method = "lambda$eventProudSoulEnchantment$1",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;canApplyAtEnchantingTable(Lnet/minecraft/world/item/enchantment/Enchantment;)Z",
+                    remap = false
+            )
+    )
+    private static boolean redirectProudSoulCanApply(ItemStack blade, Enchantment enchantment) {
+        return true;
+    }
+
 }
