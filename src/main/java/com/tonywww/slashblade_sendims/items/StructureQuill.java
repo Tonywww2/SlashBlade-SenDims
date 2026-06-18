@@ -187,6 +187,8 @@ public class StructureQuill extends Item {
             }
         }
 
+        mapStack.getOrCreateTag().putInt("yLevel", -1000);
+
         return mapStack;
     }
 
