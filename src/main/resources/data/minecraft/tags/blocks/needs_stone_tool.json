@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "slashblade_sendims:saturn_stone",
+    "slashblade_sendims:saturn_cobblestone",
+    "slashblade_sendims:saturn_deepslate",
+    "slashblade_sendims:saturn_cobbled_deepslate",
+    "slashblade_sendims:saturn_sandstone",
+    "slashblade_sendims:porous_saturn_stone"
+  ]
+}

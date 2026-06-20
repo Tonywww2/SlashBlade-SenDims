@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "slashblade_sendims:block/porous_saturn_stone"
+  }
+}

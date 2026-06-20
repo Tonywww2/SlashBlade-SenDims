@@ -12,6 +12,12 @@
   "item.slashblade_sendims.estus_flask_4": "原素瓶 +4",
   "item.slashblade_sendims.estus_flask_5": "原素瓶 +5",
   "item.slashblade_sendims.estus_flask_6": "原素瓶 +6",
+  "block.slashblade_sendims.saturn_stone": "土星岩",
+  "block.slashblade_sendims.saturn_cobblestone": "土星岩圆石",
+  "block.slashblade_sendims.saturn_deepslate": "土星深板岩",
+  "block.slashblade_sendims.saturn_cobbled_deepslate": "土星深板岩圆石",
+  "block.slashblade_sendims.saturn_sandstone": "土星砂岩",
+  "block.slashblade_sendims.porous_saturn_stone": "土星孔洞岩",
 
   "slash_art.slashblade_sendims.frenzied_burst": "§6划空癫火",
   "slash_art.slashblade_sendims.frenzied_burst.desc": "向锁定目标或前方的目标发射一道远距离的射线，造成一次伤害并附带攻击特效。如果拥有SE§6癫火§r，则会造成一次伤害并附带攻击特效，同时为自身施加一定的§6发狂值§r，对目标施加大量的发狂值。",

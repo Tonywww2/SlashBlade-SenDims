@@ -7,6 +7,7 @@ import com.tonywww.slashblade_sendims.items.BloodJade;
 import com.tonywww.slashblade_sendims.items.DeepRealmCertificate;
 import com.tonywww.slashblade_sendims.items.EstusFlask;
 import com.tonywww.slashblade_sendims.items.StructureQuill;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -109,6 +110,19 @@ public class SBSDItems {
                     .rarity(Rarity.EPIC),
                     640, 0.55f, 200
             ));
+
+    public static final RegistryObject<Item> SATURN_STONE = ITEMS.register("saturn_stone",
+            () -> new BlockItem(SBSDBlocks.SATURN_STONE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SATURN_COBBLESTONE = ITEMS.register("saturn_cobblestone",
+            () -> new BlockItem(SBSDBlocks.SATURN_COBBLESTONE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SATURN_DEEPSLATE = ITEMS.register("saturn_deepslate",
+            () -> new BlockItem(SBSDBlocks.SATURN_DEEPSLATE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SATURN_COBBLED_DEEPSLATE = ITEMS.register("saturn_cobbled_deepslate",
+            () -> new BlockItem(SBSDBlocks.SATURN_COBBLED_DEEPSLATE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SATURN_SANDSTONE = ITEMS.register("saturn_sandstone",
+            () -> new BlockItem(SBSDBlocks.SATURN_SANDSTONE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> POROUS_SATURN_STONE = ITEMS.register("porous_saturn_stone",
+            () -> new BlockItem(SBSDBlocks.POROUS_SATURN_STONE.get(), new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

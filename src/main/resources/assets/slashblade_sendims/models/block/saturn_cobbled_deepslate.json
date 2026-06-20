@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "slashblade_sendims:block/saturn_cobbled_deepslate"
+  }
+}

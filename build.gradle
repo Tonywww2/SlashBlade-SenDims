@@ -263,6 +263,8 @@ dependencies {
     implementation fg.deobf("curse.maven:cyclops-core-232758:8006236")
     implementation fg.deobf("curse.maven:common-capabilities-247007:7229322")
 
+    implementation fg.deobf("curse.maven:ftb-chunks-forge-314906:8216874")
+
 //    implementation fg.deobf("curse.maven:fastworkbench-288885:5101229")
 
 //    implementation fg.deobf(files('libs/minecraft-mcp-1.20.6-forge.jar'))

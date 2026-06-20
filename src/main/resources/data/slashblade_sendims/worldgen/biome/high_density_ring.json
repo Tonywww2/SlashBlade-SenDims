@@ -1,13 +1,25 @@
 {
   "has_precipitation": false,
-  "temperature": 0.5,
+  "temperature": 0.35,
   "downfall": 0.0,
   "effects": {
-    "fog_color": 10518688,
-    "water_color": 4159204,
-    "water_fog_color": 329011,
-    "sky_color": 0,
-    "grass_color_modifier": "none"
+    "fog_color": 2238010,
+    "water_color": 1710618,
+    "water_fog_color": 1053972,
+    "sky_color": 660998,
+    "grass_color_modifier": "none",
+    "particle": {
+      "options": {
+        "type": "minecraft:ash"
+      },
+      "probability": 0.004
+    },
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 5000,
+      "block_search_extent": 8,
+      "offset": 2.4
+    }
   },
   "spawners": {},
   "spawn_costs": {},

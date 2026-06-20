@@ -6,16 +6,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
-/**
- * 沿 Z 轴（半径）进行群系分布的一维群系生成器，加入了轻微的 X 轴扰动以模糊分界线。
- */
 public class SaturnRingBiomeSource extends BiomeSource {
-
-    // 使用资源提供器获取群系（适用于1.20版本）
     public static final Codec<SaturnRingBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Biome.CODEC.fieldOf("void_ring").forGetter(source -> source.voidRing),
             Biome.CODEC.fieldOf("inner_fading_ring").forGetter(source -> source.innerFadingRing),
@@ -33,6 +30,8 @@ public class SaturnRingBiomeSource extends BiomeSource {
     private final Holder<Biome> highDensityRing;
     private final Holder<Biome> outerSparseRing;
     private final Holder<Biome> transitionWallRing;
+
+    private final SimplexNoise boundaryWarpNoise = new SimplexNoise(new LegacyRandomSource(667408L));
 
     public SaturnRingBiomeSource(Holder<Biome> voidRing, Holder<Biome> innerFadingRing,
                                  Holder<Biome> innerSparseRing, Holder<Biome> baseRing,
@@ -59,23 +58,17 @@ public class SaturnRingBiomeSource extends BiomeSource {
 
     @Override
     public @NotNull Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.@NotNull Sampler sampler) {
-        // x,y,z 为 noise 坐标，实际方块坐标需要乘 4
         int blockX = x << 2;
         int blockZ = z << 2;
+        double warpedZ = blockZ + sampleBoundaryWarp(blockX, blockZ);
 
-        // 简单的单弧线扰动（超低频率、较缓的大型正弦波，形似巨大的单一弧度）
-        double warp = Math.sin(blockX * 0.0005) * 150.0;
-        double warpedZ = blockZ + warp;
-
-        // 小行星带墙界线侦测：在原有各个区的边界附加宽为 48 (半径 24)的墙群系
         double[] boundaries = {-6000, -2000, 2000, 6000, 10000};
         for (double boundary : boundaries) {
-            if (Math.abs(warpedZ - boundary) <= 24) {
+            if (Math.abs(warpedZ - boundary) <= 32) {
                 return transitionWallRing;
             }
         }
 
-        // 根据 Z 坐标对应不同的区域
         if (warpedZ < -10000) {
             return voidRing;
         } else if (warpedZ < -6000) {
@@ -87,11 +80,17 @@ public class SaturnRingBiomeSource extends BiomeSource {
         } else if (warpedZ <= 6000) {
             return highDensityRing;
         } else if (warpedZ <= 10000) {
-            return baseRing; // 重复的基础区用于过渡
+            return baseRing;
         } else if (warpedZ <= 14000) {
             return outerSparseRing;
-        } else {
-            return voidRing;
         }
+        return voidRing;
+    }
+
+    private double sampleBoundaryWarp(int blockX, int blockZ) {
+        double ribbonWave = Math.sin(blockX * 0.0005) * 130.0;
+        double macroWarp = boundaryWarpNoise.getValue(blockX * 0.0007, blockZ * 0.0007) * 260.0;
+        double detailWarp = boundaryWarpNoise.getValue(blockX * 0.0020 + 300.0, blockZ * 0.0020 - 300.0) * 60.0;
+        return ribbonWave + macroWarp + detailWarp;
     }
 }
