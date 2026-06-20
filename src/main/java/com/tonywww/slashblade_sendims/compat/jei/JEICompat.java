@@ -12,6 +12,7 @@ import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.tracen.umapyoi.item.ItemRegistry;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -61,6 +62,14 @@ public class JEICompat implements IModPlugin {
             }
             return "";
         });
+
+        registration.registerSubtypeInterpreter(ItemRegistry.SKILL_BOOK.get(),
+                ((stack, uidContext) -> {
+                    if (!stack.hasTag()) return "";
+                    CompoundTag tag = stack.getTag();
+                    if (!tag.contains("skill")) return "";
+                    return tag.getString("skill");
+                }));
     }
 
 }
