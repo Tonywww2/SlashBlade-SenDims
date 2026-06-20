@@ -113,14 +113,14 @@ Biome 分带：
 | Biome | thickness | weightModifier | roughness |
 | --- | ---: | ---: | ---: |
 | `void_ring` | `0.0` | `1.0` | `0.0` |
-| `inner_fading_ring` | `3.0` | `0.7` | `1.5` |
-| `inner_sparse_ring` | `6.0` | `1.0` | `3.0` |
-| `base_ring` | `14.0` | `1.0` | `5.0` |
-| `high_density_ring` | `24.0` | `1.4` | `10.0` |
-| `transition_wall_ring` | `56.0` | `0.0` | `0.0` |
-| `outer_sparse_ring` | `4.0` | `0.8` | `2.0` |
+| `inner_fading_ring` | `1.5` | `0.7` | `0.75` |
+| `inner_sparse_ring` | `3.0` | `1.0` | `1.5` |
+| `base_ring` | `7.0` | `1.0` | `2.5` |
+| `high_density_ring` | `12.0` | `1.4` | `5.0` |
+| `transition_wall_ring` | `28.0` | `0.0` | `0.0` |
+| `outer_sparse_ring` | `2.0` | `0.8` | `1.0` |
 
-`transition_wall_ring` 的厚度参数已统一到 `SaturnRingBiomeMetrics`，`SaturnRingTerrainProfile` 会从 metrics 读取 `56.0`，不再保留 generator 内独立的厚度常量。
+`transition_wall_ring` 的厚度参数已统一到 `SaturnRingBiomeMetrics`，`SaturnRingTerrainProfile` 会从 metrics 读取 `28.0`，不再保留 generator 内独立的厚度常量。
 
 当前该厚度只作为小行星带垂直扫描范围使用，不再代表整墙式实体地形。
 
@@ -226,6 +226,19 @@ Biome 分带：
 - `getCoreState(Holder<Biome> biomeHolder, double materialNoise)`
 
 第一版材质噪声用于在同一 biome 内切换少量相邻材质，避免整片区域只有单一纯色方块。
+
+当前土星方块贴图采样色：
+
+| 方块 | 平均色 | MapColor |
+| --- | --- | --- |
+| `saturn_stone` | `#C88E67` | `MapColor.COLOR_ORANGE` |
+| `saturn_cobblestone` | `#C78A5D` | `MapColor.COLOR_ORANGE` |
+| `saturn_deepslate` | `#A87757` | `MapColor.DIRT` |
+| `saturn_cobbled_deepslate` | `#AD8162` | `MapColor.DIRT` |
+| `saturn_sandstone` | `#C29064` | `MapColor.COLOR_ORANGE` |
+| `porous_saturn_stone` | `#A2A8A5` | 仍继承 `Blocks.TUFF`，等待正式贴图 |
+
+`SBSDBlocks` 中除 `porous_saturn_stone` 外的土星方块已显式设置 `mapColor(...)`，避免继续继承原版石头、砂岩和深板岩的地图色。
 
 ### `SaturnRingChunkGenerator.java`
 
@@ -403,7 +416,6 @@ Biome 分带：
 - `src/main/resources/assets/slashblade_sendims/textures/environment/saturn_nebula_1.png`
 - `src/main/resources/assets/slashblade_sendims/textures/environment/saturn_nebula_2.png`
 - `src/main/resources/assets/slashblade_sendims/textures/environment/saturn_planet.png`
-- `src/main/resources/assets/slashblade_sendims/textures/environment/saturn_ring_soft.png`
 - `src/main/resources/assets/slashblade_sendims/textures/environment/saturn_ring_sharp.png`
 - `src/main/resources/assets/slashblade_sendims/textures/environment/saturn_horizon_dust.png`
 
@@ -421,13 +433,15 @@ Biome 分带：
 
 | Biome | 氛围方向 | 粒子 |
 | --- | --- | --- |
-| `void_ring` | 极暗深空，最低粒子密度 | `minecraft:ash`，`0.001` |
-| `inner_fading_ring` | 淡暗冷灰，环带消散感 | `minecraft:ash`，`0.003` |
-| `inner_sparse_ring` | 冷灰碎石区 | `minecraft:white_ash`，`0.0025` |
-| `base_ring` | 较清晰的冷灰主环 | `minecraft:white_ash`，`0.0015` |
-| `high_density_ring` | 暗蓝灰，高压迫感 | `minecraft:ash`，`0.004` |
-| `transition_wall_ring` | 黑灰尘埃小行星带 | `minecraft:ash`，`0.007` |
-| `outer_sparse_ring` | 稀薄暗灰外环 | `minecraft:white_ash`，`0.002` |
+| `void_ring` | 极暗暖褐深空，最低粒子密度 | `minecraft:ash`，`0.001` |
+| `inner_fading_ring` | 多孔灰石与暖岩混合的消散感 | `minecraft:ash`，`0.003` |
+| `inner_sparse_ring` | 灰多孔石与暖橙岩混合的碎石区 | `minecraft:white_ash`，`0.0025` |
+| `base_ring` | 暖砂岩/土星岩主环 | `minecraft:white_ash`，`0.0015` |
+| `high_density_ring` | 暗暖褐深板岩，高压迫感 | `minecraft:ash`，`0.004` |
+| `transition_wall_ring` | 暖褐圆石与深板岩小行星带 | `minecraft:ash`，`0.007` |
+| `outer_sparse_ring` | 稀薄灰暖外环 | `minecraft:white_ash`，`0.002` |
+
+Biome 颜色已根据土星方块贴图采样色重新计算，并使用暗化后的暖岩色作为 `fog_color`、`sky_color`、`water_color` 和 `water_fog_color`，避免环境色继续停留在旧的冷灰/暗蓝灰方案。
 
 当前所有 biome 都使用 `minecraft:ambient.cave` 作为 mood sound，占位提供低频环境压迫感。后续可替换为专用太空/尘埃环境音。
 
@@ -462,7 +476,8 @@ Biome 分带：
 - 参考 EdenRing 的环境渲染结构，已从单张天空盒升级为多层天空系统。
 - 当前层级包括：深空背景、星点、两层星云、地平线尘雾、后景软环、远景行星、前景锐环。
 - 天空层直接使用 `event.getPoseStack()`，与 EdenRing 使用 `WorldRenderContext.matrixStack()` 的思路一致；不再额外把相机旋转乘入 `RenderSystem.getModelViewStack()`，避免远景行星和环带的视角移动幅度被放大。
-- 环带角度已对齐 EdenRing 的表现：后景软环和前景锐环都位于 `Z=-100` 的远景平面，尺寸为 `130`，X 轴只使用基于玩家 Y 坐标的 `[-0.03, 0.03]` 弧度级小偏移，不再使用固定 `74` 度大倾角。
+- 环带角度已对齐 EdenRing 的表现：后景环和前景环都位于 `Z=-100` 的远景平面，尺寸为 `130`，X 轴只使用基于玩家 Y 坐标的 `[-0.03, 0.03]` 弧度级小偏移，不再使用固定 `74` 度大倾角。
+- 当前环带只引用 `saturn_ring_sharp.png`。此前后景层引用缺失的 `saturn_ring_soft.png`，会导致 Minecraft 显示紫黑 missing texture；现已改为同一张半透明 ring 贴图渲染前后两层，使用不同 alpha 区分层次。
 - 当前所有新增天空资源仍为占位贴图，但已经拆分为可独立替换的正式资源路径。
 - 后续可以继续加入类似 EdenRing `CloudRenderer` / `WeatherRenderer` 的近场 sprite grid，用于空间尘埃、远处碎屑和闪电/能量脉冲。
 
@@ -500,7 +515,7 @@ Biome 分带：
 - 已将土星环生成材质切换到第一批自定义方块调色板，当前地形形体和噪声逻辑保持不变。
 - 已新增 `SaturnRingTerrainProfile`，用于统一每个 X/Z 列的 biome、厚度、顶部和底部计算。
 - 已将土星环维度高度提升到 `192`，环带中心高度调整为 `Y=96`，并重调基础厚度和粗糙度参数。
-- 已统一 `transition_wall_ring` 厚度参数来源，当前标准值为 `56.0`。
+- 已统一 `transition_wall_ring` 厚度参数来源，当前标准值为 `28.0`。
 - 已新增第一版土星环天空盒渲染器，并接入纯色占位自定义天空贴图。
 - 已加入多层噪声第一版：
   - `SaturnRingBiomeSource` 使用 `boundaryWarpNoise` 增强边界宏观扰动。
@@ -508,7 +523,7 @@ Biome 分带：
   - `SaturnRingChunkGenerator` 使用 `ridgeNoise` 增加高密度区长条裂谷。
   - `SaturnRingChunkGenerator` 和 `SaturnRingBlocks` 使用 `materialNoise` 增加材质斑块。
 - 已新增 `SaturnRingAsteroidField`，并将 `transition_wall_ring` 从整墙式挖空改为确定性椭球小行星带。
-- 已将过渡区域垂直扫描厚度从 `120.0` 收紧到 `56.0`。
+- 已将过渡区域垂直扫描厚度从 `120.0` 收紧到 `56.0`，后续又按整体减半方案降到 `28.0`。
 - 已加入中心破碎桥接层，缓解普通环带和小行星带之间的突兀断裂。
 - 已加入第一版近景地物装饰：
   - 表面碎石。
@@ -553,15 +568,15 @@ Biome 分带：
 ### 过渡墙参数不一致
 
 - 已解决。
-- 当前 `transition_wall_ring.thickness = 56.0`，并由 `SaturnRingTerrainProfile` 从 `SaturnRingBiomeMetrics` 读取。
+- 当前 `transition_wall_ring.thickness = 28.0`，并由 `SaturnRingTerrainProfile` 从 `SaturnRingBiomeMetrics` 读取。
 - 小行星带阶段已替换整墙式生成。
-- 当前 `56.0` 作为小行星带垂直扫描范围，而不是实体墙厚度。
+- 当前 `28.0` 作为小行星带垂直扫描范围，而不是实体墙厚度。
 
 ### Y 边界安全
 
 - 当前环带中心为 `96`，维度高度为 `0..191`。
-- 过渡墙 `56` 厚时理论范围为 `68..124`，在范围内。
-- 当前高密度区厚度 `24`、roughness `10`，理论主体仍远离上下边界。
+- 过渡墙 `28` 厚时理论范围为 `82..110`，在范围内。
+- 当前高密度区厚度 `12`、roughness `5`，理论主体仍远离上下边界。
 - 后续如果继续增加 roughness、加入小行星或修改中心高度，需要继续检查上下边界。
 
 ## 后续建议方向
@@ -676,19 +691,19 @@ Biome 分带：
 | Biome | 当前厚度 | 优化目标 |
 | --- | ---: | --- |
 | `void_ring` | `0` | 保持虚空 |
-| `inner_fading_ring` | `2` | `1~5`，强消散 |
-| `inner_sparse_ring` | `4` | `3~8`，破碎薄层 |
-| `base_ring` | `10` | `8~16`，主环层 |
-| `high_density_ring` | `16` | `16~30`，厚重裂谷区 |
-| `transition_wall_ring` | `56` 扫描范围 | 已改为小行星群，不再整墙填充 |
-| `outer_sparse_ring` | `2` | `2~6`，稀疏外环 |
+| `inner_fading_ring` | `1.5` | 强消散薄层 |
+| `inner_sparse_ring` | `3.0` | 破碎薄层 |
+| `base_ring` | `7.0` | 主环薄层 |
+| `high_density_ring` | `12.0` | 较厚但不再臃肿的裂谷区 |
+| `transition_wall_ring` | `28.0` 扫描范围 | 已改为小行星群，不再整墙填充 |
+| `outer_sparse_ring` | `2.0` | 稀疏外环 |
 
 ### 过渡墙改造
 
 `transition_wall_ring` 已从接近整层厚度的高频噪声墙改为小行星带：
 
 - 不再生成一整片厚墙。
-- 垂直扫描范围已收紧为 `56`，约 `Y=68..124`。
+- 垂直扫描范围已收紧为 `28`，约 `Y=82..110`。
 - 使用确定性 3D cell 生成 asteroid center。
 - 每个小行星用椭球体生成，半径约 `3~12`。
 - 使用噪声削边，使边缘不规则。
@@ -770,7 +785,6 @@ Biome 分带：
 资源路径：
 
 - `assets/slashblade_sendims/textures/environment/saturn_planet.png`
-- `assets/slashblade_sendims/textures/environment/saturn_ring_soft.png`
 - `assets/slashblade_sendims/textures/environment/saturn_ring_sharp.png`
 - `assets/slashblade_sendims/textures/environment/saturn_stars.png`
 - `assets/slashblade_sendims/textures/environment/saturn_nebula_1.png`
@@ -867,7 +881,7 @@ EdenRing 参考后的修订计划：
    - 已把 `transition_wall_ring` 从整墙改为小行星带。
    - 已实现确定性椭球小行星。
    - 已使用 `asteroidShapeNoise` 做边缘削切。
-   - 已将垂直扫描范围收紧到 `56`。
+   - 已将垂直扫描范围收紧到 `28`。
    - 已加入中心破碎桥接层作为局部连接过渡。
    - 碎石云和更细的局部装饰将在任务 7 中继续扩展。
 6. 近景地物阶段
@@ -937,6 +951,9 @@ EdenRing 参考后的修订计划：
 - 完成任务 7：`SaturnRingChunkGenerator` 已加入第一版 `decorateChunk(...)` 近景装饰，包含表面碎石、短岩刺、漂浮碎块和少量发光占位点。装饰在 `buildSurface` 表面替换之后执行。已通过 `compileJava` 验证。
 - 完成任务 8：7 个 biome JSON 已区分 temperature、fog_color、sky_color、water_color、water_fog_color、particle 和 mood_sound。JSON 语法检查通过，已通过 `processResources` 验证。
 - 完成任务 9：新增 `SaturnRingSkyRenderer`，在 `slashblade_sendims:saturn_ring` 维度的 `AFTER_SKY` 阶段渲染第一版天空盒；新增 `textures/environment/saturn_sky.png` 作为单张自定义天空贴图，当前为纯色占位。已通过 `compileJava` 和 `processResources` 验证。
-- 完成任务 10：参考 EdenRing 的 `EdenSkyRenderer`，将 `SaturnRingSkyRenderer` 从单贴图天空盒升级为多层主天空系统。当前包含深空背景、确定性星点、两层星云、地平线尘雾、后景软环、远景行星和前景锐环；新增 `saturn_stars.png`、`saturn_nebula_1.png`、`saturn_nebula_2.png`、`saturn_planet.png`、`saturn_ring_soft.png`、`saturn_ring_sharp.png`、`saturn_horizon_dust.png` 等占位资源。已通过 `compileJava` 和 `processResources` 验证。
+- 完成任务 10：参考 EdenRing 的 `EdenSkyRenderer`，将 `SaturnRingSkyRenderer` 从单贴图天空盒升级为多层主天空系统。当前包含深空背景、确定性星点、两层星云、地平线尘雾、后景环、远景行星和前景锐环；新增 `saturn_stars.png`、`saturn_nebula_1.png`、`saturn_nebula_2.png`、`saturn_planet.png`、`saturn_ring_sharp.png`、`saturn_horizon_dust.png` 等占位资源。已通过 `compileJava` 和 `processResources` 验证。
 - 完成任务 10 修订：修复天空远景层视角移动幅度过大的问题。`SaturnRingSkyRenderer` 现在参考 EdenRing 的透视处理方式，直接使用 Forge `RenderLevelStageEvent` 传入的 `event.getPoseStack()` 渲染天空层，不再额外叠加相机旋转；背景天空盒也改为显式使用该 pose matrix。已通过 `compileJava` 验证。
-- 完成任务 10 环带角度修订：参考 EdenRing `EdenSkyRenderer` 的 ring 渲染逻辑，将土星环天空盒 ring 从固定 `74` 度大倾角改为 `Axis.XP.rotation(angle)` 的弧度级小偏移；`angle = clamp((playerY - 96) * 0.0006, -0.03, 0.03)`，后景软环和前景锐环都使用 `Z=-100`、尺寸 `130`。已通过 `compileJava` 验证。
+- 完成任务 10 环带角度修订：参考 EdenRing `EdenSkyRenderer` 的 ring 渲染逻辑，将土星环天空盒 ring 从固定 `74` 度大倾角改为 `Axis.XP.rotation(angle)` 的弧度级小偏移；`angle = clamp((playerY - 96) * 0.0006, -0.03, 0.03)`，后景环和前景锐环都使用 `Z=-100`、尺寸 `130`。已通过 `compileJava` 验证。
+- 完成任务 10 贴图引用修订：修复半透明土星环贴图出现紫黑块的问题。原因是 `SaturnRingSkyRenderer` 后景层仍引用不存在的 `textures/environment/saturn_ring_soft.png`；当前已改为前后两层都绑定存在的 `textures/environment/saturn_ring_sharp.png`，并用不同 alpha 控制层次。已通过 `compileJava` 和 `processResources` 验证。
+- 完成任务 11：读取新土星方块贴图主色，并同步方块 map color 与 biome 氛围色。`saturn_stone`、`saturn_cobblestone`、`saturn_sandstone` 使用 `MapColor.COLOR_ORANGE`，`saturn_deepslate` 和 `saturn_cobbled_deepslate` 使用 `MapColor.DIRT`；7 个 biome JSON 的 `fog_color`、`sky_color`、`water_color`、`water_fog_color` 已改为基于新贴图采样的暖岩暗化色。`porous_saturn_stone` 因尚无新贴图，暂时保留 `Blocks.TUFF` 继承色。已通过 `compileJava`、`processResources` 和 JSON 解析验证。
+- 完成任务 12：按要求将整个土星环维度的地形厚度降低一半。`SaturnRingBiomeMetrics` 中所有非虚空 biome 的 `thickness` 已乘以 `0.5`，用于上下表面起伏的 `roughness` 也同步乘以 `0.5`，以保证视觉厚度也减半；`transition_wall_ring` 垂直扫描范围从 `56.0` 降到 `28.0`。已通过 `compileJava` 验证。

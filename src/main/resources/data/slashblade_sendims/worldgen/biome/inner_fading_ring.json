@@ -3,10 +3,10 @@
   "temperature": 0.35,
   "downfall": 0.0,
   "effects": {
-    "fog_color": 2830656,
-    "water_color": 2502460,
-    "water_fog_color": 1454622,
-    "sky_color": 1316383,
+    "fog_color": 6248786,
+    "water_color": 4275769,
+    "water_fog_color": 2696996,
+    "sky_color": 2039067,
     "grass_color_modifier": "none",
     "particle": {
       "options": {

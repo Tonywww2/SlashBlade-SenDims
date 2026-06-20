@@ -32,7 +32,6 @@ public class SaturnRingSkyRenderer {
     private static final ResourceLocation NEBULA_2_TEXTURE = SenDims.prefix("textures/environment/saturn_nebula_2.png");
     private static final ResourceLocation HORIZON_DUST_TEXTURE = SenDims.prefix("textures/environment/saturn_horizon_dust.png");
     private static final ResourceLocation PLANET_TEXTURE = SenDims.prefix("textures/environment/saturn_planet.png");
-    private static final ResourceLocation RING_SOFT_TEXTURE = SenDims.prefix("textures/environment/saturn_ring_soft.png");
     private static final ResourceLocation RING_SHARP_TEXTURE = SenDims.prefix("textures/environment/saturn_ring_sharp.png");
 
     private static final double SKY_RADIUS = 96.0D;
@@ -70,9 +69,9 @@ public class SaturnRingSkyRenderer {
         renderStars(poseStack, (float) time);
         renderNebula(poseStack, (float) time);
         renderHorizonDust(poseStack, (float) time, dustAlpha);
-        renderRingLayer(poseStack, RING_SOFT_TEXTURE, -100.0F, 130.0F, ringAngle, 0.75F);
+        renderRingLayer(poseStack, RING_SHARP_TEXTURE, -100.0F, 130.0F, ringAngle, 0.55F);
         renderPlanet(poseStack);
-        renderRingLayer(poseStack, RING_SHARP_TEXTURE, -100.0F, 130.0F, ringAngle, 0.42F);
+//        renderRingLayer(poseStack, RING_SHARP_TEXTURE, -100.0F, 130.0F, ringAngle, 0.42F);
 
         poseStack.popPose();
 

@@ -26,12 +26,12 @@ public class SaturnRingBiomeMetrics {
 
     static {
         METRICS_MAP.put(SaturnRingBiomes.VOID_RING, EMPTY);
-        METRICS_MAP.put(SaturnRingBiomes.INNER_FADING_RING, new TerrainMetrics(3.0f, 0.7f, 1.5f));
-        METRICS_MAP.put(SaturnRingBiomes.INNER_SPARSE_RING, new TerrainMetrics(6.0f, 1.0f, 3.0f));
-        METRICS_MAP.put(SaturnRingBiomes.BASE_RING, new TerrainMetrics(14.0f, 1.0f, 5.0f));
-        METRICS_MAP.put(SaturnRingBiomes.HIGH_DENSITY_RING, new TerrainMetrics(24.0f, 1.4f, 10.0f));
-        METRICS_MAP.put(SaturnRingBiomes.TRANSITION_WALL_RING, new TerrainMetrics(56.0f, 0.0f, 0.0f));
-        METRICS_MAP.put(SaturnRingBiomes.OUTER_SPARSE_RING, new TerrainMetrics(4.0f, 0.8f, 2.0f));
+        METRICS_MAP.put(SaturnRingBiomes.INNER_FADING_RING, new TerrainMetrics(1.5f, 0.7f, 0.75f));
+        METRICS_MAP.put(SaturnRingBiomes.INNER_SPARSE_RING, new TerrainMetrics(3.0f, 1.0f, 1.5f));
+        METRICS_MAP.put(SaturnRingBiomes.BASE_RING, new TerrainMetrics(7.0f, 1.0f, 2.5f));
+        METRICS_MAP.put(SaturnRingBiomes.HIGH_DENSITY_RING, new TerrainMetrics(12.0f, 1.4f, 5.0f));
+        METRICS_MAP.put(SaturnRingBiomes.TRANSITION_WALL_RING, new TerrainMetrics(28.0f, 0.0f, 0.0f));
+        METRICS_MAP.put(SaturnRingBiomes.OUTER_SPARSE_RING, new TerrainMetrics(2.0f, 0.8f, 1.0f));
     }
 
     public static TerrainMetrics getMetrics(Holder<Biome> biomeHolder) {
