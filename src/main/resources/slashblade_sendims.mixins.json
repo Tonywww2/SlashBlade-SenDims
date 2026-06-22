@@ -53,6 +53,7 @@
     "slashblade.SuperSlashArtsMixin",
     "slashblade.TargetSelectorMixin",
     "slashblade.UntouchableMixin",
+    "sbtetra.MixinEnchantedSoulExtractionSchematic",
     "tetra.MaterialDataMixin",
     "tetra.MaterialDataMixin$DeserializerMixin",
     "tetra.MaterialOutcomeDefinitionMixin",
