@@ -13,7 +13,7 @@ import org.apache.commons.lang3.tuple.Triple;
 public class VoidSlashAmmo extends AmmoSA {
 
     public static int maxAmmo = 3;
-    public static int cdAfterSlash = 10;
+    public static int cdAfterSlash = 15;
 
     public static void onInit(LivingEntity attacker) {
         Triple<ServerPlayer, ItemStack, ISlashBladeState> triple = AmmoSA.saInit(attacker);
