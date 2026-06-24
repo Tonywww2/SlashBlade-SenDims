@@ -66,7 +66,7 @@ public abstract class SandwormEntityMixin extends AbstractStateBossEntity implem
         ci.cancel();
     }
 
-    @Inject(method = "tick()V", at = @At("RETURN"))
+    @Inject(method = {"tick()V", "m_8119_"}, at = @At("RETURN"))
     private void slashBlade_SenDims$tick(CallbackInfo ci) {
         if (slashBlade_SenDims$particleCoolDown > 0) slashBlade_SenDims$particleCoolDown--;
 
