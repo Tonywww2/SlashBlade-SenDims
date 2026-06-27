@@ -6,11 +6,13 @@
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
     "adastra.EtrionicBlastFurnaceBlockEntityMixin",
+    "adastra.GravityApiImplMixin",
     "aether.AccessoryAbilityListenerMixin",
     "aether_redux.ConstructionRingItemMixin",
     "apotheosis.BerserkersFuryEnchantMixin",
     "apotheosis.GemCuttingRarityUpgradeMixin",
     "apothicattributes.AttributeEventsMixin",
+    "block_factorys_bosses.BossesRiseConfigStatsMixin",
     "block_factorys_bosses.SandwormEntityMixin",
     "botania.GaiaGuardianEntityMixin",
     "botania.TerraBladeItemMixin",
