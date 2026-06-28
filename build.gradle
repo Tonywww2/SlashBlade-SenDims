@@ -272,6 +272,8 @@ dependencies {
 
     implementation fg.deobf("curse.maven:foxbladeextrare-1350400:7799118")
 
+    implementation fg.deobf("curse.maven:ad-astra-giselle-addon-714958:8283992")
+
 //    implementation fg.deobf("curse.maven:fastworkbench-288885:5101229")
 
 //    implementation fg.deobf(files('libs/minecraft-mcp-1.20.6-forge.jar'))

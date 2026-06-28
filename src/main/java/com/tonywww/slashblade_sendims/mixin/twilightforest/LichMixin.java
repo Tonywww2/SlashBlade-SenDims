@@ -48,13 +48,13 @@ public abstract class LichMixin extends Monster {
 
     @Final
     @Shadow(remap = false)
-    public static int INITIAL_SHIELD_STRENGTH = 12;
+    public static int INITIAL_SHIELD_STRENGTH = 8;
 
     @Unique
     private static String SHIELD_BREAK_CD_PATH = "sbsd.lich.shield_cd";
 
     @Unique
-    private static int SHIELD_BREAK_CD = 120;
+    private static int SHIELD_BREAK_CD = 80;
 
     @Shadow(remap = false)
     public abstract int getShieldStrength();
@@ -115,7 +115,7 @@ public abstract class LichMixin extends Monster {
                 this.getPersistentData().putInt(SHIELD_BREAK_CD_PATH, SHIELD_BREAK_CD);
 
             } else {
-                this.getPersistentData().putInt(SHIELD_BREAK_CD_PATH, this.getPersistentData().getInt(SHIELD_BREAK_CD_PATH) - 1);
+                this.getPersistentData().putInt(SHIELD_BREAK_CD_PATH, this.getPersistentData().getInt(SHIELD_BREAK_CD_PATH) - 2);
                 this.playSound(TFSounds.SHIELD_BREAK.get(), 0.8F, 0.5F);
                 ci.cancel();
             }

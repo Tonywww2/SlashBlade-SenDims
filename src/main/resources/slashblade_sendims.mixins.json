@@ -7,6 +7,7 @@
   "mixins": [
     "adastra.EtrionicBlastFurnaceBlockEntityMixin",
     "adastra.GravityApiImplMixin",
+    "adastra_giselle.ProofEnchantmentFunctionMixin",
     "aether.AccessoryAbilityListenerMixin",
     "aether_redux.ConstructionRingItemMixin",
     "apotheosis.BerserkersFuryEnchantMixin",
