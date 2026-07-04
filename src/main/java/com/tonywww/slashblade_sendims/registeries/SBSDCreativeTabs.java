@@ -43,6 +43,9 @@ public class SBSDCreativeTabs {
                         pOutput.accept(SBSDItems.ESTUS_FLASK_5.get());
                         pOutput.accept(SBSDItems.ESTUS_FLASK_6.get());
 
+                        pOutput.accept(SBSDItems.INTEGRAL_COMPONENT_5.get());
+                        pOutput.accept(SBSDItems.INTEGRAL_COMPONENT_6.get());
+
                         pOutput.accept(SBSDItems.SATURN_STONE.get());
                         pOutput.accept(SBSDItems.SATURN_COBBLESTONE.get());
                         pOutput.accept(SBSDItems.SATURN_DEEPSLATE.get());

@@ -274,6 +274,12 @@ dependencies {
 
     implementation fg.deobf("curse.maven:ad-astra-giselle-addon-714958:8283992")
 
+    implementation fg.deobf("curse.maven:cofh-core-69162:5374122")
+    implementation fg.deobf("curse.maven:thermal-foundation-222880:5443583")
+    implementation fg.deobf("curse.maven:thermal-expansion-69163:5372749")
+    implementation fg.deobf("curse.maven:thermal-dynamics-227443:5372747")
+    implementation fg.deobf("curse.maven:thermal-innovation-291737:5372751")
+
 //    implementation fg.deobf("curse.maven:fastworkbench-288885:5101229")
 
 //    implementation fg.deobf(files('libs/minecraft-mcp-1.20.6-forge.jar'))

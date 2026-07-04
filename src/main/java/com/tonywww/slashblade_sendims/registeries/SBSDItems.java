@@ -6,6 +6,7 @@ import com.tonywww.slashblade_sendims.items.TheNectarQuest;
 import com.tonywww.slashblade_sendims.items.BloodJade;
 import com.tonywww.slashblade_sendims.items.DeepRealmCertificate;
 import com.tonywww.slashblade_sendims.items.EstusFlask;
+import com.tonywww.slashblade_sendims.items.IntegralComponent;
 import com.tonywww.slashblade_sendims.items.StructureQuill;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -109,6 +110,21 @@ public class SBSDItems {
                     .fireResistant()
                     .rarity(Rarity.EPIC),
                     640, 0.55f, 200
+            ));
+
+    public static final RegistryObject<Item> INTEGRAL_COMPONENT_5 = ITEMS.register("integral_component_5",
+            () -> new IntegralComponent(new Item.Properties()
+                    .stacksTo(64)
+                    .fireResistant()
+                    .rarity(Rarity.RARE),
+                    5.0f
+            ));
+    public static final RegistryObject<Item> INTEGRAL_COMPONENT_6 = ITEMS.register("integral_component_6",
+            () -> new IntegralComponent(new Item.Properties()
+                    .stacksTo(64)
+                    .fireResistant()
+                    .rarity(Rarity.EPIC),
+                    6.0f
             ));
 
     public static final RegistryObject<Item> SATURN_STONE = ITEMS.register("saturn_stone",
