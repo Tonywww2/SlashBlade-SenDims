@@ -76,7 +76,7 @@ public class SBSDItems {
                     .rarity(Rarity.UNCOMMON),
                     20, 0.1f, 300
             ));
-    public static final RegistryObject<Item> ESTUS_FLASK_2= ITEMS.register("estus_flask_2",
+    public static final RegistryObject<Item> ESTUS_FLASK_2 = ITEMS.register("estus_flask_2",
             () -> new EstusFlask(new Item.Properties()
                     .stacksTo(1)
                     .fireResistant()
@@ -139,6 +139,8 @@ public class SBSDItems {
             () -> new BlockItem(SBSDBlocks.SATURN_SANDSTONE.get(), new Item.Properties()));
     public static final RegistryObject<Item> POROUS_SATURN_STONE = ITEMS.register("porous_saturn_stone",
             () -> new BlockItem(SBSDBlocks.POROUS_SATURN_STONE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SOUL_CRYSTAL_CLUSTER = ITEMS.register("soul_crystal_cluster",
+            () -> new BlockItem(SBSDBlocks.SOUL_CRYSTAL_CLUSTER.get(), new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

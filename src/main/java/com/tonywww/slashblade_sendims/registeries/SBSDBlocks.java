@@ -19,6 +19,12 @@ public class SBSDBlocks {
     public static final RegistryObject<Block> SATURN_COBBLED_DEEPSLATE = register("saturn_cobbled_deepslate", Blocks.COBBLED_DEEPSLATE, MapColor.DIRT);
     public static final RegistryObject<Block> SATURN_SANDSTONE = register("saturn_sandstone", Blocks.SANDSTONE, MapColor.COLOR_ORANGE);
     public static final RegistryObject<Block> POROUS_SATURN_STONE = register("porous_saturn_stone", Blocks.TUFF);
+    public static final RegistryObject<Block> SOUL_CRYSTAL_CLUSTER = BLOCKS.register("soul_crystal_cluster", () ->
+            new Block(BlockBehaviour.Properties.copy(Blocks.SEA_LANTERN)
+                    .noOcclusion()
+                    .explosionResistance(8)
+                    .strength(16)
+            ));
 
     private static RegistryObject<Block> register(String name, Block baseBlock) {
         return BLOCKS.register(name, () -> new Block(BlockBehaviour.Properties.copy(baseBlock)));

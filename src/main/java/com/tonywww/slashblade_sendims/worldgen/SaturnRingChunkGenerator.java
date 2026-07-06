@@ -2,6 +2,7 @@ package com.tonywww.slashblade_sendims.worldgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.tonywww.slashblade_sendims.registeries.SBSDBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.WorldGenRegion;
@@ -247,7 +248,7 @@ public class SaturnRingChunkGenerator extends ChunkGenerator {
         if (chance(worldX, surfaceY, worldZ, 0x7CC5L) > 0.006) {
             return;
         }
-        setIfAir(chunk, pos, localX, surfaceY + 1, localZ, Blocks.SEA_LANTERN.defaultBlockState());
+        setIfAir(chunk, pos, localX, surfaceY + 1, localZ, SBSDBlocks.SOUL_CRYSTAL_CLUSTER.get().defaultBlockState());
     }
 
     private void placeFloatingFragment(ChunkAccess chunk, BlockPos.MutableBlockPos pos, int localX, int localZ,

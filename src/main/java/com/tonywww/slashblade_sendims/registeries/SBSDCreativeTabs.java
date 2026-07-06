@@ -52,6 +52,7 @@ public class SBSDCreativeTabs {
                         pOutput.accept(SBSDItems.SATURN_COBBLED_DEEPSLATE.get());
                         pOutput.accept(SBSDItems.SATURN_SANDSTONE.get());
                         pOutput.accept(SBSDItems.POROUS_SATURN_STONE.get());
+                        pOutput.accept(SBSDItems.SOUL_CRYSTAL_CLUSTER.get());
 
                     })
                     .build());
