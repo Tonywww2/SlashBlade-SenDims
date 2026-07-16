@@ -63,6 +63,7 @@
     "slashblade.TargetSelectorMixin",
     "slashblade.UntouchableMixin",
     "terraentity.GameEntityEventMixin",
+    "terraentity.TEAttributeModifierConfigMixin",
     "tetra.MaterialDataMixin",
     "tetra.MaterialDataMixin$DeserializerMixin",
     "tetra.MaterialOutcomeDefinitionMixin",
