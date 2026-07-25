@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims;
 
 import com.mojang.logging.LogUtils;
+import com.tonywww.slashblade_sendims.compat.draconicevolution.DraconicEvolutionCompatConfig;
 import com.tonywww.slashblade_sendims.kubejs.SBSDPlugin;
 import com.tonywww.slashblade_sendims.network.MadnessSyncPacket;
 import com.tonywww.slashblade_sendims.registeries.*;
@@ -8,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
@@ -37,6 +39,7 @@ public class SenDims {
 
     public SenDims(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
+        context.registerConfig(ModConfig.Type.COMMON, DraconicEvolutionCompatConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(serverScheduler = new ServerScheduler());
 
         SBSDPlugin.register(modEventBus);

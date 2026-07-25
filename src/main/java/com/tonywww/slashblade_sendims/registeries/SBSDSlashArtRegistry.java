@@ -1,6 +1,8 @@
 package com.tonywww.slashblade_sendims.registeries;
 
+import cn.mmf.slashblade_addon.registry.SBAComboStateRegistry;
 import com.tonywww.slashblade_sendims.SenDims;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,6 +23,19 @@ public class SBSDSlashArtRegistry {
     public static final RegistryObject<SlashArts> WAVE_EDGE_AMMO = register("wave_edge_ammo", SBSDComboRegistry.WAVE_EDGE_AMMO.getId());
     public static final RegistryObject<SlashArts> VOID_SLASH_AMMO = register("void_slash_ammo", SBSDComboRegistry.VOID_SLASH_AMMO.getId());
     public static final RegistryObject<SlashArts> SAKURA_END_AMMO = register("sakura_end_ammo", SBSDComboRegistry.SAKURA_END_AMMO.getId());
+
+        public static final RegistryObject<SlashArts> CHAOTIC_JUDGEMENT_CUT = SLASH_ARTS.register(
+            "chaotic_judgement_cut",
+            () -> new SlashArts(entity -> entity.onGround()
+                ? ComboStateRegistry.JUDGEMENT_CUT.getId()
+                : ComboStateRegistry.JUDGEMENT_CUT_SLASH_AIR.getId())
+                .setComboStateJust(entity -> ComboStateRegistry.JUDGEMENT_CUT_SLASH_JUST.getId())
+                .setComboStateSuper(entity -> ComboStateRegistry.JUDGEMENT_CUT_END.getId())
+        );
+        public static final RegistryObject<SlashArts> CHAOTIC_RAPID_BLISTERING_SWORDS = register(
+            "chaotic_rapid_blistering_swords",
+            SBAComboStateRegistry.RAPID_BLISTERING_SWORDS.getId()
+        );
 
     public static RegistryObject<SlashArts> register(String name, ResourceLocation resourceLocation) {
         return SLASH_ARTS.register(name, () -> new SlashArts((e) -> resourceLocation));
