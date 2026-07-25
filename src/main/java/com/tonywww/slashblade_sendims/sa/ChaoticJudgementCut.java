@@ -1,9 +1,12 @@
 package com.tonywww.slashblade_sendims.sa;
 
 import com.tonywww.slashblade_sendims.entities.EntityChaoticJudgementCut;
-import mods.flammpfeil.slashblade.SlashBlade;
+import com.tonywww.slashblade_sendims.registeries.SBSDEntities;
+import com.tonywww.slashblade_sendims.utils.ChaoticSlashArtEffects;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
+import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.RayTraceHelper;
 import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.sounds.SoundEvents;
@@ -12,6 +15,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -26,9 +30,58 @@ public final class ChaoticJudgementCut {
     private ChaoticJudgementCut() {
     }
 
+    public static void doCharge(LivingEntity user) {
+        long elapsed = ComboState.getElapsed(user);
+        if (elapsed == 0L) {
+            user.playSound(
+                    SoundEvents.TRIDENT_THROW,
+                    0.8F,
+                    0.625F + 0.1F * user.getRandom().nextFloat()
+            );
+            AdvancementHelper.grantCriterion(user, AdvancementHelper.ADVANCEMENT_JUDGEMENT_CUT);
+        }
+
+        if (elapsed <= 3L) {
+            user.moveRelative(-0.3F, new Vec3(0.0D, 0.0D, 1.0D));
+            Vec3 movement = user.getDeltaMovement();
+            double x = movement.x;
+            double z = movement.z;
+
+            while (x != 0.0D && user.level().noCollision(
+                    user,
+                    user.getBoundingBox().move(x, -user.maxUpStep(), 0.0D)
+            )) {
+                x = approachZero(x);
+            }
+            while (z != 0.0D && user.level().noCollision(
+                    user,
+                    user.getBoundingBox().move(0.0D, -user.maxUpStep(), z)
+            )) {
+                z = approachZero(z);
+            }
+            while (x != 0.0D && z != 0.0D && user.level().noCollision(
+                    user,
+                    user.getBoundingBox().move(x, -user.maxUpStep(), z)
+            )) {
+                x = approachZero(x);
+                z = approachZero(z);
+            }
+
+            user.move(MoverType.SELF, new Vec3(x, movement.y, z));
+        }
+
+        user.setDeltaMovement(user.getDeltaMovement().multiply(0.0D, 1.0D, 0.0D));
+    }
+
+    public static void doJudgementCutAir(LivingEntity user) {
+        doJudgementCut(user);
+        AdvancementHelper.grantCriterion(user, AdvancementHelper.ADVANCEMENT_JUDGEMENT_CUT);
+    }
+
     public static EntityChaoticJudgementCut doJudgementCutJust(LivingEntity user) {
         EntityChaoticJudgementCut judgementCut = doJudgementCut(user);
         judgementCut.setIsCritical(true);
+        AdvancementHelper.grantCriterion(user, AdvancementHelper.ADVANCEMENT_JUDGEMENT_CUT_JUST);
         return judgementCut;
     }
 
@@ -106,14 +159,12 @@ public final class ChaoticJudgementCut {
     private static EntityChaoticJudgementCut create(LivingEntity owner, Vec3 position) {
         Level level = owner.level();
         EntityChaoticJudgementCut judgementCut = new EntityChaoticJudgementCut(
-                SlashBlade.RegistryEvents.JudgementCut,
+            SBSDEntities.CHAOTIC_JUDGEMENT_CUT.get(),
                 level
         );
         judgementCut.setPos(position.x, position.y, position.z);
         judgementCut.setOwner(owner);
-        owner.getMainHandItem()
-                .getCapability(ItemSlashBlade.BLADESTATE)
-                .ifPresent(state -> judgementCut.setColor(state.getColorCode()));
+        judgementCut.setColor(ChaoticSlashArtEffects.PRIMARY_COLOR);
         owner.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
                 .ifPresent(rank -> judgementCut.setRank(rank.getRankLevel(level.getGameTime())));
         level.addFreshEntity(judgementCut);
@@ -126,5 +177,12 @@ public final class ChaoticJudgementCut {
             return target.position().add(0.0D, target.getEyeHeight() / 2.0D, 0.0D);
         }
         return hitResult.getType() == HitResult.Type.BLOCK ? hitResult.getLocation() : null;
+    }
+
+    private static double approachZero(double value) {
+        if (value < 0.05D && value >= -0.05D) {
+            return 0.0D;
+        }
+        return value > 0.0D ? value - 0.05D : value + 0.05D;
     }
 }

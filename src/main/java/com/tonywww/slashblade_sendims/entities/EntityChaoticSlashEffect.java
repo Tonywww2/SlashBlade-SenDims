@@ -2,12 +2,11 @@ package com.tonywww.slashblade_sendims.entities;
 
 import com.mojang.math.Axis;
 import com.tonywww.slashblade_sendims.utils.ChaoticAttackManager;
+import com.tonywww.slashblade_sendims.utils.ChaoticSlashArtEffects;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.entity.Projectile;
 import mods.flammpfeil.slashblade.event.handler.FallHandler;
-import mods.flammpfeil.slashblade.util.AttackManager;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -58,7 +57,7 @@ public class EntityChaoticSlashEffect extends EntitySlashEffect {
             List<Entity> hits;
             if (!this.getIndirect() && this.getShooter() instanceof LivingEntity attacker) {
                 float damage = (float) this.getDamage() * (this.getIsCritical() ? 1.1F : 1.0F);
-                hits = AttackManager.areaAttack(
+                hits = ChaoticAttackManager.areaAttack(
                         attacker,
                         this.getKnockBack().action,
                         damage,
@@ -109,16 +108,17 @@ public class EntityChaoticSlashEffect extends EntitySlashEffect {
             FallHandler.spawnLandingParticle(this, rayResult.getLocation(), normalVector, 3.0F);
         }
 
+        Vec3 particlePos = start.add(normalVector.scale(this.getBaseSize() * 2.5D));
+        addChaosParticle(particlePos, normalVector, new Vec3(direction.x(), direction.y(), direction.z()));
+
         if (IConcentrationRank.ConcentrationRanks.S.level < this.getRankCode().level) {
-            Vec3 particlePos = start.add(normalVector.scale(this.getBaseSize() * 2.5D));
-            addCriticalParticle(particlePos, normal, direction);
             float randomScale = this.random.nextFloat() + 0.5F;
             particlePos = particlePos.add(
                     direction.x() * randomScale,
                     direction.y() * randomScale,
                     direction.z() * randomScale
             );
-            addCriticalParticle(particlePos, normal, direction);
+                    addChaosParticle(particlePos, normalVector, new Vec3(direction.x(), direction.y(), direction.z()));
         }
     }
 
@@ -129,15 +129,14 @@ public class EntityChaoticSlashEffect extends EntitySlashEffect {
         Axis.YP.rotationDegrees(-this.getYRot()).transform(vector);
     }
 
-    private void addCriticalParticle(Vec3 position, Vector4f normal, Vector4f direction) {
-        this.level().addParticle(
-                ParticleTypes.CRIT,
-                position.x,
-                position.y,
-                position.z,
-                direction.x() + normal.x(),
-                direction.y() + normal.y(),
-                direction.z() + normal.z()
+    private void addChaosParticle(Vec3 position, Vec3 normal, Vec3 direction) {
+        ChaoticSlashArtEffects.spawnSlashParticles(
+                this.level(),
+                this.random,
+                position,
+                normal,
+                direction,
+                this.getBaseSize()
         );
     }
 }

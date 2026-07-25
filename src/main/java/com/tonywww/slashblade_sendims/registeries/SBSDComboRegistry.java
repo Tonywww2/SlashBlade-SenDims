@@ -1,12 +1,18 @@
 package com.tonywww.slashblade_sendims.registeries;
 
+import cn.mmf.slashblade_addon.registry.SBAComboStateRegistry;
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.sa.*;
+import com.tonywww.slashblade_sendims.utils.ChaoticAttackManager;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
+import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
+import mods.flammpfeil.slashblade.event.handler.FallHandler;
 import mods.flammpfeil.slashblade.init.DefaultResources;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.util.AttackManager;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -155,6 +161,111 @@ public class SBSDComboRegistry {
                             .build())
                     .addHitEffect(StunManager::setStun)
                     ::build);
+
+    public static final RegistryObject<ComboState> CHAOTIC_JUDGEMENT_CUT = COMBO_STATES.register(
+            "chaotic_judgement_cut",
+            ComboState.Builder.newInstance()
+                    .startAndEnd(1900, 1923)
+                    .priority(50)
+                    .next(entity -> SenDims.prefix("chaotic_judgement_cut"))
+                    .nextOfTimeout(entity -> SenDims.prefix("chaotic_judgement_cut_slash"))
+                    .addTickAction(ChaoticJudgementCut::doCharge)
+                    .addTickAction(FallHandler::fallDecrease)
+                    .addTickAction(UserPoseOverrider::resetRot)
+                    ::build
+    );
+
+    public static final RegistryObject<ComboState> CHAOTIC_JUDGEMENT_CUT_SLASH = COMBO_STATES.register(
+            "chaotic_judgement_cut_slash",
+            ComboState.Builder.newInstance()
+                    .startAndEnd(1923, 1928)
+                    .speed(0.4F)
+                    .priority(50)
+                    .next(entity -> SenDims.prefix("chaotic_judgement_cut_slash"))
+                    .nextOfTimeout(entity -> ComboStateRegistry.JUDGEMENT_CUT_SHEATH.getId())
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(0, ChaoticJudgementCut::doJudgementCut)
+                            .build())
+                    .addTickAction(FallHandler::fallDecrease)
+                    .addHitEffect(StunManager::setStun)
+                    ::build
+    );
+
+    public static final RegistryObject<ComboState> CHAOTIC_JUDGEMENT_CUT_SLASH_AIR = COMBO_STATES.register(
+            "chaotic_judgement_cut_slash_air",
+            ComboState.Builder.newInstance()
+                    .startAndEnd(1923, 1928)
+                    .speed(0.5F)
+                    .priority(50)
+                    .next(entity -> SenDims.prefix("chaotic_judgement_cut_slash_air"))
+                    .nextOfTimeout(entity -> ComboStateRegistry.JUDGEMENT_CUT_SHEATH_AIR.getId())
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(0, ChaoticJudgementCut::doJudgementCutAir)
+                            .build())
+                    .addTickAction(FallHandler::fallResist)
+                    .addTickAction(UserPoseOverrider::resetRot)
+                    .addHitEffect(StunManager::setStun)
+                    ::build
+    );
+
+    public static final RegistryObject<ComboState> CHAOTIC_JUDGEMENT_CUT_SLASH_JUST = COMBO_STATES.register(
+            "chaotic_judgement_cut_slash_just",
+            ComboState.Builder.newInstance()
+                    .startAndEnd(1923, 1928)
+                    .priority(45)
+                    .next(entity -> SenDims.prefix("chaotic_judgement_cut_slash_just"))
+                    .nextOfTimeout(entity -> ComboStateRegistry.JUDGEMENT_CUT_SLASH_JUST2.getId())
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(1, ChaoticJudgementCut::doJudgementCutJust)
+                            .build())
+                    .addTickAction(UserPoseOverrider::resetRot)
+                    .addTickAction(FallHandler::fallResist)
+                    .addHitEffect(StunManager::setStun)
+                    ::build
+    );
+
+    public static final RegistryObject<ComboState> CHAOTIC_JUDGEMENT_CUT_END = COMBO_STATES.register(
+            "chaotic_judgement_cut_end",
+            ComboState.Builder.newInstance()
+                    .startAndEnd(1923, 1928)
+                    .priority(50)
+                    .next(entity -> SenDims.prefix("chaotic_judgement_cut_end"))
+                    .nextOfTimeout(entity -> ComboStateRegistry.JUDGEMENT_CUT_SHEATH.getId())
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(0, ChaoticJudgementCut::doJudgementCutSuper)
+                            .build())
+                    .addTickAction(FallHandler::fallDecrease)
+                    .addHitEffect(StunManager::setStun)
+                    ::build
+    );
+
+    public static final RegistryObject<ComboState> CHAOTIC_RAPID_BLISTERING_SWORDS = COMBO_STATES.register(
+            "chaotic_rapid_blistering_swords",
+            ComboState.Builder.newInstance()
+                    .startAndEnd(400, 459)
+                    .priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(ComboState.TimeoutNext.buildFromFrame(15, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SBAComboStateRegistry.RAPID_BLISTERING_SWORDS_END.getId())
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(2, entity -> ChaoticAttackManager.doSlash(
+                                    entity,
+                                    -30.0F,
+                                    Vec3.ZERO,
+                                    false,
+                                    false,
+                                    0.1F
+                            ))
+                            .put(3, entity -> ChaoticRapidBlisteringSwords.doSlash(
+                                    entity,
+                                    false,
+                                    7.0D,
+                                    2.0F
+                            ))
+                            .build())
+                    .addHitEffect(StunManager::setStun)
+                    ::build
+    );
 
     public static void register(IEventBus bus) {
         COMBO_STATES.register(bus);

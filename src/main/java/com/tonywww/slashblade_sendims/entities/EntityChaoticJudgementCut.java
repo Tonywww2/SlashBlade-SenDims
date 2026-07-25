@@ -1,7 +1,8 @@
 package com.tonywww.slashblade_sendims.entities;
 
+import com.tonywww.slashblade_sendims.registeries.SBSDEntities;
 import com.tonywww.slashblade_sendims.utils.ChaoticAttackManager;
-import mods.flammpfeil.slashblade.SlashBlade;
+import com.tonywww.slashblade_sendims.utils.ChaoticSlashArtEffects;
 import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
 import mods.flammpfeil.slashblade.entity.Projectile;
 import mods.flammpfeil.slashblade.util.KnockBacks;
@@ -25,6 +26,8 @@ public class EntityChaoticJudgementCut extends EntityJudgementCut {
         }
         this.baseTick();
 
+        ChaoticSlashArtEffects.spawnJudgementCutParticles(this, this.random);
+
         if (this.tickCount < 8 && this.tickCount % 2 == 0) {
             this.playSound(this.getHitEntitySound(), 0.2F, 0.5F + 0.25F * this.random.nextFloat());
         }
@@ -37,7 +40,7 @@ public class EntityChaoticJudgementCut extends EntityJudgementCut {
 
             if (this.getIsCritical() && this.tickCount > 0 && this.tickCount <= 3) {
                 EntityChaoticSlashEffect slash = new EntityChaoticSlashEffect(
-                        SlashBlade.RegistryEvents.SlashEffect,
+                        SBSDEntities.CHAOTIC_SLASH_EFFECT.get(),
                         this.level()
                 );
                 slash.absMoveTo(
@@ -53,7 +56,7 @@ public class EntityChaoticJudgementCut extends EntityJudgementCut {
                 slash.setIsCritical(true);
                 slash.setDamage(0.1F);
                 slash.setColor(this.getColor());
-                slash.setBaseSize(0.5F);
+                slash.setBaseSize(1.0F);
                 slash.setKnockBack(KnockBacks.cancel);
                 slash.setIndirect(true);
                 slash.setRank(this.getRank());

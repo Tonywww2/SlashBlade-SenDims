@@ -51,6 +51,7 @@ public class SenDims {
         SBSDComboRegistry.register(modEventBus);
         SBSDSlashArtRegistry.register(modEventBus);
 
+        SBSDEntities.register(modEventBus);
         SBSDAttributes.register(modEventBus);
         SBSDBlocks.register(modEventBus);
         SBSDItems.register(modEventBus);
