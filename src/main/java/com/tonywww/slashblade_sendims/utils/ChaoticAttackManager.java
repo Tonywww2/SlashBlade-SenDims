@@ -28,6 +28,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -148,7 +149,27 @@ public final class ChaoticAttackManager {
             return targets;
         }
 
-        targets = TargetSelector.getTargettableEntitiesWithinAABB(source.level(), reach, source);
+        targets = Lists.newArrayList(
+                TargetSelector.getTargettableEntitiesWithinAABB(source.level(), reach, source)
+        );
+
+        // TargetSelector only yields living entities (and their multipart parts). Chaotic attacks
+        // must also strike non-living, projectile-hittable entities such as the Draconic Guardian
+        // Crystal, mirroring how the chaotic summoned swords already hit them.
+        for (Entity extra : source.level().getEntitiesOfClass(
+                Entity.class,
+                source.getBoundingBox().inflate(reach),
+                entity -> entity.canBeHitByProjectile()
+                        && !(entity instanceof LivingEntity)
+                        && !(entity instanceof PartEntity<?>)
+                        && entity != source
+                        && entity != source.getShooter()
+        )) {
+            if (!targets.contains(extra)) {
+                targets.add(extra);
+            }
+        }
+
         if (excluded != null) {
             targets.removeAll(excluded);
         }

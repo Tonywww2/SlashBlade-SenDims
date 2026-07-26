@@ -41,9 +41,9 @@
   "slash_art.slashblade_sendims.void_slash_ammo.desc": "获得3枚弹药。\n斩击后，消耗1枚弹药并向前方斩出强力的一刀，随后进入短暂的冷却。",
   "slash_art.slashblade_sendims.sakura_end_ammo": "终焉樱·弹药",
   "slash_art.slashblade_sendims.sakura_end_ammo.desc": "获得36枚弹药。\n斩击后，消耗1枚弹药。每消耗6枚弹药，下次斩击时会额外斩出两刀，同时额外消耗2枚弹药。消耗完全部弹药之后，依据期间命中的敌人数量恢复百分比最大生命值与百分比最大行动力。",
-  "slash_art.slashblade_sendims.chaotic_judgement_cut": "Chaotic Judgement Cut",
+  "slash_art.slashblade_sendims.chaotic_judgement_cut": "§4Chaotic Judgement Cut",
   "slash_art.slashblade_sendims.chaotic_judgement_cut.desc": "Retains Judgement Cut's mechanics, deals 1.25x damage at chaotic tier, and gains double visual size with unique chaos effects.",
-  "slash_art.slashblade_sendims.chaotic_rapid_blistering_swords": "Chaotic Rapid Blistering Swords",
+  "slash_art.slashblade_sendims.chaotic_rapid_blistering_swords": "§4Chaotic Rapid Blistering Swords",
   "slash_art.slashblade_sendims.chaotic_rapid_blistering_swords.desc": "Retains Rapid Blistering Swords' mechanics, deals 1.25x damage at chaotic tier, and gains double visual size with unique chaos effects.",
 
   "se.slashblade_sendims.frenzied_flame": "§6癫火",

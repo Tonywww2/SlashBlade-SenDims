@@ -3,11 +3,11 @@ package com.tonywww.slashblade_sendims.sa;
 import com.tonywww.slashblade_sendims.entities.EntityChaoticBlisteringSwords;
 import com.tonywww.slashblade_sendims.registeries.SBSDEntities;
 import com.tonywww.slashblade_sendims.utils.ChaoticSlashArtEffects;
-import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -15,15 +15,14 @@ public final class ChaoticRapidBlisteringSwords {
     private ChaoticRapidBlisteringSwords() {
     }
 
-    public static void doSlash(LivingEntity attacker, boolean critical, double damage, float speed) {
-        doSlash(attacker, ChaoticSlashArtEffects.PRIMARY_COLOR, critical, damage, speed);
+    public static void doSlash(LivingEntity attacker, boolean critical, float speed) {
+        doSlash(attacker, ChaoticSlashArtEffects.PRIMARY_COLOR, critical, speed);
     }
 
     public static void doSlash(
             LivingEntity attacker,
             int color,
             boolean critical,
-            double damage,
             float speed
     ) {
         if (attacker.level().isClientSide()) {
@@ -32,10 +31,8 @@ public final class ChaoticRapidBlisteringSwords {
 
         attacker.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
             Level level = attacker.level();
-            int rank = attacker.getCapability(CapabilityConcentrationRank.RANK_POINT)
-                    .map(value -> value.getRank(level.getGameTime()).level)
-                    .orElse(0);
-            int count = 3 + rank;
+            double damage = 4.0D + 1.2D * attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
+            int count = 10;
 
             for (int index = 0; index < count; index++) {
                 EntityChaoticBlisteringSwords sword = new EntityChaoticBlisteringSwords(

@@ -259,8 +259,7 @@ public class SBSDComboRegistry {
                             .put(3, entity -> ChaoticRapidBlisteringSwords.doSlash(
                                     entity,
                                     false,
-                                    7.0D,
-                                    2.0F
+                                    10.0F
                             ))
                             .build())
                     .addHitEffect(StunManager::setStun)

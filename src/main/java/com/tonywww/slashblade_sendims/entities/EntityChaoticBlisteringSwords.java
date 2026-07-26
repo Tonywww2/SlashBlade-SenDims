@@ -5,14 +5,11 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.init.DEDamage;
 import com.tonywww.slashblade_sendims.utils.ChaoticSlashArtEffects;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.entity.Projectile;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
-import mods.flammpfeil.slashblade.util.AttackManager;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -62,7 +59,7 @@ public class EntityChaoticBlisteringSwords extends BlisteringSwordsEntity {
         Entity target = result.getEntity();
         MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.SummonedSwordOnHitEntityEvent(this, target));
 
-        int damage = Mth.ceil(this.getDamage());
+        float damage = (float) this.getDamage();
         if (this.getPierce() > 0) {
             if (this.alreadyHits == null) {
                 this.alreadyHits = new IntOpenHashSet(5);
@@ -75,7 +72,7 @@ public class EntityChaoticBlisteringSwords extends BlisteringSwordsEntity {
         }
 
         if (this.getIsCritical()) {
-            damage += this.random.nextInt(damage / 2 + 2);
+            damage += this.random.nextInt((int) (damage / 2.0F + 2.0F));
         }
 
         Entity shooter = this.getShooter();
@@ -97,13 +94,8 @@ public class EntityChaoticBlisteringSwords extends BlisteringSwordsEntity {
         }
 
         target.invulnerableTime = 0;
-        float scale = 1.0F;
-        if (shooter instanceof LivingEntity livingShooter) {
-            scale = (float) (AttackManager.getSlashBladeDamageScale(livingShooter)
-                    * SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER.get());
-        }
 
-        if (target.hurt(source, damage * scale * ChaoticSlashArtEffects.DAMAGE_MULTIPLIER)) {
+        if (target.hurt(source, damage)) {
             Entity actualTarget = target instanceof PartEntity<?> part ? part.getParent() : target;
             if (actualTarget instanceof LivingEntity livingTarget) {
                 StunManager.setStun(livingTarget);
