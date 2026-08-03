@@ -13,8 +13,8 @@ import org.apache.commons.lang3.tuple.Triple;
 
 public class WaveEdgeAmmo extends AmmoSA {
 
-    public static int maxAmmo = 8;
-    public static int cdAfterSlash = 2;
+    public static int maxAmmo = 10;
+    public static int cdAfterSlash = 1;
 
     public static void onInit(LivingEntity attacker) {
         Triple<ServerPlayer, ItemStack, ISlashBladeState> triple = AmmoSA.saInit(attacker);

@@ -274,6 +274,8 @@ dependencies {
 
     implementation fg.deobf("curse.maven:bossesrise-1314084:8123166")
 
+    implementation fg.deobf("curse.maven:cult-of-azazel-1571005:8561722")
+
     implementation fg.deobf("curse.maven:foxbladeextrare-1350400:7799118")
 
     implementation fg.deobf("curse.maven:ad-astra-giselle-addon-714958:8283992")

@@ -40,6 +40,8 @@
     "minecraft.MixinShulkerAttackGoal",
     "minecraft.NoiseBasedChunkGeneratorMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
+    "netherman.AzazelEntityMixin",
+    "netherman.GildedGolemEntityMixin",
     "nc.NCFluidsMixin",
     "nc.NCFluidsMixin$FluidEntryMixin",
     "neat.NeatHealthBarRendererMixin",
