@@ -13,7 +13,7 @@ import org.apache.commons.lang3.tuple.Triple;
 
 public class WaveEdgeAmmo extends AmmoSA {
 
-    public static int maxAmmo = 10;
+    public static int maxAmmo = 8;
     public static int cdAfterSlash = 1;
 
     public static void onInit(LivingEntity attacker) {
@@ -30,7 +30,7 @@ public class WaveEdgeAmmo extends AmmoSA {
         if (AmmoSA.onSlashEffects(attacker, stack, state, maxAmmo, cdAfterSlash)) {
             int timesUsed = maxAmmo - currentAmmo;
 
-            double damage = state.getDamage() * 0.3d;
+            double damage = state.getDamage() * 0.25d;
             float minSpeed = 0.2f + 0.1f * timesUsed;
             float maxSpeed = 1f + 0.1f * timesUsed;
             int lifetime = 20 + 2 * timesUsed;

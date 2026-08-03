@@ -75,6 +75,7 @@
   "message.slashblade_sendims.structure_quill.failed": "在该区域未找到结构",
   "message.slashblade_sendims.structure_quill.error": "搜索时发生错误",
   "message.slashblade_sendims.structure_quill.start_search": "开始搜索结构...",
+  "structure.minecraft.stronghold": "Stronghold",
   "creativetab.slashblade_sendims_tab": "千界万锻",
   "attribute.name.sbsd.sprint_cd": "特殊行动冷却",
   "attribute.name.sbsd.sprint_cd_return": "特殊行动冷却返还",

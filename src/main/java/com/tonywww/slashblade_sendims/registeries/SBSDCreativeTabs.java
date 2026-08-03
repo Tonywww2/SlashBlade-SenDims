@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.config.StructureQuillConfig;
 import com.tonywww.slashblade_sendims.items.BloodJade;
 import com.tonywww.slashblade_sendims.items.StructureQuill;
 import net.minecraft.core.registries.Registries;
@@ -24,7 +25,8 @@ public class SBSDCreativeTabs {
                         pOutput.accept(SBSDItems.PRINCIPLE_OF_SWORD_ARTS.get());
                         pOutput.accept(SBSDItems.THE_NECTAR_QUEST.get());
                         pOutput.accept(SBSDItems.STRUCTURE_QUILL.get());
-                        pOutput.accept(StructureQuill.forStructure("minecraft:stronghold"));
+                        StructureQuillConfig.creativeTabStructures().forEach(structureId ->
+                            pOutput.accept(StructureQuill.forStructure(structureId.toString())));
 
                         pOutput.accept(SBSDItems.BLOOD_JADE.get());
                         pOutput.accept(BloodJade.withKillCount(10));

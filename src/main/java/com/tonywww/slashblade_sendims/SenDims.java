@@ -2,6 +2,7 @@ package com.tonywww.slashblade_sendims;
 
 import com.mojang.logging.LogUtils;
 import com.tonywww.slashblade_sendims.compat.draconicevolution.DraconicEvolutionCompatConfig;
+import com.tonywww.slashblade_sendims.config.StructureQuillConfig;
 import com.tonywww.slashblade_sendims.kubejs.SBSDPlugin;
 import com.tonywww.slashblade_sendims.network.MadnessSyncPacket;
 import com.tonywww.slashblade_sendims.registeries.*;
@@ -40,6 +41,7 @@ public class SenDims {
     public SenDims(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
         context.registerConfig(ModConfig.Type.COMMON, DraconicEvolutionCompatConfig.SPEC);
+        context.registerConfig(ModConfig.Type.CLIENT, StructureQuillConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(serverScheduler = new ServerScheduler());
 
         SBSDPlugin.register(modEventBus);

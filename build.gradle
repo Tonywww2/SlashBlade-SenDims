@@ -111,6 +111,7 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    mavenCentral()
 
     maven {
         name = "CurseMaven"
@@ -219,7 +220,7 @@ dependencies {
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:jade-324717:6855440")
 
-    implementation fg.deobf("curse.maven:classic-bars-317642:5983897")
+    implementation fg.deobf("curse.maven:classic-bars-317642:8250607")
 
     implementation fg.deobf("curse.maven:tetra-289712:6912921")
 

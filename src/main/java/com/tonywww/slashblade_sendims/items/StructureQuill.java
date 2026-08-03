@@ -69,8 +69,14 @@ public class StructureQuill extends Item {
             }
             tooltips.add(Component.translatable("message.slashblade_sendims.structure_quill.tooltip").withStyle(ChatFormatting.AQUA));
             if (tag.contains(TAG_STRUCTURE)) {
-                tooltips.add(Component.literal(tag.getString(TAG_STRUCTURE)).withStyle(ChatFormatting.AQUA));
-
+                String structureName = tag.getString(TAG_STRUCTURE);
+                tooltips.add(Component.literal(structureName).withStyle(ChatFormatting.AQUA));
+                ResourceLocation structureId = ResourceLocation.tryParse(structureName);
+                if (structureId != null) {
+                    String fallbackName = structureId.getPath().replace('/', ' ').replace('_', ' ');
+                    tooltips.add(Component.translatableWithFallback(
+                            structureId.toLanguageKey("structure"), fallbackName).withStyle(ChatFormatting.GRAY));
+                }
             }
         }
     }
