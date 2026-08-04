@@ -9,6 +9,7 @@ import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerChunkCache;
@@ -36,6 +37,8 @@ import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStruct
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -61,6 +64,29 @@ public class StructureQuill extends Item {
     }
 
     @Override
+    public Component getName(ItemStack stack) {
+        Component name = super.getName(stack);
+        if (FMLEnvironment.dist != Dist.CLIENT) {
+            return name;
+        }
+
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains(TAG_STRUCTURE)) {
+            return name;
+        }
+
+        ResourceLocation structureId = ResourceLocation.tryParse(tag.getString(TAG_STRUCTURE));
+        if (structureId == null) {
+            return name;
+        }
+
+        return name.copy()
+                .append(" (")
+                .append(localizedStructureName(structureId))
+                .append(")");
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltips, TooltipFlag flag) {
         var tag = stack.getTag();
         if (tag != null) {
@@ -73,12 +99,15 @@ public class StructureQuill extends Item {
                 tooltips.add(Component.literal(structureName).withStyle(ChatFormatting.AQUA));
                 ResourceLocation structureId = ResourceLocation.tryParse(structureName);
                 if (structureId != null) {
-                    String fallbackName = structureId.getPath().replace('/', ' ').replace('_', ' ');
-                    tooltips.add(Component.translatableWithFallback(
-                            structureId.toLanguageKey("structure"), fallbackName).withStyle(ChatFormatting.GRAY));
+                    tooltips.add(localizedStructureName(structureId).withStyle(ChatFormatting.GRAY));
                 }
             }
         }
+    }
+
+    private static MutableComponent localizedStructureName(ResourceLocation structureId) {
+        String fallbackName = structureId.getPath().replace('/', ' ').replace('_', ' ');
+        return Component.translatableWithFallback(structureId.toLanguageKey("structure"), fallbackName);
     }
 
     @Override
