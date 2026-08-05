@@ -44,22 +44,15 @@ public class SBSDLeader {
     public static final Vector3f PARRY_INDICATOR_FROM_COLOR = new Vector3f(0.3f, 0.1f, 0.1f);
 
     public static void tickLeader(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData, int currentTick) {
+        if (LeaderApi.isParried(entity)) {
+            tickParried(entity, serverLevel, persistentData);
+            return;
+        }
         if (entity instanceof Mob mob) {
             if (mob.getTarget() != null) {
-                boolean isParried = LeaderApi.isParried(entity);
-                if (isParried) {
-                    // 被击破
-                    tickParried(entity, serverLevel, persistentData);
-
-                } else {
-                    // 通常状态
-                    tickNormal(entity, serverLevel, persistentData);
-
-                }
+                tickNormal(entity, serverLevel, persistentData);
             }
-
         }
-
     }
 
     @Deprecated(forRemoval = false)
@@ -99,8 +92,16 @@ public class SBSDLeader {
     }
 
     public static boolean tickParried(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData) {
-        boolean stillParried = true;
         doLeaderParriedIndicator(entity, serverLevel);
+        if (LeaderStateStorage.hasParriedDeadline(entity)) {
+            if (LeaderStateStorage.hasParriedDeadlineExpired(entity)) {
+                LeaderManager.recover(entity);
+                return false;
+            }
+            return true;
+        }
+
+        boolean stillParried = true;
         int endParriedTick = getLeaderNextActionTickCount(persistentData);
         if (endParriedTick <= 0) {
             endParriedTick = SBSDValues.END_PARRIED_TICK;

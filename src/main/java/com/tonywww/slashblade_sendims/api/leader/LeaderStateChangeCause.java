@@ -4,5 +4,6 @@ public enum LeaderStateChangeCause {
     WINDOW_OPENED,
     WINDOW_CLOSED,
     PARRIED,
-    RECOVERED
+    RECOVERED,
+    PARRY_ABSORBED
 }

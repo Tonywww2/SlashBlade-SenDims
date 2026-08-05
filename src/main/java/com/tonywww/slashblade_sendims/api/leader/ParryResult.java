@@ -4,5 +4,10 @@ public enum ParryResult {
     SUCCESS,
     NOT_LEADER,
     NOT_PARRYABLE,
-    WRONG_SIDE
+    WRONG_SIDE,
+    ABSORBED;
+
+    public boolean isAccepted() {
+        return this == SUCCESS || this == ABSORBED;
+    }
 }

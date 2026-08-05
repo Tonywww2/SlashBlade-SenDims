@@ -26,6 +26,8 @@ Agent 在修改消费项目之前，必须确认：
 4. `mods.toml` 是否需要声明对 `slashblade_sendims` 的强制依赖。
 5. 需求发生在逻辑服务端、客户端，还是两端。
 
+所有状态写操作必须运行在逻辑服务端主线程。不要从异步网络回调、`CompletableFuture` 或工作线程直接调用写 API。
+
 如果消费项目将 SenDimS 设为可选依赖，不得直接在无 Mod 环境会加载的类中引用 API 类型。此时应先设计隔离的 compat 类，并用 `ModList.get().isLoaded("slashblade_sendims")` 控制类加载。
 
 ## 只允许依赖的包
@@ -35,11 +37,14 @@ Agent 在修改消费项目之前，必须确认：
 ```java
 import com.tonywww.slashblade_sendims.api.leader.LeaderApi;
 import com.tonywww.slashblade_sendims.api.leader.LeaderPhase;
+import com.tonywww.slashblade_sendims.api.leader.LeaderParryDecision;
 import com.tonywww.slashblade_sendims.api.leader.LeaderProfile;
 import com.tonywww.slashblade_sendims.api.leader.LeaderSnapshot;
 import com.tonywww.slashblade_sendims.api.leader.LeaderStateChangeCause;
 import com.tonywww.slashblade_sendims.api.leader.ParryResult;
 import com.tonywww.slashblade_sendims.api.leader.event.ClientLeaderStateChangedEvent;
+import com.tonywww.slashblade_sendims.api.leader.event.LeaderParryAbsorbedEvent;
+import com.tonywww.slashblade_sendims.api.leader.event.LeaderParryAttemptEvent;
 import com.tonywww.slashblade_sendims.api.leader.event.LeaderParriedEvent;
 import com.tonywww.slashblade_sendims.api.leader.event.LeaderStateChangedEvent;
 ```
@@ -94,7 +99,7 @@ import com.tonywww.slashblade_sendims.api.leader.event.LeaderStateChangedEvent;
   └─ 消费项目 → EXTERNAL
 
 是否要改变状态？
-  ├─ 是 → 只在逻辑服务端调用 open/close/tryParry
+    ├─ 是 → 只在逻辑服务端主线程调用 open/close/tryParry/enterParriedState
   └─ 否 → 两端都可调用查询 API
 
 是否只需在状态变化时处理？
@@ -220,6 +225,7 @@ ResourceLocation sourceId = ResourceLocation.fromNamespaceAndPath(
 ParryResult result = LeaderApi.tryParry(target, attacker, sourceId);
 switch (result) {
     case SUCCESS -> onParrySucceeded(attacker, target);
+    case ABSORBED -> onParryAbsorbed(attacker, target);
     case NOT_LEADER -> LOGGER.debug("Target is not a Leader");
     case NOT_PARRYABLE -> LOGGER.debug("Leader parry window is closed");
     case WRONG_SIDE -> LOGGER.warn("tryParry was called on the logical client");
@@ -228,7 +234,7 @@ switch (result) {
 
 `actor` 允许为 `null`，但只应在没有合理触发实体时使用。`sourceId` 不允许为 `null`，应稳定标识招架来源，而不是每次动态生成。
 
-成功后 API 已经完成以下操作：
+`result.isAccepted()` 对 `SUCCESS` 和 `ABSORBED` 都返回 `true`。`SUCCESS` 后 API 已经完成以下操作：
 
 1. 将目标切换为 `PARRIED`。
 2. 关闭当前窗口并重置相关计时。
@@ -237,6 +243,48 @@ switch (result) {
 5. 发布服务端事件。
 
 Agent 不得在 `SUCCESS` 后再次写状态、重复眩晕目标或手动发送 Leader 同步包。消费项目可以在成功后添加自己的声音、粒子、资源消耗或奖励。
+
+### 5.1 在提交前吸收招架或覆盖时长
+
+需要护盾层吸收招架时，监听 `LeaderParryAttemptEvent`：
+
+```java
+@SubscribeEvent
+public static void onLeaderParryAttempt(LeaderParryAttemptEvent event) {
+    if (!isOwnedTarget(event.getTarget())) {
+        return;
+    }
+    if (hasBarrier(event.getTarget())) {
+        consumeBarrier(event.getTarget());
+        event.setDecision(LeaderParryDecision.ABSORB);
+    } else {
+        event.setParriedTicks(100);
+        event.setStunTicks(100);
+    }
+}
+```
+
+该事件只在服务端校验通过、目标仍为 `PARRYABLE` 时发布。它不可取消；决议默认为 `PARRY`。`parriedTicks` 和 `stunTicks` 必须大于零。多个监听器修改同一字段时最后一次写入生效。
+
+监听器不得在 attempt 事件中对同一目标重入 `tryParry`、`enterParriedState`、`openParryWindow` 或 `closeParryWindow`。API 会拒绝这些重入，但业务代码仍应避免依赖拒绝行为。
+
+`ABSORB` 会关闭窗口、回到 `NORMAL` 并发布 `LeaderParryAbsorbedEvent`；不会应用 stun、破防或易伤。SlashBlade 标准反击和治疗仍执行一次。
+
+### 5.2 从外部机制直接触发破防
+
+不经过招架窗口的护盾破裂使用：
+
+```java
+ParryResult result = LeaderApi.enterParriedState(
+        target,
+        actor,
+        ResourceLocation.fromNamespaceAndPath("examplemod", "barrier_break"),
+        100,
+        100
+);
+```
+
+该方法不发布 attempt 事件。目标必须存活、未移除、已注册且当前不是 `PARRIED`。成功后由 API 负责关窗、PARRIED、stun、同步和标准结果事件；消费项目不得重复这些动作。该调用不会自动发放 SlashBlade 玩家奖励。
 
 ### 6. 监听服务端状态变化
 
@@ -263,10 +311,16 @@ public final class LeaderEvents {
         LivingEntity actor = event.getActor(); // Nullable.
         ResourceLocation sourceId = event.getSourceId();
     }
+
+    @SubscribeEvent
+    public static void onLeaderParryAbsorbed(LeaderParryAbsorbedEvent event) {
+        LivingEntity target = event.getTarget();
+        ResourceLocation sourceId = event.getSourceId();
+    }
 }
 ```
 
-事件发布在 `MinecraftForge.EVENT_BUS`，不是 Mod event bus。它们不可取消，也不能修改最终结果。
+事件发布在 `MinecraftForge.EVENT_BUS`，不是 Mod event bus。只有 `LeaderParryAttemptEvent` 可修改决议和时长；结果事件只读且不可取消。
 
 `LeaderStateChangedEvent` 的 cause 包含：
 
@@ -276,8 +330,9 @@ public final class LeaderEvents {
 | `WINDOW_CLOSED` | 招架窗口关闭 |
 | `PARRIED` | 招架成功并进入破防阶段 |
 | `RECOVERED` | 从破防阶段恢复到正常阶段 |
+| `PARRY_ABSORBED` | 招架被外部机制吸收并回到正常阶段 |
 
-一次成功招架的服务端顺序是：状态提交、目标反应、客户端同步、`LeaderStateChangedEvent`、`LeaderParriedEvent`。
+一次成功招架的服务端顺序是：attempt、状态提交、目标反应、客户端同步、`LeaderStateChangedEvent`、`LeaderParriedEvent`。吸收顺序是：attempt、NORMAL 提交、客户端同步、`LeaderStateChangedEvent`、`LeaderParryAbsorbedEvent`。SlashBlade 奖励在结果事件之后执行。
 
 需要知道招架者和来源时监听 `LeaderParriedEvent`。只关心阶段变化时监听 `LeaderStateChangedEvent`。不要同时在两个事件中发放同一奖励。
 
@@ -321,7 +376,8 @@ Agent 不得忽略会表达失败的返回值：
 | `registerLeaderType` | 同一类型已有不同 profile |
 | `openParryWindow` | 非 Leader、非 EXTERNAL、客户端调用，或当前已 PARRIED |
 | `closeParryWindow` | 非 Leader、非 EXTERNAL、客户端调用，或窗口未开启 |
-| `tryParry` | `NOT_LEADER`、`NOT_PARRYABLE` 或 `WRONG_SIDE` |
+| `tryParry` | `ABSORBED` 表示已接受但未破防；失败值为 `NOT_LEADER`、`NOT_PARRYABLE` 或 `WRONG_SIDE` |
+| `enterParriedState` | 与 `tryParry` 相同的失败值；不要求窗口，但已 PARRIED 或目标无效会返回 `NOT_PARRYABLE` |
 
 失败通常不是异常。Agent 应根据业务需要记录日志、跳过动作或回退，而不是直接修改 NBT 绕过失败。
 
@@ -355,6 +411,7 @@ modEventBus.addListener(this::onLeaderParried);
 - 缓存 `LeaderSnapshot` 并长期当作权威状态使用。
 - 每 tick 调用 `tryParry`。
 - 在 `LeaderParriedEvent` 中再次调用 `tryParry`。
+- 在 `LeaderParryAttemptEvent` 中对同一目标重入任何 Leader 写操作。
 - 假设 `event.getActor()` 永不为 `null`。
 - 把 `remainingTicks().isEmpty()` 当作状态已结束。
 - 为了改变 profile 而删除或重写实体持久化数据。
@@ -385,6 +442,9 @@ Agent 完成集成后至少验证：
 | 客户端直接注册实体 | 返回 `false`，不改变服务端状态 |
 | 打开 20 tick 窗口 | phase 变为 `PARRYABLE`，发布一次状态事件 |
 | 窗口内调用 `tryParry` | 返回 `SUCCESS`，phase 变为 `PARRIED` |
+| attempt 将决议设为 ABSORB | 返回 `ABSORBED`，phase 回到 `NORMAL`，不 stun |
+| attempt 覆盖为 100/100 tick | PARRIED 与 stun 均精确持续 100 tick |
+| 从 NORMAL 调用 `enterParriedState` | 返回 `SUCCESS`，无需窗口进入 PARRIED |
 | 窗口外调用 `tryParry` | 返回 `NOT_PARRYABLE` |
 | 对普通实体调用 `tryParry` | 返回 `NOT_LEADER` |
 | MANAGED 实体调用 `openParryWindow` | 返回 `false` |
@@ -400,6 +460,7 @@ Agent 完成集成后至少验证：
 - 是否明确选择且只使用一个 profile？
 - 是否保证所有状态写操作在逻辑服务端？
 - 是否处理了 API 的布尔返回值和 `ParryResult`？
+- 是否显式处理了 `ABSORBED`，并避免在 attempt 事件中重入？
 - 是否区分 `PARRYABLE` 与 `PARRIED`？
 - 是否把客户端监听器限制到 `Dist.CLIENT`？
 - 是否避免在两个服务端事件中重复发放奖励？

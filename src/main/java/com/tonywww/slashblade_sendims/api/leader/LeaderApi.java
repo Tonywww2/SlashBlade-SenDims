@@ -10,7 +10,10 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Public entry point for registering, querying, and parrying Leader entities. */
+/**
+ * Public entry point for registering, querying, and parrying Leader entities.
+ * State-changing methods must be called on the logical server's main thread.
+ */
 public final class LeaderApi {
     private LeaderApi() {
     }
@@ -73,5 +76,16 @@ public final class LeaderApi {
     public static ParryResult tryParry(LivingEntity target, @Nullable LivingEntity actor,
                                        ResourceLocation sourceId) {
         return LeaderManager.tryParry(target, actor, sourceId);
+    }
+
+    /**
+     * Forces an authoritative parried transition without requiring an open parry window.
+     * The target must be a server-side Leader that is not already parried.
+     */
+    public static ParryResult enterParriedState(LivingEntity target, @Nullable LivingEntity actor,
+                                                ResourceLocation sourceId, int parriedTicks,
+                                                int stunTicks) {
+        return LeaderManager.enterParriedState(
+                target, actor, sourceId, parriedTicks, stunTicks);
     }
 }

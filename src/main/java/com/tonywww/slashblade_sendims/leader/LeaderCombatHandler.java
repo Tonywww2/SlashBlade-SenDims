@@ -15,6 +15,9 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import twilightforest.entity.boss.Naga;
 
 public final class LeaderCombatHandler {
+    private static final int DEFAULT_STUN_TICKS = 80;
+    private static final int NAGA_STUN_TICKS = 60;
+
     private LeaderCombatHandler() {
     }
 
@@ -23,7 +26,8 @@ public final class LeaderCombatHandler {
         if (!SBSDValues.PARRY_COMBOS.contains(currentCombo)) {
             return false;
         }
-        if (LeaderManager.tryParry(target, event.getUser(), currentCombo) != ParryResult.SUCCESS) {
+        ParryResult result = LeaderManager.tryParry(target, event.getUser(), currentCombo);
+        if (!result.isAccepted()) {
             return false;
         }
 
@@ -36,13 +40,19 @@ public final class LeaderCombatHandler {
     }
 
     public static void applyParriedReaction(LivingEntity target) {
+        applyParriedReaction(target, defaultStunTicks(target));
+    }
+
+    public static void applyParriedReaction(LivingEntity target, int stunTicks) {
         if (target instanceof Naga naga) {
             naga.getMovementAI().doDaze();
             naga.setCharging(false);
-            StunManager.setStun(target, 60);
-        } else {
-            StunManager.setStun(target, 80);
         }
+        StunManager.setStun(target, stunTicks);
+    }
+
+    static int defaultStunTicks(LivingEntity target) {
+        return target instanceof Naga ? NAGA_STUN_TICKS : DEFAULT_STUN_TICKS;
     }
 
     public static void scaleIncomingDamage(LivingHurtEvent event) {
