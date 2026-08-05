@@ -359,3 +359,20 @@ publishing {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
+tasks.register('leaderApiTest', JavaExec) {
+    group = 'verification'
+    description = 'Runs dependency-free Leader API state and packet checks.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.leader.LeaderApiSelfTest'
+    def testWorkingDirectory = layout.buildDirectory.dir('leader-api-test')
+    workingDir testWorkingDirectory
+    doFirst {
+        testWorkingDirectory.get().asFile.mkdirs()
+    }
+}
+
+tasks.named('test').configure {
+    dependsOn tasks.named('leaderApiTest')
+}

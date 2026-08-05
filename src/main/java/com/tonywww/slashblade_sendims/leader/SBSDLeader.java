@@ -1,14 +1,13 @@
 package com.tonywww.slashblade_sendims.leader;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.api.leader.LeaderApi;
 import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import com.tonywww.slashblade_sendims.utils.MobAttackManager;
 import com.tonywww.slashblade_sendims.entities.EntityMobDrive;
 import com.tonywww.slashblade_sendims.utils.NBTUtils;
 import com.tonywww.slashblade_sendims.SBSDValues;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
-import mods.flammpfeil.slashblade.util.AttackManager;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -31,7 +30,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.joml.Vector3f;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
-import twilightforest.entity.ai.goal.NagaMovementPattern;
 import twilightforest.entity.boss.Naga;
 
 import java.util.List;
@@ -48,7 +46,7 @@ public class SBSDLeader {
     public static void tickLeader(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData, int currentTick) {
         if (entity instanceof Mob mob) {
             if (mob.getTarget() != null) {
-                boolean isParried = getParried(persistentData);
+                boolean isParried = LeaderApi.isParried(entity);
                 if (isParried) {
                     // 被击破
                     tickParried(entity, serverLevel, persistentData);
@@ -64,58 +62,24 @@ public class SBSDLeader {
 
     }
 
+    @Deprecated(forRemoval = false)
     public static void tickBossLeader(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData, int currentTick) {
-        if (entity instanceof Mob mob) {
-            if (mob.getTarget() != null) {
-                boolean isParried = getParried(persistentData);
-                if (isParried) {
-                    // 被击破
-                    tickBossParried(entity, serverLevel, persistentData);
-
-                } else {
-                    // 通常状态
-//                    tickNormal(entity, serverLevel, persistentData);
-                    if (entity instanceof Naga naga) {
-                        if (naga.getMovementAI().getState() == NagaMovementPattern.MovementState.INTIMIDATE) {
-                            SBSDLeader.doLeaderParryIndicator(naga, (ServerLevel) naga.level(), 10);
-                            SBSDLeader.setParriable(persistentData, true);
-                        } else {
-                            SBSDLeader.setParriable(persistentData, false);
-                        }
-                    }
-
-                }
-            }
-
+        if (entity instanceof Naga naga) {
+            NagaLeaderController.tick(naga, serverLevel);
         }
-
     }
 
+    @Deprecated(forRemoval = false)
     public static boolean handleParryActions(SlashBladeEvent.HitEvent event, LivingEntity target, CompoundTag persistentData) {
-        ISlashBladeState bladeState = event.getSlashBladeState();
-        ResourceLocation currentCS = bladeState.getComboSeq();
-
-        if (getParriable(persistentData) && SBSDValues.PARRY_COMBOS.contains(currentCS)) {
-            setLeaderParried(target, persistentData);
-            // TODO 招架追加攻击做成饰品
-            LivingEntity user = event.getUser();
-            AttackManager.doSlash(user, 45.0F, 0x6cf243, Vec3.ZERO, false, false, 1.25f, KnockBacks.smash);
-            float amount = (float) SBSDAttributes.getAttributeValue(event.getUser(), SBSDAttributes.PARRY_HEAL_AMOUNT.get());
-            amount += user.getMaxHealth() * 0.2f;
-            user.heal(amount);
-            return true;
-        }
-        return false;
+        return LeaderCombatHandler.handleSlashBladeParry(event, target);
     }
 
+    @Deprecated(forRemoval = false)
     public static void scaleIncomingDamage(LivingHurtEvent event, CompoundTag persistentData) {
-        if (SBSDLeader.getParried(persistentData)) {
-            float damage = event.getAmount();
-            damage *= SBSDValues.PARRIED_DAMAGE_SCALE;
-            event.setAmount(damage);
-        }
+        LeaderCombatHandler.scaleIncomingDamage(event);
     }
 
+    @Deprecated(forRemoval = false)
     public static void setLeaderParried(LivingEntity target, CompoundTag persistentData) {
         setParried(persistentData, true);
         setParriable(persistentData, false);
@@ -145,10 +109,9 @@ public class SBSDLeader {
 
         int currentParriedTick = getLeaderActionTickCount(persistentData);
 
-        if (currentParriedTick > endParriedTick) {
-            setParried(persistentData, false);
+        if (LeaderTiming.isParriedFinished(currentParriedTick, endParriedTick)) {
+            LeaderManager.recover(entity);
             currentParriedTick = 0;
-            setLeaderNextActionTickCount(persistentData, 0);
             stillParried = false;
 
         } else {
@@ -174,12 +137,13 @@ public class SBSDLeader {
             doLeaderSA(entity, serverLevel);
             saCurrentTick = 0;
             setLeaderNextActionTickCount(persistentData, 0);
-            setParriable(persistentData, false);
+            LeaderManager.setManagedParryable(entity, false);
 
         } else {
             saCurrentTick++;
 
         }
+        setLeaderActionTickCount(persistentData, saCurrentTick);
 
         int diff = saTargetTick - saCurrentTick;
         if (diff <= SBSDValues.PRE_N_ATTACK_TICK) {
@@ -189,25 +153,23 @@ public class SBSDLeader {
                 }
                 if (diff <= SBSDValues.PARRY_TICK) {
                     doLeaderParryIndicator(entity, serverLevel, diff);
-                    if (diff >= 0) {
-                        setParriable(persistentData, true);
+                    if (LeaderTiming.isManagedParryWindowOpen(diff)) {
+                        LeaderManager.setManagedParryable(entity, true);
                     }
                 } else {
-                    setParriable(persistentData, false);
+                    LeaderManager.setManagedParryable(entity, false);
 
                 }
             } else {
                 doLeaderPreAttackIndicator(entity, serverLevel, diff);
-                setParriable(persistentData, false);
+                LeaderManager.setManagedParryable(entity, false);
 
             }
 
         } else {
-            setParriable(persistentData, false);
+            LeaderManager.setManagedParryable(entity, false);
 
         }
-
-        setLeaderActionTickCount(persistentData, saCurrentTick);
 
     }
 
@@ -317,18 +279,22 @@ public class SBSDLeader {
         }
     }
 
+    @Deprecated(forRemoval = false)
     public static boolean getParried(CompoundTag persistentData) {
         return NBTUtils.getSpecificBoolField(persistentData, SBSDValues.IS_PARRIED_PATH);
     }
 
+    @Deprecated(forRemoval = false)
     public static void setParried(CompoundTag persistentData, boolean b) {
         persistentData.putBoolean(SBSDValues.IS_PARRIED_PATH, b);
     }
 
+    @Deprecated(forRemoval = false)
     public static boolean getParriable(CompoundTag persistentData) {
         return NBTUtils.getSpecificBoolField(persistentData, SBSDValues.IS_PARRIABLE_PATH);
     }
 
+    @Deprecated(forRemoval = false)
     public static void setParriable(CompoundTag persistentData, boolean b) {
         persistentData.putBoolean(SBSDValues.IS_PARRIABLE_PATH, b);
     }

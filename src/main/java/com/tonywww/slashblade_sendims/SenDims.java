@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.tonywww.slashblade_sendims.compat.draconicevolution.DraconicEvolutionCompatConfig;
 import com.tonywww.slashblade_sendims.config.StructureQuillConfig;
 import com.tonywww.slashblade_sendims.kubejs.SBSDPlugin;
+import com.tonywww.slashblade_sendims.network.LeaderStateSyncPacket;
 import com.tonywww.slashblade_sendims.network.MadnessSyncPacket;
 import com.tonywww.slashblade_sendims.registeries.*;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,7 @@ public class SenDims {
 
     public static ServerScheduler serverScheduler;
 
-    private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "2";
     public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(
             prefix("main"),
             () -> PROTOCOL_VERSION,
@@ -71,6 +72,10 @@ public class SenDims {
                 MadnessSyncPacket::encode,
                 MadnessSyncPacket::decode,
                 MadnessSyncPacket::handle);
+        NETWORK.registerMessage(id++, LeaderStateSyncPacket.class,
+            LeaderStateSyncPacket::encode,
+            LeaderStateSyncPacket::decode,
+            LeaderStateSyncPacket::handle);
     }
 
     @SuppressWarnings("removal")

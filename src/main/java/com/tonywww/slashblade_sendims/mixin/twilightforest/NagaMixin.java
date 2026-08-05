@@ -1,6 +1,6 @@
 package com.tonywww.slashblade_sendims.mixin.twilightforest;
 
-import com.tonywww.slashblade_sendims.leader.SBSDLeader;
+import com.tonywww.slashblade_sendims.leader.NagaLeaderController;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
@@ -21,7 +21,7 @@ public class NagaMixin extends Monster {
     @Inject(method = "Ltwilightforest/entity/boss/Naga;tick()V", at = @At("RETURN"))
     private void injectTick(CallbackInfo ci) {
         if (this.level() instanceof ServerLevel serverLevel) {
-            SBSDLeader.tickBossLeader(this, serverLevel, this.getPersistentData(), this.tickCount);
+            NagaLeaderController.tick((Naga) (Object) this, serverLevel);
         }
     }
 }
