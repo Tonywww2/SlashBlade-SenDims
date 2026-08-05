@@ -70,6 +70,9 @@ minecraft {
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
+            if (project.hasProperty('useIntegrationTestWorld')) {
+                args '--world', 'sendims-integration-test'
+            }
 
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -279,7 +282,10 @@ dependencies {
 
     implementation fg.deobf("curse.maven:foxbladeextrare-1350400:7799118")
 
-    implementation fg.deobf("curse.maven:ad-astra-giselle-addon-714958:8283992")
+    compileOnly fg.deobf("curse.maven:ad-astra-giselle-addon-714958:8283992")
+    if (!project.hasProperty('excludeGiselleFromServerRuntime')) {
+        runtimeOnly fg.deobf("curse.maven:ad-astra-giselle-addon-714958:8283992")
+    }
 
     implementation fg.deobf("curse.maven:cofh-core-69162:5374122")
     implementation fg.deobf("curse.maven:thermal-foundation-222880:5443583")

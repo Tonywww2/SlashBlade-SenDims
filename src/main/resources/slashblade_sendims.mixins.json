@@ -3,6 +3,7 @@
   "compatibilityLevel": "JAVA_17",
   "required": true,
   "minVersion": "0.8",
+  "plugin": "com.tonywww.slashblade_sendims.mixin.SenDimsMixinConfigPlugin",
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
     "adastra.EtrionicBlastFurnaceBlockEntityMixin",
