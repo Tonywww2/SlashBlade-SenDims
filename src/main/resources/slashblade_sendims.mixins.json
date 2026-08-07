@@ -26,6 +26,7 @@
     "draconicevolution.ChaosIslandFeatureMixin",
     "draconicevolution.DraconicGuardianEntityMixin",
     "draconicevolution.EndIslandDensityFunctionMixin",
+    "draconicevolution.RemappedEndBiomeSourceMixin",
     "draconicevolution.TheEndBiomeSourceMixin",
     "ftbquests.ChapterMixin",
     "foxextra.FEXComboRegistryMixin",

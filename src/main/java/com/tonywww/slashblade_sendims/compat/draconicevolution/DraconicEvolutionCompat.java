@@ -4,7 +4,6 @@ import com.tonywww.slashblade_sendims.SenDims;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.TheEndBiomeSource;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Mod.EventBusSubscriber(modid = SenDims.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class DraconicEvolutionCompat {
     private static final Set<SimplexNoise> TARGET_END_ISLAND_NOISES = ConcurrentHashMap.newKeySet();
-    private static final Set<TheEndBiomeSource> TARGET_END_BIOME_SOURCES = ConcurrentHashMap.newKeySet();
+    private static final Set<BiomeSource> TARGET_END_BIOME_SOURCES = ConcurrentHashMap.newKeySet();
 
     private DraconicEvolutionCompat() {
     }
@@ -30,7 +29,7 @@ public final class DraconicEvolutionCompat {
         return TARGET_END_ISLAND_NOISES.contains(noise);
     }
 
-    public static boolean isTargetEndBiomeSource(TheEndBiomeSource biomeSource) {
+    public static boolean isTargetEndBiomeSource(BiomeSource biomeSource) {
         return TARGET_END_BIOME_SOURCES.contains(biomeSource);
     }
 
@@ -56,9 +55,7 @@ public final class DraconicEvolutionCompat {
 
     private static void trackLevel(ServerLevel level, boolean add) {
         BiomeSource biomeSource = level.getChunkSource().getGenerator().getBiomeSource();
-        if (biomeSource instanceof TheEndBiomeSource endBiomeSource) {
-            update(TARGET_END_BIOME_SOURCES, endBiomeSource, add);
-        }
+        update(TARGET_END_BIOME_SOURCES, biomeSource, add);
 
         level.getChunkSource().randomState().router().mapAll(function -> {
             if (function instanceof EndIslandNoiseAccessor accessor) {

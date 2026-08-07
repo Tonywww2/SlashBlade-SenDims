@@ -41,8 +41,6 @@ public class SBSDLeader {
         void apply(LivingEntity entity, ServerLevel serverLevel);
     }
 
-    public static final Vector3f PARRY_INDICATOR_FROM_COLOR = new Vector3f(0.3f, 0.1f, 0.1f);
-
     public static void tickLeader(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData, int currentTick) {
         if (LeaderApi.isParried(entity)) {
             tickParried(entity, serverLevel, persistentData);
@@ -258,13 +256,9 @@ public class SBSDLeader {
         double yPos = boundBox.getYsize() / 2 + entity.getY();
         double zPos = entity.getZ();
 
-        float ratio = Math.min(1f, (float) tickBeforeAttack / (SBSDValues.PARRY_TICK));
-        float r = PARRY_INDICATOR_FROM_COLOR.x() + (1.0f - PARRY_INDICATOR_FROM_COLOR.x()) * ratio;
-        float g = PARRY_INDICATOR_FROM_COLOR.y() + (1.0f - PARRY_INDICATOR_FROM_COLOR.y()) * ratio;
-        float b = PARRY_INDICATOR_FROM_COLOR.z() + (1.0f - PARRY_INDICATOR_FROM_COLOR.z()) * ratio;
-        Vector3f color = new Vector3f(r, g, b);
-
-        DustColorTransitionOptions dustOptions = new DustColorTransitionOptions(color, PARRY_INDICATOR_FROM_COLOR, 1.0f);
+        Vector3f color = LeaderIndicatorVisuals.dangerColor(tickBeforeAttack + 2);
+        DustColorTransitionOptions dustOptions = new DustColorTransitionOptions(
+            color, LeaderIndicatorVisuals.DANGER_END_COLOR, 1.0f);
 
         spawnIndicatorParticles(serverLevel, dustOptions, xPos, yPos, zPos, 2, 10d);
     }

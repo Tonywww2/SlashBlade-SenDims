@@ -28,6 +28,9 @@ public class SaturnRingWorldGenRegistry {
     public static final RegistryObject<Codec<SaturnRingBiomeSource>> SATURN_RING_BIOME_SOURCE =
             BIOME_SOURCES.register("saturn_ring_biome_source", () -> SaturnRingBiomeSource.CODEC);
 
+    public static final RegistryObject<Codec<RemappedEndBiomeSource>> REMAPPED_END_BIOME_SOURCE =
+            BIOME_SOURCES.register("remapped_end", () -> RemappedEndBiomeSource.CODEC);
+
     // 注册土星环区块生成器
     public static final RegistryObject<Codec<SaturnRingChunkGenerator>> SATURN_RING_CHUNK_GENERATOR =
             CHUNK_GENERATORS.register("saturn_ring_chunk_generator", () -> SaturnRingChunkGenerator.CODEC);

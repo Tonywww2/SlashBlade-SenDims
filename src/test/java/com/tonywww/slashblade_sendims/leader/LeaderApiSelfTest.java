@@ -24,6 +24,7 @@ public final class LeaderApiSelfTest {
         verifyPhaseWritesAreMutuallyExclusive();
         verifyLegacyTimingBoundaries();
         verifyDeadlineTimingBoundaries();
+        verifyIndicatorColorProgress();
         verifyAppendedResultSemantics();
         verifySyncPacketRoundTrip();
     }
@@ -103,6 +104,19 @@ public final class LeaderApiSelfTest {
                 "an expired deadline must report zero remaining ticks");
     }
 
+    private static void verifyIndicatorColorProgress() {
+        checkClose(LeaderIndicatorVisuals.dangerProgress(SBSDValues.PARRY_TICK + 2), 0.0F,
+                "danger color must start at its pale-red endpoint");
+        checkClose(LeaderIndicatorVisuals.dangerProgress(2), 1.0F,
+                "danger color must reach deep red at the attack tick");
+        int startColor = LeaderIndicatorVisuals.dangerArgb(SBSDValues.PARRY_TICK + 2);
+        int endColor = LeaderIndicatorVisuals.dangerArgb(2);
+        check(((startColor >> 8) & 0xFF) > ((endColor >> 8) & 0xFF),
+                "danger color must lose green as the attack approaches");
+        check(((endColor >> 16) & 0xFF) > ((endColor >> 8) & 0xFF) * 2,
+                "danger color must end as a strongly red-biased color");
+    }
+
     private static void verifyAppendedResultSemantics() {
         check(ParryResult.SUCCESS.ordinal() == 0, "SUCCESS ordinal must remain stable");
         check(ParryResult.WRONG_SIDE.ordinal() == 3, "existing result ordinals must remain stable");
@@ -137,5 +151,10 @@ public final class LeaderApiSelfTest {
         if (!condition) {
             throw new AssertionError(message);
         }
+    }
+
+    private static void checkClose(float actual, float expected, String message) {
+        check(Math.abs(actual - expected) < 1.0E-6F,
+                message + ": expected " + expected + ", got " + actual);
     }
 }

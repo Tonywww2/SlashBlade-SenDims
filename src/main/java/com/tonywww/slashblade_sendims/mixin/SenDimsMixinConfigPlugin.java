@@ -19,8 +19,13 @@ public final class SenDimsMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (mixinClassName.contains(".draconicevolution.")
+                && classLoader.getResource("com/brandon3055/draconicevolution/DraconicEvolution.class") == null) {
+            return false;
+        }
         String targetResource = targetClassName.replace('.', '/') + ".class";
-        return Thread.currentThread().getContextClassLoader().getResource(targetResource) != null;
+        return classLoader.getResource(targetResource) != null;
     }
 
     @Override
