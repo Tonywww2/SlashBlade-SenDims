@@ -22,13 +22,13 @@ Agent 在修改消费项目之前，必须确认：
 
 1. 项目目标版本为 Minecraft 1.20.1 和 Forge 47.x。
 2. 运行环境包含 `slashblade_sendims` 主 Mod；API 当前不单独发布为 API JAR。
-3. 消费项目能够在编译期引用包含 `com.tonywww.slashblade_sendims.api.leader` 的 JAR。
+3. 消费项目能够在编译期引用包含所需公开类型的 SenDimS JAR；使用前摇指示器时必须包含 `ClientLeaderIndicatorApi`。
 4. `mods.toml` 是否需要声明对 `slashblade_sendims` 的强制依赖。
 5. 需求发生在逻辑服务端、客户端，还是两端。
 
 所有状态写操作必须运行在逻辑服务端主线程。不要从异步网络回调、`CompletableFuture` 或工作线程直接调用写 API。
 
-如果消费项目将 SenDimS 设为可选依赖，不得直接在无 Mod 环境会加载的类中引用 API 类型。此时应先设计隔离的 compat 类，并用 `ModList.get().isLoaded("slashblade_sendims")` 控制类加载。
+如果消费项目将 SenDimS 设为可选依赖，不得直接在无 Mod 环境会加载的类中引用 API 类型。此时应先设计隔离的 compat 类，用 `ModList.get().isLoaded("slashblade_sendims")` 控制 common compat 类加载，并在物理客户端延迟加载客户端 provider 类。
 
 ## 只允许依赖的包
 
@@ -42,6 +42,7 @@ import com.tonywww.slashblade_sendims.api.leader.LeaderProfile;
 import com.tonywww.slashblade_sendims.api.leader.LeaderSnapshot;
 import com.tonywww.slashblade_sendims.api.leader.LeaderStateChangeCause;
 import com.tonywww.slashblade_sendims.api.leader.ParryResult;
+import com.tonywww.slashblade_sendims.api.leader.client.ClientLeaderIndicatorApi;
 import com.tonywww.slashblade_sendims.api.leader.event.ClientLeaderStateChangedEvent;
 import com.tonywww.slashblade_sendims.api.leader.event.LeaderParryAbsorbedEvent;
 import com.tonywww.slashblade_sendims.api.leader.event.LeaderParryAttemptEvent;
@@ -105,7 +106,7 @@ import com.tonywww.slashblade_sendims.api.leader.event.LeaderStateChangedEvent;
 是否只需在状态变化时处理？
   ├─ 服务端玩法 → LeaderStateChangedEvent 或 LeaderParriedEvent
   ├─ 客户端显示 → ClientLeaderStateChangedEvent
-  └─ 每帧渲染 → 查询客户端只读快照
+    └─ EXTERNAL 前摇渲染 → 注册 ClientLeaderIndicatorApi 提供器
 ```
 
 ## 标准任务模板
@@ -366,6 +367,51 @@ public final class ClientLeaderEvents {
 
 客户端事件只用于 HUD、渲染和音效，不能决定伤害、资源消耗或是否招架成功。
 
+### 8. 提供 EXTERNAL Leader 的前摇进度
+
+消费项目已有自己的攻击 telegraph 时，只需在客户端初始化路径注册进度提供器：
+
+```java
+public static void registerLeaderIndicator() {
+    ClientLeaderIndicatorApi.registerExternalWarningProvider(entity -> {
+        if (!(entity instanceof ExampleBoss boss)) {
+            return OptionalDouble.empty();
+        }
+        AttackTelegraph telegraph = boss.getAttackTelegraph();
+        return telegraph.isVisible()
+                ? OptionalDouble.of(telegraph.progress())
+                : OptionalDouble.empty();
+    });
+}
+```
+
+该类必须限制在客户端加载，并且 `registerLeaderIndicator()` 在进程生命周期内只能调用一次。当前 API 没有注销或重复注册去重。进度语义为 `0.0`（前摇刚开始）到 `1.0`（攻击即将释放）；核心会钳制有限越界值，忽略 `NaN` 和无穷值。提供器只决定本项目是否有可见 telegraph 以及当前进度，不需要重复检查 `LeaderProfile` 或 `LeaderPhase`。
+
+提供器会在客户端 tick 和实体渲染期间频繁运行。它必须快速、无副作用，不得返回 `null`、抛出异常、修改实体、生成粒子、播放音效、发送网络包或输出逐帧日志。没有 telegraph 几何但仍需要固定警告时返回 `OptionalDouble.of(1.0)`。
+
+SenDimS 负责距离筛选、危字、脉冲、颜色、粒子环、粒子清理和前摇首次可见时的钟声。消费项目不得为同一提示再次订阅 `RenderLivingEvent`、`ClientTickEvent` 或复制核心渲染器，否则会产生重复视觉与音效。
+
+可选依赖项目可以从已经延迟加载的 common compat 类中，再按物理端反射加载 provider，避免 dedicated server 解析客户端兼容类：
+
+```java
+private static final String CLIENT_PROVIDER =
+        "com.example.compat.sendims.client.ExternalLeaderIndicatorProvider";
+
+private static void registerClientProvider() {
+    if (FMLEnvironment.dist != Dist.CLIENT) {
+        return;
+    }
+    try {
+        Class<?> provider = Class.forName(CLIENT_PROVIDER);
+        provider.getMethod("register").invoke(null);
+    } catch (ReflectiveOperationException exception) {
+        LOGGER.error("Unable to register the SenDimS indicator provider", exception);
+    }
+}
+```
+
+provider 类应只保留实体类型筛选、telegraph 可见性判断和归一化进度读取。旧有危字、颜色、粒子、距离检查、`RenderLivingEvent` 与 `ClientTickEvent` 代码应删除，而不是包在新 provider 外继续运行。
+
 ## 返回值处理规则
 
 Agent 不得忽略会表达失败的返回值：
@@ -415,6 +461,8 @@ modEventBus.addListener(this::onLeaderParried);
 - 假设 `event.getActor()` 永不为 `null`。
 - 把 `remainingTicks().isEmpty()` 当作状态已结束。
 - 为了改变 profile 而删除或重写实体持久化数据。
+- 从 tick、世界加载或资源重载事件重复注册同一个前摇提供器。
+- 在前摇提供器中复制 SenDimS 已负责的危字、粒子或音效反馈。
 
 ## Agent 实施步骤
 
@@ -428,8 +476,9 @@ modEventBus.addListener(this::onLeaderParried);
 6. 只从公开 API 包导入类型。
 7. 对失败返回值和 `ParryResult` 做显式处理。
 8. 客户端代码放入 `Dist.CLIENT` 隔离类。
-9. 编译消费项目。
-10. 用服务端和客户端场景验证状态转换与事件次数。
+9. 需要前摇渲染时只注册 `ClientLeaderIndicatorApi` 提供器，不复制渲染实现。
+10. 编译消费项目。
+11. 用服务端和客户端场景验证状态转换与事件次数。
 
 ## 最小验收矩阵
 
@@ -449,13 +498,15 @@ Agent 完成集成后至少验证：
 | 对普通实体调用 `tryParry` | 返回 `NOT_LEADER` |
 | MANAGED 实体调用 `openParryWindow` | 返回 `false` |
 | 玩家开始追踪 Leader | 客户端最终能读取同步快照 |
+| EXTERNAL 前摇提供有效进度 | 核心显示危字和粒子环，首次可见时只响一次钟声 |
+| EXTERNAL 提供器返回空值 | 核心不显示前摇提示，也不播放钟声 |
 | dedicated server 加载 | 不发生客户端类加载错误 |
 
 ## Agent 完成前自检
 
 提交代码前回答以下问题；任一答案为“否”都应继续修正：
 
-- 是否只依赖 `api.leader` 和 `api.leader.event`？
+- 是否只依赖 `api.leader`、`api.leader.client` 和 `api.leader.event`？
 - 是否没有直接读写 Leader NBT？
 - 是否明确选择且只使用一个 profile？
 - 是否保证所有状态写操作在逻辑服务端？
@@ -463,6 +514,7 @@ Agent 完成集成后至少验证：
 - 是否显式处理了 `ABSORBED`，并避免在 attempt 事件中重入？
 - 是否区分 `PARRYABLE` 与 `PARRIED`？
 - 是否把客户端监听器限制到 `Dist.CLIENT`？
+- 是否只注册一次前摇提供器，并确保它轻量、无副作用且永不返回 `null`？
 - 是否避免在两个服务端事件中重复发放奖励？
 - 是否完成编译以及至少一个成功和一个失败路径测试？
 

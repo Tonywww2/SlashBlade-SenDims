@@ -1,6 +1,8 @@
 package com.tonywww.bossrefactoraether.integration;
 
 import com.aetherteam.aether.entity.monster.dungeon.boss.Slider;
+import com.aetherteam.aether.entity.monster.dungeon.AbstractValkyrie;
+import com.aetherteam.aether.entity.monster.dungeon.boss.ValkyrieQueen;
 import com.aetherteam.aether.entity.monster.dungeon.boss.goal.AvoidObstaclesGoal;
 import com.aetherteam.aether.entity.monster.dungeon.boss.goal.BackOffAfterAttackGoal;
 import com.aetherteam.aether.entity.monster.dungeon.boss.goal.CollideGoal;
@@ -9,7 +11,9 @@ import com.aetherteam.aether.entity.monster.dungeon.boss.goal.SetPathUpOrDownGoa
 import com.aetherteam.aether.entity.monster.dungeon.boss.goal.SliderMoveGoal;
 import com.mojang.logging.LogUtils;
 import com.tonywww.bossrefactoraether.mixin.LivingEntityDamageBlockAccessor;
+import com.tonywww.bossrefactoraether.mixin.AbstractValkyrieTeleportAccessor;
 import com.tonywww.bossrefactoraether.slider.SliderStateAccess;
+import com.tonywww.bossrefactoraether.valkyriequeen.ValkyrieQueenStateAccess;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,13 +35,19 @@ public final class BossMixinIntegrationAssertion {
                 "SliderMixin interface was not applied");
         require(LivingEntityDamageBlockAccessor.class.isAssignableFrom(LivingEntity.class),
             "LivingEntityDamageBlockAccessor was not applied");
+        require(ValkyrieQueenStateAccess.class.isAssignableFrom(ValkyrieQueen.class),
+            "ValkyrieQueenMixin interface was not applied");
+        require(AbstractValkyrieTeleportAccessor.class.isAssignableFrom(AbstractValkyrie.class),
+            "AbstractValkyrieTeleportAccessor was not applied");
         requireInjectedMethod(CollideGoal.class, "bossRefactorAether$suppressCollision");
         requireInjectedMethod(SliderMoveGoal.class, "bossRefactorAether$suppressMove");
         requireInjectedMethod(CrushGoal.class, "bossRefactorAether$suppressPathing");
         requireInjectedMethod(AvoidObstaclesGoal.class, "bossRefactorAether$suppressPathing");
         requireInjectedMethod(BackOffAfterAttackGoal.class, "bossRefactorAether$suppressPathing");
         requireInjectedMethod(SetPathUpOrDownGoal.class, "bossRefactorAether$suppressPathing");
-        LOGGER.info("Verified all BossRefactorAether Slider mixins in SenDimS integration runtime");
+        requireInjectedMethod(ValkyrieQueen.class, "bossRefactorAether$tickCombat");
+        requireInjectedMethod(ValkyrieQueen.class, "bossRefactorAether$suppressOriginalMelee");
+        LOGGER.info("Verified all BossRefactorAether Slider and Valkyrie Queen mixins in SenDimS integration runtime");
     }
 
     private static void requireInjectedMethod(Class<?> target, String methodName) {

@@ -111,6 +111,14 @@ public final class LeaderApiSelfTest {
                 "danger color must reach deep red at the attack tick");
         int startColor = LeaderIndicatorVisuals.dangerArgb(SBSDValues.PARRY_TICK + 2);
         int endColor = LeaderIndicatorVisuals.dangerArgb(2);
+        check(LeaderIndicatorVisuals.dangerArgb(0.0F) == startColor,
+                "normalized progress zero must use the managed start color");
+        check(LeaderIndicatorVisuals.dangerArgb(1.0F) == endColor,
+                "normalized progress one must use the managed end color");
+        check(LeaderIndicatorVisuals.dangerArgb(-1.0F) == startColor,
+                "normalized progress must clamp below zero");
+        check(LeaderIndicatorVisuals.dangerArgb(2.0F) == endColor,
+                "normalized progress must clamp above one");
         check(((startColor >> 8) & 0xFF) > ((endColor >> 8) & 0xFF),
                 "danger color must lose green as the attack approaches");
         check(((endColor >> 16) & 0xFF) > ((endColor >> 8) & 0xFF) * 2,

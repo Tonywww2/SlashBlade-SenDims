@@ -72,6 +72,33 @@ LeaderApi.getSnapshot(entity).ifPresent(snapshot -> {
 
 玩家开始追踪实体以及状态真正变化时会发送快照。客户端倒计时在本地递减，不会每 tick 收包。实体尚未生成时到达的快照会按 UUID 暂存，并在实体加入客户端世界时应用。
 
+## 客户端前摇指示器
+
+`EXTERNAL` Leader 的消费项目可以只提供当前招式的归一化前摇进度，由 SenDimS 统一绘制危字、脉冲和粒子环：
+
+```java
+import com.tonywww.slashblade_sendims.api.leader.client.ClientLeaderIndicatorApi;
+
+import java.util.OptionalDouble;
+
+ClientLeaderIndicatorApi.registerExternalWarningProvider(entity -> {
+    if (!(entity instanceof ExampleBoss boss) || !boss.isWarningVisible()) {
+        return OptionalDouble.empty();
+    }
+    return OptionalDouble.of(boss.getWarningProgress());
+});
+```
+
+注册必须从客户端初始化路径执行，并且每个提供器在进程生命周期内只注册一次。当前 API 不提供注销或重复注册去重；不要从客户端 tick、世界加载或资源重载事件重复调用注册方法。
+
+提供器返回 `OptionalDouble.empty()` 表示当前不展示；可见进度约定为 `0.0` 到 `1.0`，核心会钳制有限的越界值并忽略 `NaN` 与无穷值。多个提供器按注册顺序查询，第一个返回有效进度的提供器生效。提供器及返回值不得为 `null`，提供器也不得抛出异常。
+
+核心只会为已同步为 `EXTERNAL/PARRYABLE` 的实体查询提供器。消费项目不需要自行查询 Leader 快照，也不应再订阅 `RenderLivingEvent` 或创建同类粒子环。`MANAGED` Leader 继续使用核心自身的倒计时进度。
+
+提供器会在客户端 tick 和实体渲染期间被频繁查询，必须保持轻量、无副作用；只读取已经同步到实体的 telegraph/动画状态，不要播放音效、生成粒子、修改实体、发送网络包或输出逐帧日志。没有可见 telegraph 但仍希望展示固定警告时，可以返回 `OptionalDouble.of(1.0)`。
+
+当可招架前摇首次进入可见状态时，核心会在 Leader 位置播放一次原版钟声；该反馈同时覆盖 `MANAGED` 和已提供可见进度的 `EXTERNAL` Leader。
+
 ## 触发招架
 
 其他战斗系统可以绕过 SlashBlade combo 判定，提交一次标准招架：
@@ -162,3 +189,5 @@ public static void onLeaderParried(LeaderParriedEvent event) {
 新破防使用绝对游戏时间保存截止点，`remainingTicks()`、服务端恢复和客户端倒计时使用同一时钟。旧存档中没有截止点的 `PARRIED` 状态继续使用原 action tick 兼容路径。
 
 新枚举值均追加在末尾，旧 ordinal 不变。尽管如此，旧源码中的穷尽 `switch` 在升级后必须增加 `ABSORBED` 或 `default` 分支。旧代码可以继续读取原 NBT 字段，但新集成应只依赖 `LeaderApi` 和 `api.leader.event`，不要直接写实体 NBT，也不要调用 `SBSDLeader` 的原始 `CompoundTag` setter。
+
+使用客户端前摇指示器时，消费项目的编译期和运行时 SenDimS JAR 都必须包含 `ClientLeaderIndicatorApi`。可选依赖项目应把所有直接 API 引用隔离在延迟加载的 compat 包内，避免未安装 SenDimS 时加载这些类。

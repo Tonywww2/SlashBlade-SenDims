@@ -143,7 +143,6 @@ public class SBSDValues {
 
     static {
         DEFAULT_LEADER_SET.add(TFEntities.MINOSHROOM.get());
-        DEFAULT_LEADER_SET.add(TFEntities.KNIGHT_PHANTOM.get());
         DEFAULT_LEADER_SET.add(TFEntities.ALPHA_YETI.get());
 //        DEFAULT_LEADER_SET.add(BotaniaEntities.DOPPLEGANGER);
     }

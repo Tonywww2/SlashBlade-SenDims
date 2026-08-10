@@ -19,15 +19,23 @@ public final class LeaderIndicatorVisuals {
     }
 
     public static Vector3f dangerColor(int remainingTicks) {
-        float progress = dangerProgress(remainingTicks);
+        return dangerColor(dangerProgress(remainingTicks));
+    }
+
+    public static Vector3f dangerColor(float progress) {
+        float clampedProgress = Math.max(0.0F, Math.min(1.0F, progress));
         return new Vector3f(
-                lerp(DANGER_START_COLOR.x(), DANGER_END_COLOR.x(), progress),
-                lerp(DANGER_START_COLOR.y(), DANGER_END_COLOR.y(), progress),
-                lerp(DANGER_START_COLOR.z(), DANGER_END_COLOR.z(), progress));
+                lerp(DANGER_START_COLOR.x(), DANGER_END_COLOR.x(), clampedProgress),
+                lerp(DANGER_START_COLOR.y(), DANGER_END_COLOR.y(), clampedProgress),
+                lerp(DANGER_START_COLOR.z(), DANGER_END_COLOR.z(), clampedProgress));
     }
 
     public static int dangerArgb(int remainingTicks) {
-        Vector3f color = dangerColor(remainingTicks);
+        return dangerArgb(dangerProgress(remainingTicks));
+    }
+
+    public static int dangerArgb(float progress) {
+        Vector3f color = dangerColor(progress);
         return 0xFF000000
                 | Math.round(color.x() * 255.0F) << 16
                 | Math.round(color.y() * 255.0F) << 8

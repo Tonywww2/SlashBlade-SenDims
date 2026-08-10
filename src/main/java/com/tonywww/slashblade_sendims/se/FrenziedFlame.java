@@ -122,9 +122,9 @@ public class FrenziedFlame extends SpecialEffect {
             data.putInt(MADNESS_PATH, Math.max(0, newMadness));
         }
 
-        if (target instanceof ServerPlayer serverPlayer) {
-            SenDims.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
-                    new MadnessSyncPacket(target.getId(), data.getInt(MADNESS_PATH)));
+        if (target.level() instanceof ServerLevel) {
+            SenDims.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target),
+                new MadnessSyncPacket(target.getId(), data.getInt(MADNESS_PATH)));
         }
     }
 

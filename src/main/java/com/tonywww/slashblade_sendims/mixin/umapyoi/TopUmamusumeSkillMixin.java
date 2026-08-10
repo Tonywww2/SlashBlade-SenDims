@@ -22,7 +22,7 @@ public class TopUmamusumeSkillMixin extends UmaSkill {
     @Inject(method = "applySkill(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)V", at = @At("HEAD"), remap = false, cancellable = true)
     private void injectApplySkill(Level level, LivingEntity user, CallbackInfo ci) {
         user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100, 1));
-        user.heal(Math.min(4f, user.getMaxHealth() * 0.15f));
+        user.heal(Math.max(4f, user.getMaxHealth() * 0.1f));
         UmaStatusUtils.addMotivation(user);
         ci.cancel();
     }

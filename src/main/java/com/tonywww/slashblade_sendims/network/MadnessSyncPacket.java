@@ -1,9 +1,9 @@
 package com.tonywww.slashblade_sendims.network;
 
-import com.tonywww.slashblade_sendims.se.FrenziedFlame;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import com.tonywww.slashblade_sendims.client.overlay.ClientMadnessStateCache;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -27,12 +27,10 @@ public class MadnessSyncPacket {
     }
 
     public static void handle(MadnessSyncPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            LocalPlayer player = Minecraft.getInstance().player;
-            if (player != null && player.getId() == msg.entityId) {
-                player.getPersistentData().putInt(FrenziedFlame.MADNESS_PATH, msg.madness);
-            }
-        });
+        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(
+                Dist.CLIENT,
+                () -> () -> ClientMadnessStateCache.accept(msg.entityId, msg.madness)
+        ));
         ctx.get().setPacketHandled(true);
     }
 }
