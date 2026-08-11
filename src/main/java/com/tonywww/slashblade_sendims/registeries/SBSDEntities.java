@@ -4,6 +4,7 @@ import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.entities.EntityChaoticBlisteringSwords;
 import com.tonywww.slashblade_sendims.entities.EntityChaoticJudgementCut;
 import com.tonywww.slashblade_sendims.entities.EntityChaoticSlashEffect;
+import com.tonywww.slashblade_sendims.entities.EntityStableDrive;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,6 +39,14 @@ public final class SBSDEntities {
                     .clientTrackingRange(4)
                     .updateInterval(20)
                     .build(SenDims.prefix("chaotic_blistering_swords").toString()));
+
+    public static final RegistryObject<EntityType<EntityStableDrive>> STABLE_DRIVE =
+            ENTITY_TYPES.register("stable_drive", () -> EntityType.Builder
+                    .<EntityStableDrive>of(EntityStableDrive::new, MobCategory.MISC)
+                    .sized(3.0F, 3.0F)
+                    .clientTrackingRange(4)
+                    .updateInterval(20)
+                    .build(SenDims.prefix("stable_drive").toString()));
 
     private SBSDEntities() {
     }

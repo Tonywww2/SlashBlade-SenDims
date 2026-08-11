@@ -338,10 +338,6 @@ public class StructureQuill extends Item {
                 continue;
             }
 
-            if (!skipKnownStructures && checkResult == StructureCheckResult.START_PRESENT) {
-                return placement.getLocatePos(chunkPos);
-            }
-
             ChunkAccess chunkAccess = chunkCache.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.STRUCTURE_STARTS, true);
             if (chunkAccess == null) continue;
 
@@ -353,7 +349,7 @@ public class StructureQuill extends Item {
                     if (structureStart.canBeReferenced()) {
                         structureManager.addReference(structureStart);
                     }
-                    return placement.getLocatePos(structureStart.getChunkPos());
+                    return structureStart.getBoundingBox().getCenter();
                 }
             }
         }

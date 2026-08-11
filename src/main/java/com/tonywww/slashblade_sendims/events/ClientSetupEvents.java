@@ -5,6 +5,7 @@ import com.tonywww.slashblade_sendims.client.renderer.entity.ChaoticBlisteringSw
 import com.tonywww.slashblade_sendims.client.renderer.entity.ChaoticJudgementCutRenderer;
 import com.tonywww.slashblade_sendims.client.overlay.MadnessOverlay;
 import com.tonywww.slashblade_sendims.registeries.SBSDEntities;
+import mods.flammpfeil.slashblade.client.renderer.entity.DriveRenderer;
 import mods.flammpfeil.slashblade.client.renderer.entity.SlashEffectRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -28,6 +29,10 @@ public class ClientSetupEvents {
         event.registerEntityRenderer(
                 SBSDEntities.CHAOTIC_BLISTERING_SWORDS.get(),
                 ChaoticBlisteringSwordsRenderer::new
+        );
+        event.registerEntityRenderer(
+            SBSDEntities.STABLE_DRIVE.get(),
+            DriveRenderer::new
         );
     }
 

@@ -1,8 +1,7 @@
 package com.tonywww.slashblade_sendims.sa;
 
-import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.entities.EntityStableDrive;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.slasharts.WaveEdge;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,7 +12,7 @@ import org.apache.commons.lang3.tuple.Triple;
 
 public class WaveEdgeAmmo extends AmmoSA {
 
-    public static int maxAmmo = 8;
+    public static int maxAmmo = 9;
     public static int cdAfterSlash = 1;
 
     public static void onInit(LivingEntity attacker) {
@@ -35,7 +34,7 @@ public class WaveEdgeAmmo extends AmmoSA {
             float maxSpeed = 1f + 0.1f * timesUsed;
             int lifetime = 20 + 2 * timesUsed;
 
-            WaveEdge.doSlash(
+            EntityStableDrive.doSlash(
                     attacker,
                     90f,
                     lifetime,
@@ -46,7 +45,7 @@ public class WaveEdgeAmmo extends AmmoSA {
                     minSpeed,
                     maxSpeed,
                     timesUsed
-            );
+                    );
 
             return true;
         }
