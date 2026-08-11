@@ -6,13 +6,14 @@ import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Triple;
 
 public class WaveEdgeAmmo extends AmmoSA {
 
-    public static int maxAmmo = 9;
+    public static int maxAmmo = 8;
     public static int cdAfterSlash = 1;
 
     public static void onInit(LivingEntity attacker) {
@@ -29,7 +30,7 @@ public class WaveEdgeAmmo extends AmmoSA {
         if (AmmoSA.onSlashEffects(attacker, stack, state, maxAmmo, cdAfterSlash)) {
             int timesUsed = maxAmmo - currentAmmo;
 
-            double damage = state.getDamage() * 0.25d;
+            double damage = attacker.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.25d;
             float minSpeed = 0.2f + 0.1f * timesUsed;
             float maxSpeed = 1f + 0.1f * timesUsed;
             int lifetime = 20 + 2 * timesUsed;
