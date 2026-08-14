@@ -26,7 +26,6 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import twilightforest.entity.boss.Naga;
 
 public final class LeaderManager {
     private static final Map<EntityType<?>, LeaderProfile> TYPE_PROFILES = new ConcurrentHashMap<>();
@@ -135,7 +134,7 @@ public final class LeaderManager {
                     sourceId,
                     oldSnapshot,
                     SBSDValues.END_PARRIED_TICK,
-                    LeaderCombatHandler.defaultStunTicks(target)
+                        LeaderCombatHandler.defaultStunTicks()
             );
             MinecraftForge.EVENT_BUS.post(attempt);
 
@@ -247,7 +246,6 @@ public final class LeaderManager {
                                              ResourceLocation sourceId, LeaderSnapshot oldSnapshot,
                                              int parriedTicks, int stunTicks) {
         LeaderStateStorage.clearExternalWindow(target);
-        LeaderStateStorage.clearAutomaticWindowSuppression(target);
         LeaderStateStorage.resetActionTicks(target);
         LeaderStateStorage.setPhase(target, LeaderPhase.PARRIED);
         LeaderStateStorage.setParriedDeadline(target, parriedTicks);
@@ -264,9 +262,6 @@ public final class LeaderManager {
         LeaderStateStorage.clearParriedDeadline(target);
         LeaderStateStorage.resetActionTicks(target);
         LeaderStateStorage.setPhase(target, LeaderPhase.NORMAL);
-        if (target instanceof Naga) {
-            LeaderStateStorage.suppressAutomaticWindow(target);
-        }
         LeaderSnapshot newSnapshot = publishTransition(
                 target, oldSnapshot, LeaderStateChangeCause.PARRY_ABSORBED);
         MinecraftForge.EVENT_BUS.post(

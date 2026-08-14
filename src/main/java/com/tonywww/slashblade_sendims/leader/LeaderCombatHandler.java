@@ -12,11 +12,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import twilightforest.entity.boss.Naga;
 
 public final class LeaderCombatHandler {
     private static final int DEFAULT_STUN_TICKS = 80;
-    private static final int NAGA_STUN_TICKS = 60;
 
     private LeaderCombatHandler() {
     }
@@ -40,19 +38,15 @@ public final class LeaderCombatHandler {
     }
 
     public static void applyParriedReaction(LivingEntity target) {
-        applyParriedReaction(target, defaultStunTicks(target));
+        applyParriedReaction(target, DEFAULT_STUN_TICKS);
     }
 
     public static void applyParriedReaction(LivingEntity target, int stunTicks) {
-        if (target instanceof Naga naga) {
-            naga.getMovementAI().doDaze();
-            naga.setCharging(false);
-        }
         StunManager.setStun(target, stunTicks);
     }
 
-    static int defaultStunTicks(LivingEntity target) {
-        return target instanceof Naga ? NAGA_STUN_TICKS : DEFAULT_STUN_TICKS;
+    static int defaultStunTicks() {
+        return DEFAULT_STUN_TICKS;
     }
 
     public static void scaleIncomingDamage(LivingHurtEvent event) {
@@ -60,9 +54,6 @@ public final class LeaderCombatHandler {
         if (target.getPersistentData().contains(SBSDValues.APOTH_BOSS)
                 && !target.getPersistentData().getBoolean(SBSDValues.APOTH_BOSS)
                 && !LeaderStateStorage.hasExplicitProfile(target)) {
-            return;
-        }
-        if (target instanceof Naga && !target.getPersistentData().getBoolean(SBSDValues.APOTH_BOSS)) {
             return;
         }
         if (LeaderApi.isParried(target)) {

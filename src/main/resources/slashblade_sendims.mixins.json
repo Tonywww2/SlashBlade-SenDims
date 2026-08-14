@@ -78,8 +78,6 @@
     "tetra.MaterialOutcomeDefinitionMixin",
     "tls.ItemRegistryMixin",
     "twilightforest.LichMixin",
-    "twilightforest.NagaGoalMixin",
-    "twilightforest.NagaMixin",
     "twilightforest.TFTeleporterMixin",
     "umapyoi.DivineSpeedSkillMixin",
     "umapyoi.HealSkillMixin",

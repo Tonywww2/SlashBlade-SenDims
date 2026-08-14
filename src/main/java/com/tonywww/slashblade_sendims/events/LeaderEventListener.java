@@ -23,8 +23,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
-import twilightforest.entity.boss.Naga;
-import twilightforest.init.TFEntities;
 
 @Mod.EventBusSubscriber
 public class LeaderEventListener {
@@ -33,7 +31,6 @@ public class LeaderEventListener {
     public static void LivingTickEventListener(LivingEvent.LivingTickEvent event) {
         LivingEntity living = event.getEntity();
         if (!(living.level() instanceof ServerLevel serverLevel)
-                || living instanceof Naga
                 || !LeaderApi.isLeader(living)) {
             return;
         }
@@ -63,11 +60,7 @@ public class LeaderEventListener {
             living.getPersistentData().putBoolean(SBSDValues.BOSS_LEADER, true);
             living.getPersistentData().putBoolean(SBSDValues.APOTH_BOSS, true);
         }
-        if (living.getType() == TFEntities.NAGA.get()) {
-            LeaderManager.registerLeader(living, LeaderProfile.EXTERNAL);
-        } else {
-            LeaderManager.applyRegistration(living);
-        }
+        LeaderManager.applyRegistration(living);
     }
 
     @SubscribeEvent

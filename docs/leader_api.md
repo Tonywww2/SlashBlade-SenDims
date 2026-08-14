@@ -124,7 +124,7 @@ ParryResult result = LeaderApi.tryParry(
 `SUCCESS` 后 API 会：
 
 1. 将目标切换为 `PARRIED` 并关闭窗口。
-2. 应用标准 stun；Naga 使用其原有 daze/charging 处理。
+2. 应用标准 stun。
 3. 同步客户端。
 4. 发布状态变化事件和招架成功事件。
 

@@ -30,7 +30,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.joml.Vector3f;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
-import twilightforest.entity.boss.Naga;
 
 import java.util.List;
 
@@ -54,13 +53,6 @@ public class SBSDLeader {
     }
 
     @Deprecated(forRemoval = false)
-    public static void tickBossLeader(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData, int currentTick) {
-        if (entity instanceof Naga naga) {
-            NagaLeaderController.tick(naga, serverLevel);
-        }
-    }
-
-    @Deprecated(forRemoval = false)
     public static boolean handleParryActions(SlashBladeEvent.HitEvent event, LivingEntity target, CompoundTag persistentData) {
         return LeaderCombatHandler.handleSlashBladeParry(event, target);
     }
@@ -77,16 +69,6 @@ public class SBSDLeader {
         setLeaderActionTickCount(persistentData, 0);
         setLeaderNextActionTickCount(persistentData, 0);
 
-    }
-
-    public static void tickBossParried(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData) {
-        if (tickParried(entity, serverLevel, persistentData)) {
-            if (entity instanceof Naga naga) {
-                naga.getMovementAI().doDaze();
-            }
-        } else {
-
-        }
     }
 
     public static boolean tickParried(LivingEntity entity, ServerLevel serverLevel, CompoundTag persistentData) {
@@ -211,14 +193,6 @@ public class SBSDLeader {
                 true, false, true, 0.2f, KnockBacks.cancel);
         MobAttackManager.doSlash(entity, -30, 3d, 0.75f, 0xb16cc4, Vec3.ZERO,
                 true, false, true, 0.2f, KnockBacks.cancel);
-
-    }
-
-    public static void doLeaderSATripleDrive(LivingEntity entity, ServerLevel serverLevel) {
-        EntityMobDrive.doSlash(entity, 0f, 0f, 60, 0x126000, Vec3.ZERO,
-                false, 0.3f, KnockBacks.cancel, 1.5f, 2f);
-        EntityMobDrive.doSlash(entity, 90f, 0f, 60, 0x126000, Vec3.ZERO,
-                false, 0.3f, KnockBacks.cancel, 1.5f, 2f);
 
     }
 
