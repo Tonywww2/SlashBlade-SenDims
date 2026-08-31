@@ -21,6 +21,7 @@
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",
     "cataclysm.SunkenCityStructureMixin",
+    "cataclysm.WadjetEntityMixin",
     "classicbar.AirBarMixin",
     "classicbar.HungerBarMixin",
     "draconicevolution.ChaosIslandFeatureMixin",

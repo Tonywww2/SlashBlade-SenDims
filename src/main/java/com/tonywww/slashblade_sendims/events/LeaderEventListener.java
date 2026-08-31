@@ -56,10 +56,6 @@ public class LeaderEventListener {
                 || !(event.getEntity() instanceof LivingEntity living)) {
             return;
         }
-        if (SBSDValues.DEFAULT_LEADER_SET.contains(living.getType())) {
-            living.getPersistentData().putBoolean(SBSDValues.BOSS_LEADER, true);
-            living.getPersistentData().putBoolean(SBSDValues.APOTH_BOSS, true);
-        }
         LeaderManager.applyRegistration(living);
     }
 

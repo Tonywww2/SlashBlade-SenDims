@@ -10,13 +10,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import se.mickelus.tetra.effect.ItemEffect;
-import twilightforest.init.TFEntities;
 
 import java.util.*;
 
@@ -137,13 +135,6 @@ public class SBSDValues {
             });
 
         });
-    }
-
-    public static HashSet<EntityType<?>> DEFAULT_LEADER_SET =  new HashSet<>();
-
-    static {
-        DEFAULT_LEADER_SET.add(TFEntities.MINOSHROOM.get());
-//        DEFAULT_LEADER_SET.add(BotaniaEntities.DOPPLEGANGER);
     }
 
     // Kubejs
