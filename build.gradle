@@ -234,6 +234,10 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    if (project.hasProperty('bumblezoneJar')) {
+        compileOnly fg.deobf(files(project.property('bumblezoneJar')))
+    }
+
     if (project.hasProperty('includeBossRefactorIntegration')) {
         bossIntegrationCompileOnly files('../BossRefactorAether/libs/nitrogen_internals-1.20.1-1.0.12-neoforge.jar')
     }

@@ -18,6 +18,7 @@
     "block_factorys_bosses.SandwormEntityMixin",
     "botania.GaiaGuardianEntityMixin",
     "botania.TerraBladeItemMixin",
+    "bumblezone.HoneyCrystalFormationMixin",
     "cataclysm.Burning_Arena_StructureMixin",
     "cataclysm.RuinedCitadelStructureMixin",
     "cataclysm.SunkenCityStructureMixin",
