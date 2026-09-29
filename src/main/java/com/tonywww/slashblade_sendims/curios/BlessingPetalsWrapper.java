@@ -63,12 +63,12 @@ public class BlessingPetalsWrapper implements ICurio {
             atts.put(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(uuid, "blessing_petals_attack_damage",
                             atk,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL));
+                            AttributeModifier.Operation.MULTIPLY_BASE));
 
             atts.put(Attributes.MAX_HEALTH,
                     new AttributeModifier(uuid, "blessing_petals_max_health",
                             hp,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL));
+                            AttributeModifier.Operation.MULTIPLY_BASE));
         }
         return atts;
     }

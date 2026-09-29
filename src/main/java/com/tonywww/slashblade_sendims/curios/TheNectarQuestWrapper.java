@@ -59,7 +59,7 @@ public class TheNectarQuestWrapper implements ICurio {
         atts.put(Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(uuid, "the_nectar_quest_attack_damage",
                         atk,
-                        AttributeModifier.Operation.MULTIPLY_TOTAL));
+                        AttributeModifier.Operation.MULTIPLY_BASE));
         return atts;
     }
 }
