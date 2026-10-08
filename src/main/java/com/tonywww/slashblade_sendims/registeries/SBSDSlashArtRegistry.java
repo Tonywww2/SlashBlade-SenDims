@@ -11,6 +11,10 @@ public class SBSDSlashArtRegistry {
 
     public static final DeferredRegister<SlashArts> SLASH_ARTS = DeferredRegister.create(SlashArts.REGISTRY_KEY, SenDims.MOD_ID);
 
+    public static final RegistryObject<SlashArts> NAMELESS_THREEFOLD = SLASH_ARTS.register("nameless_threefold",
+            () -> new SlashArts(entity -> SBSDComboRegistry.NAMELESS_THREEFOLD.getId())
+                    .setComboStateSuper(entity -> SBSDComboRegistry.NAMELESS_THREEFOLD.getId()));
+
     public static final RegistryObject<SlashArts> FRENZIED_BURST = register("frenzied_burst", SBSDComboRegistry.FRENZIED_BURST.getId());
     public static final RegistryObject<SlashArts> UNENDURABLE_FRENZY = register("unendurable_frenzy", SBSDComboRegistry.UNENDURABLE_FRENZY.getId());
     public static final RegistryObject<SlashArts> GOLDEN_CRUX = register("golden_crux", SBSDComboRegistry.GOLDEN_CRUX.getId());

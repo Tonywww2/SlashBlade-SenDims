@@ -461,3 +461,17 @@ tasks.named('test').configure {
     dependsOn tasks.named('leaderApiTest')
     dependsOn tasks.named('endIslandWorldgenCompatTest')
 }
+
+// Pure geometry assertions for the sdbf:deep_realm_level_2 generator.
+tasks.register('worldTreeGeometryTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks tree canopy coverage, bounds, chunk seams, cache determinism and seabed depth.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.worldgen.WorldTreeFieldSelfTest'
+    def outputDirectory = layout.buildDirectory.dir('world-tree-geometry-test')
+    workingDir outputDirectory
+    args outputDirectory.get().asFile.absolutePath
+    doFirst { outputDirectory.get().asFile.mkdirs() }
+}
+tasks.named('test').configure { dependsOn tasks.named('worldTreeGeometryTest') }

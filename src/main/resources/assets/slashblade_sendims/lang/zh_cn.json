@@ -1,4 +1,6 @@
 {
+  "slash_art.slashblade_sendims.nameless_threefold": "§6无王三式",
+  "slash_art.slashblade_sendims.nameless_threefold.desc": "横扫、反斩，停顿后突进刺击；命中后引下金雷，再回身逐雷、回旋追斩。五段倍率为2、2、5、1、2，总计12倍；无额外冷却。",
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
   "item.slashblade_sendims.blessing_petals": "祝福之花",
   "item.slashblade_sendims.the_nectar_quest": "流金滴萃",
@@ -144,5 +146,22 @@
   "jei.stacking.blessing_petals": "为祝福之花添加收集品",
   "jei.stacking.principle_of_sword_arts": "为剑技绝艺总纲添加SA",
   "jei.stacking.the_nectar_quest": "为流金滴萃纪录精华",
-  "jei.stacking.blood_jade": "使用血玉"
+  "jei.stacking.blood_jade": "使用血玉",
+
+  "effect.slashblade_sendims.storm_penetration": "风暴穿透",
+  "death.attack.slashblade_sendims.true_damage": "%1$s 被无名的王权碾碎",
+  "death.attack.slashblade_sendims.true_damage.player": "%1$s 被 %2$s 以无名王权碾碎",
+
+  "se.slashblade_sendims.nameless_se_faded": "§7褪名",
+  "se.slashblade_sendims.nameless_se_faded.desc": "5 秒内未斩击命中敌人时，下一次命中会修正刀的耐久值：\n剩余耐久高于 70% 则降至 70%，低于 30% 则抬升至 30%。\n\n§8王者舍弃了自己的名字，刀也因此无法被完整地持守。",
+  "se.slashblade_sendims.nameless_se_sovereignty": "§b王威",
+  "se.slashblade_sendims.nameless_se_sovereignty.desc": "斩击命中的敌人会被记入「王之名录」。\n每 5 tick 依名录长度积攒王威充能并清空名录；充能满 §b50§r 层时清空充能并恢复 §b15%§r 最大 AP。",
+  "se.slashblade_sendims.nameless_se_sovereignty_ex": "§6§l王威·极",
+  "se.slashblade_sendims.nameless_se_sovereignty_ex.desc": "加冕之后，王威不再迟缓。\n充能满 §6 40§r 层即可触发，触发时恢复 §6 20%§r 最大 AP。",
+  "se.slashblade_sendims.nameless_se_storm": "§3风暴",
+  "se.slashblade_sendims.nameless_se_storm.desc": "释放 SA 时，获得 2 秒「§3风暴穿透§r」（每级 +5 魔法穿透），\n同时对锁定目标（无锁定则取最近敌人）落下一道雷击。",
+  "se.slashblade_sendims.nameless_se_suppression": "§e王权压制",
+  "se.slashblade_sendims.nameless_se_suppression.desc": "对精英与 Boss 的斩击命中时，额外造成相当于原伤害 §e10%§r 的§f真实伤害§r。\n\n真实伤害无视护甲、附魔、药水效果与伤害抗性。",
+  "se.slashblade_sendims.nameless_se_crownless": "§6§l无冠",
+  "se.slashblade_sendims.nameless_se_crownless.desc": "王者以名字为祭完成加冕。\n解除「§7褪名§r」的耐久钳制，并使「§b王威§r」进化为「§6王威·极§r」。"
 }

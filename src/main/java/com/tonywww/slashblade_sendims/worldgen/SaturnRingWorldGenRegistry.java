@@ -9,6 +9,8 @@ import net.minecraftforge.registries.RegistryObject;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
 /**
  * 将我们的自定义维度生成器注册到 Forge / 原版引擎中。
@@ -35,7 +37,36 @@ public class SaturnRingWorldGenRegistry {
     public static final RegistryObject<Codec<SaturnRingChunkGenerator>> SATURN_RING_CHUNK_GENERATOR =
             CHUNK_GENERATORS.register("saturn_ring_chunk_generator", () -> SaturnRingChunkGenerator.CODEC);
 
+    public static final RegistryObject<Codec<WorldTreeSeaBiomeSource>> WORLD_TREE_SEA_BIOMES =
+            BIOME_SOURCES.register("world_tree_sea", () -> WorldTreeSeaBiomeSource.CODEC);
+
+    public static final RegistryObject<Codec<WorldTreeSeaChunkGenerator>> WORLD_TREE_SEA_GENERATOR =
+            CHUNK_GENERATORS.register("world_tree_sea", () -> WorldTreeSeaChunkGenerator.CODEC);
+
+    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES =
+            DeferredRegister.create(Registries.STRUCTURE_TYPE, SenDims.MOD_ID);
+    public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECES =
+            DeferredRegister.create(Registries.STRUCTURE_PIECE, SenDims.MOD_ID);
+    public static final RegistryObject<StructureType<WorldTreeSmallStructure>> WORLD_TREE_SMALL =
+            STRUCTURE_TYPES.register("world_tree_small", () -> () -> WorldTreeSmallStructure.CODEC);
+    public static final RegistryObject<StructurePieceType> WORLD_TREE_SMALL_PIECE =
+            STRUCTURE_PIECES.register("world_tree_small", () -> WorldTreeSmallStructure.Piece::new);
+
+    public static final RegistryObject<StructureType<WorldTreeDungeonStructure>> WORLD_TREE_DUNGEON =
+            STRUCTURE_TYPES.register("world_tree_dungeon", () -> () -> WorldTreeDungeonStructure.CODEC);
+    public static final RegistryObject<StructurePieceType> WORLD_TREE_DUNGEON_PIECE =
+            STRUCTURE_PIECES.register("world_tree_dungeon", () -> WorldTreeDungeonStructure.Piece::new);
+
+    public static final RegistryObject<Codec<AsteroidBeltChunkGenerator>> ASTEROID_BELT_GENERATOR =
+            CHUNK_GENERATORS.register("asteroid_belt", () -> AsteroidBeltChunkGenerator.CODEC);
+    public static final RegistryObject<StructureType<AsteroidBaseStructure>> ASTEROID_BASE =
+            STRUCTURE_TYPES.register("asteroid_base", () -> () -> AsteroidBaseStructure.CODEC);
+    public static final RegistryObject<StructurePieceType> ASTEROID_BASE_PIECE =
+            STRUCTURE_PIECES.register("asteroid_base", () -> AsteroidBaseStructure.Piece::new);
+
     public static void register(IEventBus eventBus) {
+        STRUCTURE_TYPES.register(eventBus);
+        STRUCTURE_PIECES.register(eventBus);
         CHUNK_GENERATORS.register(eventBus);
         BIOME_SOURCES.register(eventBus);
     }

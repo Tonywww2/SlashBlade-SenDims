@@ -51,6 +51,7 @@ public class SenDims {
 
         SBSDParticles.registerCommon(modEventBus);
         SBSDSpecialEffects.register(modEventBus);
+        SBSDMobEffects.register(modEventBus);
         SBSDComboRegistry.register(modEventBus);
         SBSDSlashArtRegistry.register(modEventBus);
 

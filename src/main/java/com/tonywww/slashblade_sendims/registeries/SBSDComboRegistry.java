@@ -29,6 +29,25 @@ public class SBSDComboRegistry {
                     .releaseAction(ComboState::releaseActionQuickCharge)::build
     );
 
+    public static final RegistryObject<ComboState> NAMELESS_THREEFOLD = COMBO_STATES.register("nameless_threefold",
+            ComboState.Builder.newInstance().startAndEnd(400, 451).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(new ComboState.TimeoutNext(NamelessThreefold.OPENING_TICKS, entity -> NamelessThreefold.PURSUIT_ID))
+                    .nextOfTimeout(entity -> NamelessThreefold.PURSUIT_ID)
+                    .addTickAction(NamelessThreefold::tick)
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
+    public static final RegistryObject<ComboState> NAMELESS_THREEFOLD_PURSUIT = COMBO_STATES.register("nameless_threefold_pursuit",
+            ComboState.Builder.newInstance().startAndEnd(918, 957).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(new ComboState.TimeoutNext(14, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+                    .clickAction(NamelessThreefold::beginPursuit)
+                    .addTickAction(NamelessThreefold::pursuitTick)
+                    .addHitEffect(StunManager::setStun)
+                    ::build);
+
     public static final RegistryObject<ComboState> FRENZIED_BURST = COMBO_STATES.register("frenzied_burst",
             ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
                     .motionLoc(DefaultResources.ExMotionLocation)

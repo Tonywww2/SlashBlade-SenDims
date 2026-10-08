@@ -1,4 +1,6 @@
 {
+  "slash_art.slashblade_sendims.nameless_threefold": "§6Crownless Threefold",
+  "slash_art.slashblade_sendims.nameless_threefold.desc": "Sweep, reverse slash, then pause before a lunging thrust. A hit calls down golden lightning, followed by a returning pursuit and spinning slash. Damage ratios: 2 + 2 + 5 + 1 + 2 = 12. No added cooldown.",
   "item.slashblade_sendims.deeprealm_certificate": "深境证章",
   "item.slashblade_sendims.blessing_petals": "祝福之花",
   "item.slashblade_sendims.the_nectar_quest": "流金滴萃",
@@ -144,5 +146,22 @@
   "jei.stacking.blessing_petals": "为祝福之花添加收集品",
   "jei.stacking.principle_of_sword_arts": "为剑技绝艺总纲添加SA",
   "jei.stacking.the_nectar_quest": "为流金滴萃纪录精华",
-  "jei.stacking.blood_jade": "使用血玉"
+  "jei.stacking.blood_jade": "使用血玉",
+
+  "effect.slashblade_sendims.storm_penetration": "Storm Penetration",
+  "death.attack.slashblade_sendims.true_damage": "%1$s was crushed by nameless royalty",
+  "death.attack.slashblade_sendims.true_damage.player": "%1$s was crushed by %2$s's nameless royalty",
+
+  "se.slashblade_sendims.nameless_se_faded": "§7Faded Name",
+  "se.slashblade_sendims.nameless_se_faded.desc": "If you do not land a slash for 5 seconds, the next hit forcibly corrects the blade: remaining durability above 70% is lowered to 70%, and below 30% is raised to 30%.",
+  "se.slashblade_sendims.nameless_se_sovereignty": "§bSovereignty",
+  "se.slashblade_sendims.nameless_se_sovereignty.desc": "Enemies hit by your slashes are recorded in the Roll of Kings (no duplicates).\nEvery 5 ticks you gain charge equal to the roll's length, then the roll is cleared. At §b50§r charge you spend it all and restore §b15%§r of your max AP.",
+  "se.slashblade_sendims.nameless_se_sovereignty_ex": "§6§lSovereignty EX",
+  "se.slashblade_sendims.nameless_se_sovereignty_ex.desc": "After the coronation, royalty no longer lags.\nCharge triggers at §6 40§r and restores §6 20%§r of your max AP.",
+  "se.slashblade_sendims.nameless_se_storm": "§3Storm",
+  "se.slashblade_sendims.nameless_se_storm.desc": "Releasing a SA grants 2 seconds of §3Storm Penetration§r (5 magic penetration per level, V here → +25),\nand calls down a lightning strike on your locked target (or the nearest enemy).",
+  "se.slashblade_sendims.nameless_se_suppression": "§eRoyal Suppression",
+  "se.slashblade_sendims.nameless_se_suppression.desc": "Slash hits against elites and bosses deal an extra §e10%§r of the original damage as §ftrue damage§r.\n\nTrue damage ignores armor, enchantments, mob effects and damage resistance.",
+  "se.slashblade_sendims.nameless_se_crownless": "§6§lCrownless",
+  "se.slashblade_sendims.nameless_se_crownless.desc": "The king completes his coronation by sacrificing his name.\nRemoves the durability clamp of §7Faded Name§r and upgrades §bSovereignty§r to §6Sovereignty EX§r."
 }

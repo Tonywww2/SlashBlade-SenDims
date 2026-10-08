@@ -6,6 +6,7 @@
   "plugin": "com.tonywww.slashblade_sendims.mixin.SenDimsMixinConfigPlugin",
   "refmap": "slashblade_sendims.refmap.json",
   "mixins": [
+    "adastra.AsteroidEnvironmentMixin",
     "adastra.EtrionicBlastFurnaceBlockEntityMixin",
     "adastra.GravityApiImplMixin",
     "adastra_giselle.ProofEnchantmentFunctionMixin",
@@ -43,6 +44,7 @@
     "minecraft.EnderDragonMixin",
     "minecraft.MixinShulkerAttackGoal",
     "minecraft.NoiseBasedChunkGeneratorMixin",
+    "minecraft.WorldTreeStructurePlacementMixin",
     "minecraft.SingleItemRecipeMixin$SerializerMixin",
     "netherman.AzazelEntityMixin",
     "netherman.GildedGolemEntityMixin",
