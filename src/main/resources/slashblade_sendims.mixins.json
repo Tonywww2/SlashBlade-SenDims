@@ -117,6 +117,8 @@
   ],
   "client": [
     "neat.NeatHealthBarRendererMixin",
+    "netmusic.BigMegaphoneItemRendererMixin",
+    "netmusic.MusicPlayerItemRendererMixin",
     "derenderpatcher.CompatModsMixin",
     "minecraft.ModelPartTraversalMixin",
     "apotheosis.GemCuttingScreenMixin",

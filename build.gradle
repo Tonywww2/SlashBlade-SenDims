@@ -544,3 +544,18 @@ tasks.register('quarkItemSharingTest', JavaExec) {
 }
 
 tasks.named('test').configure { dependsOn tasks.named('quarkItemSharingTest') }
+
+// Net Music item models are baked independently of lazy block-renderer creation.
+tasks.register('netMusicItemRenderingTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks both native poses and all installed Net Music item-renderer singleton crash paths offline.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.client.compat.netmusic.NetMusicItemRenderingSelfTest'
+    def outputDirectory = layout.buildDirectory.dir('netmusic-item-rendering-test')
+    workingDir outputDirectory
+    if (project.hasProperty('netMusicCompatModsDirectory')) args project.property('netMusicCompatModsDirectory')
+    doFirst { outputDirectory.get().asFile.mkdirs() }
+}
+
+tasks.named('test').configure { dependsOn tasks.named('netMusicItemRenderingTest') }
