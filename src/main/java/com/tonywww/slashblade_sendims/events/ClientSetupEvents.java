@@ -3,6 +3,8 @@ package com.tonywww.slashblade_sendims.events;
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.client.renderer.entity.ChaoticBlisteringSwordsRenderer;
 import com.tonywww.slashblade_sendims.client.renderer.entity.ChaoticJudgementCutRenderer;
+import com.tonywww.slashblade_sendims.client.renderer.entity.HolySwordLightRenderer;
+import com.tonywww.slashblade_sendims.client.renderer.entity.YakumanDriveRenderer;
 import com.tonywww.slashblade_sendims.client.overlay.MadnessOverlay;
 import com.tonywww.slashblade_sendims.registeries.SBSDEntities;
 import mods.flammpfeil.slashblade.client.renderer.entity.DriveRenderer;
@@ -18,6 +20,8 @@ public class ClientSetupEvents {
 
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(SBSDEntities.HOLY_SWORD_LIGHT.get(), HolySwordLightRenderer::new);
+        event.registerEntityRenderer(SBSDEntities.YAKUMAN_DRIVE.get(), YakumanDriveRenderer::new);
         event.registerEntityRenderer(
                 SBSDEntities.CHAOTIC_JUDGEMENT_CUT.get(),
                 ChaoticJudgementCutRenderer::new

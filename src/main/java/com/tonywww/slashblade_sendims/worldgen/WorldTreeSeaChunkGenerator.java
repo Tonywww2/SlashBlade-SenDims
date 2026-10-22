@@ -8,6 +8,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.SimpleBitStorage;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.block.Blocks;
@@ -88,19 +90,28 @@ public final class WorldTreeSeaChunkGenerator extends ChunkGenerator {
             // Like vanilla noise generation, own the palette locks and write sections directly.
             // ProtoChunk.setBlockState otherwise scans/updates heightmaps for every block.
             LevelChunkSection[] sections=chunk.getSections();
+            EnumSet<Heightmap.Types> maps=EnumSet.of(Heightmap.Types.WORLD_SURFACE_WG,Heightmap.Types.OCEAN_FLOOR_WG);
+            maps.addAll(chunk.getStatus().heightmapsAfter());
+            Heightmap.Types[] types=maps.toArray(Heightmap.Types[]::new);
+            SimpleBitStorage[] heights=new SimpleBitStorage[types.length];
+            for(int i=0;i<types.length;i++)heights[i]=new SimpleBitStorage(Mth.ceillog2(chunk.getHeight()+1),256);
             for(LevelChunkSection section:sections)section.acquire();
             try{
                 for(int z=0;z<16;z++)for(int x=0;x<16;x++){
                     WorldTreeField.Column c=field().cachedColumn(pos.getMinBlockX()+x,pos.getMinBlockZ()+z,candidates);
-                    for(int y=getMinY();y<getMinY()+getGenDepth();y++){
+                    int pending=(1<<types.length)-1;
+                    for(int y=c.highestOccupiedY();y>=getMinY();y--){
                         BlockState s=state(c,y);
-                        if(!s.isAir())sections[chunk.getSectionIndex(y)].setBlockState(x,y&15,z,s,false);
+                        if(s.isAir())continue;
+                        sections[chunk.getSectionIndex(y)].setBlockState(x,y&15,z,s,false);
+                        // Find each first available height during the existing descending fill pass.
+                        if(pending!=0)for(int i=0;i<types.length;i++)if((pending&(1<<i))!=0&&types[i].isOpaque().test(s)){
+                            heights[i].set(x+z*16,y+1-chunk.getMinBuildHeight());pending&=~(1<<i);
+                        }
                     }
                 }
             }finally{for(LevelChunkSection section:sections)section.release();}
-            EnumSet<Heightmap.Types> maps=EnumSet.of(Heightmap.Types.WORLD_SURFACE_WG,Heightmap.Types.OCEAN_FLOOR_WG);
-            maps.addAll(chunk.getStatus().heightmapsAfter());
-            Heightmap.primeHeightmaps(chunk,maps);
+            for(int i=0;i<types.length;i++)chunk.setHeightmap(types[i],heights[i].getRaw());
             return chunk;
         },executor);
     }

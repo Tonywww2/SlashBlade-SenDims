@@ -1,0 +1,24 @@
+{
+  "name": "slashblade_sendims:mizushi",
+  "enchantments": [
+    {"id": "minecraft:sharpness", "lvl": 5},
+    {"id": "minecraft:unbreaking", "lvl": 3},
+    {"id": "minecraft:looting", "lvl": 3}
+  ],
+  "properties": {
+    "attack_base": 65.0,
+    "slash_art": "slashblade_sendims:malevolent_shrine",
+    "special_effects": [
+      "slashblade_sendims:mahoraga_false",
+      "slashblade_sendims:space_cut",
+      "slashblade_sendims:reverse_cursed_technique"
+    ],
+    "sword_type": ["bewitched"]
+  },
+  "render": {
+    "carry_type": "katana",
+    "model": "slashblade_sendims:model/sukuna/mizushi.obj",
+    "texture": "slashblade_sendims:model/sukuna/mizushi.png",
+    "summon_sword_color": 6687523
+  }
+}

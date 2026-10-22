@@ -18,6 +18,7 @@ public final class WorldTreeField {
     private final ConcurrentHashMap<Long, Column> columns = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, Optional<Mangrove>> mangroves = new ConcurrentHashMap<>();
     private static final Segment[] NO_SEGMENTS=new Segment[0];
+    private static final int SECTION_COUNT=HEIGHT/16;
     private static long coordinateKey(int x,int z){return mix(((long)x<<32)^(z&0xffffffffL));}
     private static <T> void trim(ConcurrentHashMap<Long,T> cache,int limit,int batch){
         if(cache.size()<=limit)return;
@@ -139,6 +140,9 @@ public final class WorldTreeField {
         private final List<Segment> wood=new ArrayList<>();
         private final List<Lobe> leaves=new ArrayList<>();
         private final List<Mangrove> smallTrees=new ArrayList<>(1);
+        private final Segment[][] woodBySection;
+        private final Lobe[][] leavesBySection;
+        private final int highestOccupiedY;
         Column(int x,int z,List<Tree> candidates) {
             this.x=x;this.z=z;floor=floorAt(x,z,candidates);
             zone=floor>=seaLevel ? Zone.ROOTS : floor>=seaLevel-11 ? Zone.SHALLOWS : Zone.DEPTHS;
@@ -160,13 +164,42 @@ public final class WorldTreeField {
                 }
                 trim(mangroves,1024,128);
             }
+            // Conservative Y bounds only prune impossible intersections; containment math/order stay identical.
+            int[] woodCounts=new int[SECTION_COUNT],leafCounts=new int[SECTION_COUNT];
+            int highest=Math.max(floor,seaLevel-1);
+            for(Tree t:trunks)highest=Math.max(highest,(int)Math.ceil(t.top-2));
+            for(Segment s:wood){
+                highest=Math.max(highest,(int)Math.ceil(s.maxY));
+                for(int i=section(s.minY);i<=section(s.maxY);i++)woodCounts[i]++;
+            }
+            for(Lobe l:leaves){
+                highest=Math.max(highest,(int)Math.ceil(l.y+l.ry*1.25));
+                for(int i=section(l.y-l.ry*1.25);i<=section(l.y+l.ry*1.25);i++)leafCounts[i]++;
+            }
+            for(Mangrove m:smallTrees)highest=Math.max(highest,m.maxY);
+            highestOccupiedY=Math.min(MAX_Y,highest);
+            woodBySection=new Segment[SECTION_COUNT][];leavesBySection=new Lobe[SECTION_COUNT][];
+            for(int i=0;i<SECTION_COUNT;i++){
+                woodBySection[i]=woodCounts[i]==0?NO_SEGMENTS:new Segment[woodCounts[i]];
+                leavesBySection[i]=leafCounts[i]==0?null:new Lobe[leafCounts[i]];
+            }
+            java.util.Arrays.fill(woodCounts,0);java.util.Arrays.fill(leafCounts,0);
+            for(Segment s:wood)for(int i=section(s.minY);i<=section(s.maxY);i++)woodBySection[i][woodCounts[i]++]=s;
+            for(Lobe l:leaves)for(int i=section(l.y-l.ry*1.25);i<=section(l.y+l.ry*1.25);i++)leavesBySection[i][leafCounts[i]++]=l;
         }
+        private int section(double y){return Math.max(0,Math.min(SECTION_COUNT-1,((int)Math.floor(y)-MIN_Y)>>4));}
+        /** All higher cells are air, including small mangroves. */
+        public int highestOccupiedY(){return highestOccupiedY;}
         public boolean woodAt(int y) {
             for(Tree t:trunks) if(t.trunkContains(x,y,z)) return true;
-            for(Segment s:wood) if(s.contains(x,y,z)) return true;
+            for(Segment s:woodBySection[section(y)]) if(s.contains(x,y,z)) return true;
             return false;
         }
-        public boolean leavesAt(int y) { for(Lobe l:leaves) if(l.contains(x,y,z)) return true; return false; }
+        public boolean leavesAt(int y) {
+            Lobe[] candidates=leavesBySection[section(y)];
+            if(candidates!=null)for(Lobe l:candidates)if(l.contains(x,y,z))return true;
+            return false;
+        }
         /** Bounded attachment search using this column's spatially indexed wood segments. */
         int ecologySurface(int low,int high,boolean underside) {
             int found=Integer.MIN_VALUE;
@@ -215,7 +248,7 @@ public final class WorldTreeField {
             return y<seaLevel ? Kind.WATER : Kind.AIR;
         }
         public int highestSolid(boolean includeLeaves) {
-            for(int y=MAX_Y;y>floor;y--) if(woodAt(y) || includeLeaves && leavesAt(y)) return y;
+            for(int y=highestOccupiedY;y>floor;y--) if(woodAt(y) || includeLeaves && leavesAt(y)) return y;
             return floor;
         }
     }
@@ -283,6 +316,7 @@ public final class WorldTreeField {
         private final double[] burlY=new double[3],burlSize=new double[3];
         private final Random geometryRandom;
         private volatile Geometry geometry;
+        private volatile TrunkSlice[] trunkSlices;
         public final List<Segment> wood=new ArrayList<>();
         public final List<Lobe> leaves=new ArrayList<>();
         Tree(int cx,int cz) {
@@ -386,16 +420,30 @@ public final class WorldTreeField {
             double taper=Math.max(14,radius*(1-.70*Math.pow(t,.83)));
             return Math.hypot(px-c.x,pz-c.z)<taper*(.37+.06*Math.sin(y*.12+phase));
         }
-        private boolean trunkContains(double px,double y,double pz) {
+        private TrunkSlice[] trunkSlices(){
+            TrunkSlice[] result=trunkSlices;
+            if(result!=null)return result;
+            synchronized(this){
+                if(trunkSlices==null){
+                    result=new TrunkSlice[HEIGHT];
+                    for(int y=(int)Math.ceil(base-6);y<=Math.floor(top-2);y++){
+                        Vec c=trunkCenter(y);double t=Math.max(0,(y-base)/(top-base));
+                        double taper=Math.max(14,radius*(1-.70*Math.pow(t,.83))),burls=0;
+                        for(int i=0;i<burlY.length;i++){double q=(y-burlY[i])/13;burls+=burlSize[i]*Math.exp(-q*q);}
+                        double buttress=radius*.48*Math.exp(-Math.pow((y-base)/30,2));
+                        result[y-MIN_Y]=new TrunkSlice(c.x,c.z,taper,taper+burls+buttress);
+                    }
+                    trunkSlices=result;
+                }
+                return trunkSlices;
+            }
+        }
+        private boolean trunkContains(double px,int y,double pz) {
             if(y<base-6 || y>top-2) return false;
-            Vec c=trunkCenter(y);
-            double t=Math.max(0,(y-base)/(top-base));
+            TrunkSlice c=trunkSlices()[y-MIN_Y];
             double angle=Math.atan2(pz-c.z,px-c.x);
-            double taper=Math.max(14,radius*(1-.70*Math.pow(t,.83)));
-            double burls=0;
-            for(int i=0;i<burlY.length;i++){double q=(y-burlY[i])/13;burls+=burlSize[i]*Math.exp(-q*q);}
-            double buttress=radius*.48*Math.exp(-Math.pow((y-base)/30,2));
-            double rr=(taper+burls+buttress)*(1+.18*Math.sin(angle*5+phase+y*.037)+.08*Math.cos(angle*11-y*.071))
+            double taper=c.taper;
+            double rr=c.radius*(1+.18*Math.sin(angle*5+phase+y*.037)+.08*Math.cos(angle*11-y*.071))
                 +2.5*woodNoise(px,y,pz,phase);
             double d=Math.hypot(px-c.x,pz-c.z);
             if(d>rr) return false;
@@ -419,6 +467,7 @@ public final class WorldTreeField {
             return path;
         }
     }
+    private record TrunkSlice(double x,double z,double taper,double radius) {}
     private final class Curve {
         private final Tree owner;
         private final Vec a,b,c,d;

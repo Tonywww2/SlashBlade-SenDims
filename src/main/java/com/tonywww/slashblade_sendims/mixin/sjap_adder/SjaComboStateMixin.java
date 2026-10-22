@@ -14,15 +14,40 @@ import net.minecraftforge.registries.DeferredRegister;
 import com.dinzeer.legendreliclib.lib.compat.slashblade.Drives;
 import com.dinzeer.sjapadder.sa.DriveSum;
 import mods.flammpfeil.slashblade.init.DefaultResources;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.RegistryObject;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.function.Supplier;
 
 @Mixin(value = SjaComboRegistry.class, remap = false)
 public class SjaComboStateMixin {
+
+    // DeadBallSa emits one central ball plus two per pair: 3 -> 7, 10 -> 21.
+    // Patch only the two SA callers; the SE uses spawnDeadBall independently.
+    @ModifyArg(
+            method = "*",
+            at = @At(value = "INVOKE", target = "Lcom/dinzeer/sjapadder/sa/DeadBallSa;doSlash(Lnet/minecraft/world/entity/LivingEntity;I)V"),
+            index = 1,
+            require = 2,
+            allow = 2,
+            remap = false
+    )
+    private static int sendimsDeadBallRelease(LivingEntity user, int pairs) {
+        if (pairs == 18) {
+            // This tick action runs after the native SA/AP release checks succeed.
+            if (user instanceof ServerPlayer player && player.getMainHandItem().getItem() instanceof ItemSlashBlade) {
+                player.getCooldowns().addCooldown(player.getMainHandItem().getItem(), 140);
+            }
+            return 10;
+        }
+        return pairs == 6 ? 3 : pairs;
+    }
 
     @Redirect(
             method = "<clinit>",

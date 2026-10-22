@@ -10,6 +10,16 @@ import net.minecraftforge.registries.RegistryObject;
 public class SBSDSlashArtRegistry {
 
     public static final DeferredRegister<SlashArts> SLASH_ARTS = DeferredRegister.create(SlashArts.REGISTRY_KEY, SenDims.MOD_ID);
+    public static final RegistryObject<SlashArts> MALEVOLENT_SHRINE = SLASH_ARTS.register("malevolent_shrine",
+            () -> new SlashArts(entity -> SBSDComboRegistry.MALEVOLENT_SHRINE.getId())
+                    .setComboStateSuper(entity -> SBSDComboRegistry.MALEVOLENT_SHRINE.getId()));
+
+    public static final RegistryObject<SlashArts> CALIBURN = SLASH_ARTS.register("caliburn",
+            () -> new SlashArts(entity -> SBSDComboRegistry.CALIBURN.getId())
+                    .setComboStateSuper(entity -> SBSDComboRegistry.CALIBURN.getId()));
+    public static final RegistryObject<SlashArts> EXCALIBUR = SLASH_ARTS.register("excalibur",
+            () -> new SlashArts(entity -> SBSDComboRegistry.EXCALIBUR.getId())
+                    .setComboStateSuper(entity -> SBSDComboRegistry.EXCALIBUR.getId()));
 
     public static final RegistryObject<SlashArts> NAMELESS_THREEFOLD = SLASH_ARTS.register("nameless_threefold",
             () -> new SlashArts(entity -> SBSDComboRegistry.NAMELESS_THREEFOLD.getId())

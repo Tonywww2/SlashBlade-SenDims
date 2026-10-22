@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 public final class SenDimsMixinConfigPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
+        com.tonywww.slashblade_sendims.startup.EarlyStartupOptimizer.install();
     }
 
     @Override
@@ -22,6 +23,10 @@ public final class SenDimsMixinConfigPlugin implements IMixinConfigPlugin {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (mixinClassName.contains(".draconicevolution.")
                 && classLoader.getResource("com/brandon3055/draconicevolution/DraconicEvolution.class") == null) {
+            return false;
+        }
+        if (mixinClassName.contains(".quark.")
+                && classLoader.getResource("org/violetmoon/quark/content/management/module/ItemSharingModule.class") == null) {
             return false;
         }
         String targetResource = targetClassName.replace('.', '/') + ".class";

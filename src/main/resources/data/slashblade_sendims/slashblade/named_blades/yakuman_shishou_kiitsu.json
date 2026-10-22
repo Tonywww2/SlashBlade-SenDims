@@ -1,0 +1,36 @@
+{
+  "name": "slashblade_sendims:yakuman_shishou_kiitsu",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 10
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 7
+    },
+    {
+      "id": "minecraft:looting",
+      "lvl": 4
+    }
+  ],
+  "properties": {
+    "attack_base": 105.0,
+    "slash_art": "slashblade_sendims:yakuman_shishou_kiitsu",
+    "special_effects": [
+      "slashblade_sendims:yakuman_four_seals",
+      "slashblade_sendims:yakuman_seven_edict",
+      "slashblade_sendims:yakuman_wind_veil",
+      "slashblade_sendims:yakuman_kong"
+    ],
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "katana",
+    "model": "slashblade_sendims:model/yakuman/wind.obj",
+    "texture": "slashblade_sendims:model/yakuman/shishou_kiitsu.png",
+    "summon_sword_color": 14931626
+  }
+}

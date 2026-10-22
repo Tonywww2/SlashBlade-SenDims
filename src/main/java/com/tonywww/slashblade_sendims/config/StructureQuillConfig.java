@@ -8,21 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 public final class StructureQuillConfig {
-    public static final ForgeConfigSpec SPEC;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> CREATIVE_TAB_STRUCTURES;
-
-    static {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.push("structureQuill");
-        CREATIVE_TAB_STRUCTURES = builder
-                .comment("Structure IDs whose preconfigured quills are shown in the creative mode tab.",
-                        "Tooltip translation keys are generated as structure.<namespace>.<path>.",
-                        "Changing this value requires a client restart.")
-                .defineList("creativeTabStructures", List.of("minecraft:stronghold"),
-                        StructureQuillConfig::isValidStructureId);
-        builder.pop();
-        SPEC = builder.build();
-    }
+    public static final ForgeConfigSpec SPEC = com.tonywww.slashblade_sendims.config.SenDimsConfig.SPEC;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> CREATIVE_TAB_STRUCTURES = com.tonywww.slashblade_sendims.config.SenDimsConfig.CREATIVE_TAB_STRUCTURES;
 
     private StructureQuillConfig() {
     }
@@ -38,7 +25,4 @@ public final class StructureQuillConfig {
         return List.copyOf(structures);
     }
 
-    private static boolean isValidStructureId(Object value) {
-        return value instanceof String id && ResourceLocation.tryParse(id) != null;
-    }
 }

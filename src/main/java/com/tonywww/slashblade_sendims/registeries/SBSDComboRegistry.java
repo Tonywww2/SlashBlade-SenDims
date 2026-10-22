@@ -19,6 +19,31 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class SBSDComboRegistry {
     public static final DeferredRegister<ComboState> COMBO_STATES = DeferredRegister.create(ComboState.REGISTRY_KEY, SenDims.MOD_ID);
+    public static final RegistryObject<ComboState> MALEVOLENT_SHRINE = COMBO_STATES.register("malevolent_shrine",
+            ComboState.Builder.newInstance().startAndEnd(400,429).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(new ComboState.TimeoutNext(8,entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+                    .clickAction(SukunaArts::begin)::build);
+
+    public static final RegistryObject<ComboState> CALIBURN = COMBO_STATES.register("caliburn",
+            ComboState.Builder.newInstance().startAndEnd(400, 409).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(new ComboState.TimeoutNext(6, entity -> HolySwordArts.CALIBURN_FINISH))
+                    .nextOfTimeout(entity -> HolySwordArts.CALIBURN_FINISH)
+                    .clickAction(HolySwordArts::begin).addTickAction(HolySwordArts::tick)::build);
+    public static final RegistryObject<ComboState> CALIBURN_FINISH = COMBO_STATES.register("caliburn_finish",
+            ComboState.Builder.newInstance().startAndEnd(1600, 1621).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(new ComboState.TimeoutNext(14, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+                    .clickAction(HolySwordArts::finishCaliburn)::build);
+    public static final RegistryObject<ComboState> EXCALIBUR = COMBO_STATES.register("excalibur",
+            ComboState.Builder.newInstance().startAndEnd(1600, 1618).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(new ComboState.TimeoutNext(12, entity -> SlashBlade.prefix("none")))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+                    .clickAction(HolySwordArts::begin).addTickAction(HolySwordArts::tick)::build);
 
     public static final RegistryObject<ComboState> ALL_REUSE = COMBO_STATES.register(
             "all_reuse",
@@ -83,23 +108,26 @@ public class SBSDComboRegistry {
                     ::build);
 
     public static final RegistryObject<ComboState> GOLDEN_CRUX = COMBO_STATES.register("golden_crux",
-            ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
+            ComboState.Builder.newInstance().startAndEnd(1800, 1812).timeout(100).priority(50)
                     .motionLoc(DefaultResources.ExMotionLocation)
-                    .next(ComboState.TimeoutNext.buildFromFrame(25, entity -> SlashBlade.prefix("none")))
-                    .nextOfTimeout(entity -> SenDims.prefix("all_reuse"))
-                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                            .put(2, GoldenCrux::doGoldenCruxStart)
+                    .next(entity -> SlashBlade.prefix("none"))
+                    .nextOfTimeout(entity -> GoldenCrux.DIVE)
+                    .clickAction(GoldenCrux::begin)
+                    ::build);
 
-                            .put(4, GoldenCrux::doGoldenCruxHover)
-                            .put(6, GoldenCrux::doGoldenCruxHover)
-                            .put(8, GoldenCrux::doGoldenCruxHover)
-                            .put(10, GoldenCrux::doGoldenCruxHover)
+    public static final RegistryObject<ComboState> GOLDEN_CRUX_DIVE = COMBO_STATES.register("golden_crux_dive",
+            ComboState.Builder.newInstance().startAndEnd(1812, 1817).loop().timeout(2200).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(entity -> SlashBlade.prefix("none"))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+                    ::build);
 
-                            .put(12, GoldenCrux::doGoldenCruxDrop)
-                            .put(16, GoldenCrux::doGoldenCruxDrop)
-                            .put(20, GoldenCrux::doGoldenCruxImpact)
-                            .build())
-                    .addHitEffect(StunManager::setStun)
+    public static final RegistryObject<ComboState> GOLDEN_CRUX_LANDING = COMBO_STATES.register("golden_crux_landing",
+            ComboState.Builder.newInstance().startAndEnd(1817, 1841).priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(entity -> SlashBlade.prefix("none"))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+                    .addTickAction(UserPoseOverrider::resetRot)
                     ::build);
 
     public static final RegistryObject<ComboState> GOLDEN_CRUX_EX = COMBO_STATES.register("golden_crux_ex",

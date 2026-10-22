@@ -1,5 +1,6 @@
 package com.tonywww.slashblade_sendims.se;
 
+import com.tonywww.slashblade_sendims.utils.TrueDamage;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,7 +16,7 @@ public class DistantThunder extends SpecialEffect {
         if (isMagic) {
             double mDist = manhattanDistance(target.position(), player.position());
             float extraDamage = (float) (originalDamage * Math.min(0.3f, 0.0000175 * mDist * mDist));
-            DamageSource extraDamageSource = player.damageSources().sonicBoom(player);
+            DamageSource extraDamageSource = TrueDamage.source(player);
             target.invulnerableTime = 0;
             target.hurt(extraDamageSource, extraDamage);
         }

@@ -475,3 +475,72 @@ tasks.register('worldTreeGeometryTest', JavaExec) {
     doFirst { outputDirectory.get().asFile.mkdirs() }
 }
 tasks.named('test').configure { dependsOn tasks.named('worldTreeGeometryTest') }
+
+
+tasks.register('clientPerformanceTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks client performance cache invalidation, optional mods and fluid table behavior.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.performance.ClientPerformanceSelfTest'
+    def outputDirectory = layout.buildDirectory.dir('client-performance-test')
+    workingDir outputDirectory
+    doFirst { outputDirectory.get().asFile.mkdirs() }
+}
+tasks.named('test').configure { dependsOn tasks.named('clientPerformanceTest') }
+
+tasks.register('clientRenderingParityTest', JavaExec) {
+    group = 'verification'
+    description = 'Compares optimized OBJ/CCL vertices and bounded caches without starting Minecraft.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.performance.ClientRenderingParitySelfTest'
+    def outputDirectory = layout.buildDirectory.dir('client-rendering-parity-test')
+    workingDir outputDirectory
+    doFirst { outputDirectory.get().asFile.mkdirs() }
+}
+tasks.named('test').configure { dependsOn tasks.named('clientRenderingParityTest') }
+
+
+tasks.register('clientStartupTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks opcode bytecode parity, OBJ asset parity, bounded async preparation and cache invalidation.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.startup.ClientStartupSelfTest'
+    def outputDirectory = layout.buildDirectory.dir('client-startup-test')
+    workingDir outputDirectory
+    maxHeapSize = '3G'
+    if (project.hasProperty('clientStartupModsDirectory')) args project.property('clientStartupModsDirectory')
+    doFirst { outputDirectory.get().asFile.mkdirs() }
+}
+
+tasks.named('test').configure { dependsOn tasks.named('clientStartupTest') }
+
+
+tasks.register('configTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks unified config definitions, typed accessors and the early startup reader without launching Minecraft.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.config.ConfigSelfTest'
+    def outputDirectory = layout.buildDirectory.dir('config-test')
+    workingDir outputDirectory
+    if (project.hasProperty('unifiedConfigFile')) args project.property('unifiedConfigFile')
+    doFirst { outputDirectory.get().asFile.mkdirs() }
+}
+tasks.named('test').configure { dependsOn tasks.named('configTest') }
+
+// Quark item sharing: full Forge snapshot through packet and JSON hover NBT.
+tasks.register('quarkItemSharingTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks chat blade capability and ordinary NBT preservation without launching Minecraft.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.tonywww.slashblade_sendims.compat.quark.SharedBladeSnapshotSelfTest'
+    def outputDirectory = layout.buildDirectory.dir('quark-item-sharing-test')
+    workingDir outputDirectory
+    doFirst { outputDirectory.get().asFile.mkdirs() }
+}
+
+tasks.named('test').configure { dependsOn tasks.named('quarkItemSharingTest') }

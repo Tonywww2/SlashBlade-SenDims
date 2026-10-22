@@ -34,12 +34,16 @@ public class NCFluidsMixin {
         @Unique
         private static ResourceLocation slashBlade_SenDims$ACID = ResourceLocation.fromNamespaceAndPath(NuclearCraft.MODID, "sulfuric_acid");
 
-        @Redirect(method = "lambda$make$5",
+        // Lambda numbering changes between NuclearCraft releases; the exact constructor
+        // descriptor identifies the single fluid block factory without relying on that numbering.
+        @Redirect(method = "*",
                 at = @At(
                         value = "NEW",
                         target = "(Ligentuman/nc/setup/registration/NCFluids$FluidEntry;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)Ligentuman/nc/block/NCFluidBlock;"
                 ),
-                remap = false)
+                remap = false,
+                require = 1,
+                allow = 1)
         private static NCFluidBlock redirectNCFluidBlock(NCFluids.FluidEntry fluidEntry, BlockBehaviour.Properties properties) {
             if (fluidEntry.still().getId().equals(slashBlade_SenDims$ACID)) {
                 return new AcidNCFluidBlock(fluidEntry, properties);

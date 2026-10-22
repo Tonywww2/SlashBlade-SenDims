@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import java.util.Comparator;
 import java.util.List;
 
@@ -80,8 +81,10 @@ public class GoldenCruxEX {
                 // 使玩家朝向该敌人
                 attacker.lookAt(attacker.createCommandSourceStack().getAnchor(), target.position());
 
-                // 调用原有逻辑生成小刺效果
+                // 保留原生斩击的命中结算，外观统一为普通黄金穿刺的贴地刺环。
                 GoldenCrux.doGoldenCruxImpactSmall(attacker);
+                // 起点使用目标脚底高度，不能使用攻击者瞬移后的滞空高度。
+                GoldenCrux.showCrown(attacker, level.getGameTime(), new Vec3(tpX, target.getY(), tpZ));
             }
         }
     }

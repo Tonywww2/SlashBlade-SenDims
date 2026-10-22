@@ -4,6 +4,7 @@ import com.tonywww.slashblade_sendims.SBSDValues;
 import com.tonywww.slashblade_sendims.sa.NamelessThreefold;
 import com.tonywww.slashblade_sendims.registeries.SBSDSpecialEffects;
 import com.tonywww.slashblade_sendims.utils.TetraUtils;
+import com.tonywww.slashblade_sendims.utils.TrueDamage;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -182,6 +183,8 @@ public class SEEventHandlers {
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
         DamageSource source = event.getSource();
+        // True damage is terminal: do not convert, store or recursively amplify it through offensive SEs.
+        if (TrueDamage.isTrueDamage(source)) return;
         LivingEntity target = event.getEntity();
         float originalDamage = event.getAmount();
         Entity attackerEntity = source.getEntity();

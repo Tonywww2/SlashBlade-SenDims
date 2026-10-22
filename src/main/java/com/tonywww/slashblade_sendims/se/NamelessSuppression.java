@@ -1,5 +1,6 @@
 package com.tonywww.slashblade_sendims.se;
 
+import com.tonywww.slashblade_sendims.utils.TrueDamage;
 import com.tonywww.slashblade_sendims.leader.LeaderStateStorage;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +33,7 @@ public class NamelessSuppression extends SpecialEffect {
             return;
         }
 
-        NamelessSeries.dealTrueDamage(player, target,
+        TrueDamage.deal(player, target,
                 originalDamage * NamelessSeries.SUPPRESSION_TRUE_DAMAGE_RATIO);
     }
 }

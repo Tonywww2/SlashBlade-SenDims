@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.se;
 
 import com.tonywww.slashblade_sendims.SenDims;
+import com.tonywww.slashblade_sendims.utils.TrueDamage;
 import com.tonywww.slashblade_sendims.network.MadnessSyncPacket;
 import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import com.tonywww.slashblade_sendims.registeries.SBSDSpecialEffects;
@@ -174,7 +175,7 @@ public class FrenziedFlame extends SpecialEffect {
         if (finalDamage > 0) {
             for (int i = 0; i < finalCount; i += 2) {
                 SenDims.serverScheduler.schedule(i, () -> {
-                    AttackManager.doAttackWith(attacker.damageSources().sonicBoom(attacker), finalDamage, target, false, true);
+                    AttackManager.doAttackWith(TrueDamage.source(attacker), finalDamage, target, false, true);
                     doMadnessParticle(target, (ServerLevel) target.level());
 
                 });

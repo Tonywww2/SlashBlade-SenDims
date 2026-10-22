@@ -44,6 +44,11 @@ public class DeepRealmCertificate extends Item {
             ChatFormatting.LIGHT_PURPLE
     };
 
+    private static ChatFormatting getDisplayColor(int index) {
+        // A fully completed final bar has progress count 6, beyond the six rank colors.
+        return COLOR_LIST[Math.max(0, Math.min(index, COLOR_LIST.length - 1))];
+    }
+
     public DeepRealmCertificate(Properties properties) {
         super(properties);
     }
@@ -172,7 +177,7 @@ public class DeepRealmCertificate extends Item {
         MutableComponent rankComponent = Component.translatable("ui.slashblade_sendims.deeprealm_certificate.rank");
         rankComponent.append(
                 Component.translatable("ui.slashblade_sendims.deeprealm_certificate.rank." + rank)
-                        .setStyle(rankComponent.getStyle().withColor(COLOR_LIST[rank]))
+                        .setStyle(rankComponent.getStyle().withColor(getDisplayColor(rank)))
         );
         toolTips.add(rankComponent);
 
@@ -184,7 +189,7 @@ public class DeepRealmCertificate extends Item {
         MutableComponent healthMaterial = null;
         health.append(
                 Component.literal("[" + healthProgressCount + "] ")
-                        .setStyle(health.getStyle().withColor(COLOR_LIST[healthProgressCount]))
+                        .setStyle(health.getStyle().withColor(getDisplayColor(healthProgressCount)))
         );
         if (healthProgress >= progressCap) {
             health.append(Component.literal("MAX"));
@@ -207,7 +212,7 @@ public class DeepRealmCertificate extends Item {
         MutableComponent damageMaterial = null;
         damage.append(
                 Component.literal("[" + damageProgressCount + "] ")
-                        .setStyle(damage.getStyle().withColor(COLOR_LIST[damageProgressCount]))
+                        .setStyle(damage.getStyle().withColor(getDisplayColor(damageProgressCount)))
         );
         if (damageProgress >= progressCap) {
             damage.append(Component.literal("MAX"));

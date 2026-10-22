@@ -1,0 +1,34 @@
+{
+  "name": "slashblade_sendims:yakuman_chinrou_suukou",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 6
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 4
+    },
+    {
+      "id": "minecraft:looting",
+      "lvl": 3
+    }
+  ],
+  "properties": {
+    "attack_base": 60.0,
+    "slash_art": "slashblade_sendims:yakuman_chinrou_suukou",
+    "special_effects": [
+      "slashblade_sendims:yakuman_hidden_triplets",
+      "slashblade_sendims:yakuman_terminals"
+    ],
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "katana",
+    "model": "slashblade_sendims:model/yakuman/shadow.obj",
+    "texture": "slashblade_sendims:model/yakuman/chinrou_suukou.png",
+    "summon_sword_color": 14931626
+  }
+}

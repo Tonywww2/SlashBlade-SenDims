@@ -1,0 +1,34 @@
+{
+  "name": "slashblade_sendims:yakuman_chisei_chuuren",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 8
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 5
+    },
+    {
+      "id": "minecraft:looting",
+      "lvl": 3
+    }
+  ],
+  "properties": {
+    "attack_base": 80.0,
+    "slash_art": "slashblade_sendims:yakuman_chisei_chuuren",
+    "special_effects": [
+      "slashblade_sendims:yakuman_nine_lamps",
+      "slashblade_sendims:yakuman_earth"
+    ],
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "katana",
+    "model": "slashblade_sendims:model/yakuman/celestial.obj",
+    "texture": "slashblade_sendims:model/yakuman/chisei_chuuren.png",
+    "summon_sword_color": 14931626
+  }
+}

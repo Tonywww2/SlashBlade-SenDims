@@ -10,6 +10,14 @@ import net.minecraftforge.registries.RegistryObject;
 public class SBSDSpecialEffects {
     public static final DeferredRegister<SpecialEffect> SE = DeferredRegister.create(SpecialEffect.REGISTRY_KEY, SenDims.MOD_ID);
 
+    // Holy swords have no additional experience-level gate; progression belongs to recipes.
+    public static final RegistryObject<SpecialEffect> MANA_BURST = SE.register("mana_burst", () -> new SpecialEffect(0));
+    public static final RegistryObject<SpecialEffect> KINGS_SELECTION = SE.register("kings_selection", () -> new SpecialEffect(0));
+    public static final RegistryObject<SpecialEffect> INVISIBLE_AIR = SE.register("invisible_air", () -> new SpecialEffect(0));
+    public static final RegistryObject<SpecialEffect> MAHORAGA_FALSE = SE.register("mahoraga_false", () -> new SpecialEffect(0));
+    public static final RegistryObject<SpecialEffect> SPACE_CUT = SE.register("space_cut", () -> new SpecialEffect(0));
+    public static final RegistryObject<SpecialEffect> REVERSE_CURSED_TECHNIQUE = SE.register("reverse_cursed_technique", () -> new SpecialEffect(0));
+
     public static final RegistryObject<SpecialEffect> FRENZIED_FLAME = SE.register("frenzied_flame", FrenziedFlame::new);
     public static final RegistryObject<SpecialEffect> ARCANE_A = SE.register("arcane_a", ArcaneA::new);
     public static final RegistryObject<SpecialEffect> THREE_FINGERS = SE.register("three_fingers", ThreeFingers::new);

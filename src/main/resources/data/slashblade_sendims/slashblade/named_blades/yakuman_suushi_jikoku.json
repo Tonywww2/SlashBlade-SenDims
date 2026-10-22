@@ -1,0 +1,35 @@
+{
+  "name": "slashblade_sendims:yakuman_suushi_jikoku",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 9
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 6
+    },
+    {
+      "id": "minecraft:looting",
+      "lvl": 4
+    }
+  ],
+  "properties": {
+    "attack_base": 95.0,
+    "slash_art": "slashblade_sendims:yakuman_suushi_jikoku",
+    "special_effects": [
+      "slashblade_sendims:yakuman_four_seals",
+      "slashblade_sendims:yakuman_seven_edict",
+      "slashblade_sendims:yakuman_wind_veil"
+    ],
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "katana",
+    "model": "slashblade_sendims:model/yakuman/wind.obj",
+    "texture": "slashblade_sendims:model/yakuman/suushi_jikoku.png",
+    "summon_sword_color": 14931626
+  }
+}

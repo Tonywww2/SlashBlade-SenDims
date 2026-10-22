@@ -1,0 +1,31 @@
+{
+  "name": "slashblade_sendims:yakuman_tenhou",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 4
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 3
+    },
+    {
+      "id": "minecraft:looting",
+      "lvl": 2
+    }
+  ],
+  "properties": {
+    "attack_base": 35.0,
+    "slash_art": "slashblade_sendims:yakuman_tenhou",
+    "special_effects": [],
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "katana",
+    "model": "slashblade_sendims:model/yakuman/celestial.obj",
+    "texture": "slashblade_sendims:model/yakuman/tenhou.png",
+    "summon_sword_color": 14931626
+  }
+}

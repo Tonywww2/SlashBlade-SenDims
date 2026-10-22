@@ -1,8 +1,10 @@
 package com.tonywww.slashblade_sendims;
 
 import com.mojang.logging.LogUtils;
-import com.tonywww.slashblade_sendims.compat.draconicevolution.DraconicEvolutionCompatConfig;
-import com.tonywww.slashblade_sendims.config.StructureQuillConfig;
+import com.tonywww.slashblade_sendims.config.SenDimsConfig;
+import com.tonywww.slashblade_sendims.network.HolySwordVisualPacket;
+import net.minecraftforge.network.NetworkDirection;
+import java.util.Optional;
 import com.tonywww.slashblade_sendims.kubejs.SBSDPlugin;
 import com.tonywww.slashblade_sendims.network.LeaderStateSyncPacket;
 import com.tonywww.slashblade_sendims.network.MadnessSyncPacket;
@@ -31,7 +33,7 @@ public class SenDims {
 
     public static ServerScheduler serverScheduler;
 
-    private static final String PROTOCOL_VERSION = "2";
+    private static final String PROTOCOL_VERSION = "7";
     public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(
             prefix("main"),
             () -> PROTOCOL_VERSION,
@@ -41,8 +43,7 @@ public class SenDims {
 
     public SenDims(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
-        context.registerConfig(ModConfig.Type.COMMON, DraconicEvolutionCompatConfig.SPEC);
-        context.registerConfig(ModConfig.Type.CLIENT, StructureQuillConfig.SPEC);
+        context.registerConfig(ModConfig.Type.COMMON, SenDimsConfig.SPEC, SenDimsConfig.FILE_NAME);
         MinecraftForge.EVENT_BUS.register(serverScheduler = new ServerScheduler());
 
         SBSDPlugin.register(modEventBus);
@@ -50,6 +51,7 @@ public class SenDims {
         modEventBus.addListener(this::clientSetup);
 
         SBSDParticles.registerCommon(modEventBus);
+        com.tonywww.slashblade_sendims.yakuman.YakumanRegistry.bootstrap();
         SBSDSpecialEffects.register(modEventBus);
         SBSDMobEffects.register(modEventBus);
         SBSDComboRegistry.register(modEventBus);
@@ -77,6 +79,27 @@ public class SenDims {
             LeaderStateSyncPacket::encode,
             LeaderStateSyncPacket::decode,
             LeaderStateSyncPacket::handle);
+        NETWORK.registerMessage(id++, HolySwordVisualPacket.class,
+                HolySwordVisualPacket::encode, HolySwordVisualPacket::decode,
+                HolySwordVisualPacket::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        NETWORK.registerMessage(id++, com.tonywww.slashblade_sendims.network.SukunaVisualPacket.class,
+                com.tonywww.slashblade_sendims.network.SukunaVisualPacket::encode,
+                com.tonywww.slashblade_sendims.network.SukunaVisualPacket::decode,
+                com.tonywww.slashblade_sendims.network.SukunaVisualPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+    }
+
+    static {
+        NETWORK.registerMessage(5, com.tonywww.slashblade_sendims.network.GoldenCruxVisualPacket.class,
+                com.tonywww.slashblade_sendims.network.GoldenCruxVisualPacket::encode,
+                com.tonywww.slashblade_sendims.network.GoldenCruxVisualPacket::decode,
+                com.tonywww.slashblade_sendims.network.GoldenCruxVisualPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        NETWORK.registerMessage(4, com.tonywww.slashblade_sendims.yakuman.YakumanVisualPacket.class,
+                com.tonywww.slashblade_sendims.yakuman.YakumanVisualPacket::encode,
+                com.tonywww.slashblade_sendims.yakuman.YakumanVisualPacket::decode,
+                com.tonywww.slashblade_sendims.yakuman.YakumanVisualPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     @SuppressWarnings("removal")

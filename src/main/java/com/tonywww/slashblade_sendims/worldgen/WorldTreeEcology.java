@@ -6,7 +6,10 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -16,6 +19,10 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.levelgen.feature.CoralTreeFeature;
+import net.minecraft.world.level.levelgen.feature.CoralClawFeature;
+import net.minecraft.world.level.levelgen.feature.CoralMushroomFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +35,8 @@ public final class WorldTreeEcology {
         HOLLOW_LOG, HUMUS_MAT, FOREST_POOL,
         ROOT_RAFT, LILY_COLONY, DRIFTWOOD,
         SUNKEN_LOG, CRYSTAL_REEF, SEAGRASS_MEADOW,
-        MOSS_ROOT_STEPS, SUBMERGED_ROOTLETS, ROOT_DETRITUS
+        MOSS_ROOT_STEPS, SUBMERGED_ROOTLETS, ROOT_DETRITUS,
+        CORAL_REEF
     }
     enum Mode { OPEN, EARTH, PLANT }
     record Voxel(BlockPos pos,BlockState state,Mode mode) {}
@@ -68,6 +76,9 @@ public final class WorldTreeEcology {
         final BlockState hugeLily=block("twilightforest:huge_lily_pad",Blocks.LILY_PAD.defaultBlockState());
         final BlockState hugeFlower=block("twilightforest:huge_water_lily",Blocks.LILY_PAD.defaultBlockState());
         final BlockState hollow=property(block("quark:hollow_ancient_log",Blocks.DARK_OAK_LOG.defaultBlockState()),"axis","x");
+        final BlockState[] coral={Blocks.TUBE_CORAL_BLOCK.defaultBlockState(),Blocks.BRAIN_CORAL_BLOCK.defaultBlockState(),Blocks.BUBBLE_CORAL_BLOCK.defaultBlockState(),Blocks.FIRE_CORAL_BLOCK.defaultBlockState(),Blocks.HORN_CORAL_BLOCK.defaultBlockState()};
+        final BlockState[] coralPlants={Blocks.TUBE_CORAL.defaultBlockState(),Blocks.BRAIN_CORAL.defaultBlockState(),Blocks.BUBBLE_CORAL.defaultBlockState(),Blocks.FIRE_CORAL.defaultBlockState(),Blocks.HORN_CORAL.defaultBlockState()};
+        final BlockState[] coralFans={Blocks.TUBE_CORAL_FAN.defaultBlockState(),Blocks.BRAIN_CORAL_FAN.defaultBlockState(),Blocks.BUBBLE_CORAL_FAN.defaultBlockState(),Blocks.FIRE_CORAL_FAN.defaultBlockState(),Blocks.HORN_CORAL_FAN.defaultBlockState()};
     }
     List<Plan> plans(int cx,int cz){
         long key=((long)cx<<32)^(cz&0xffffffffL);
@@ -136,7 +147,20 @@ public final class WorldTreeEcology {
                 b.finish().ifPresent(result::add);
             }
         }
+        coralCandidate(cx,cz,result);
         return List.copyOf(result);
+    }
+    private void coralCandidate(int cx,int cz,List<Plan> result){
+        // One independently seeded candidate per 192x192 region; old ecological
+        // candidates keep their exact random sequence and positions.
+        int rx=Math.floorDiv(cx,4),rz=Math.floorDiv(cz,4);
+        var r=new Random(f.pointSeed(rx,0x43a17e,rz));
+        int cellX=rx*4+r.nextInt(4),cellZ=rz*4+r.nextInt(4);
+        if(cx!=cellX||cz!=cellZ||r.nextDouble()>=.32)return;
+        int x=cx*CELL+12+r.nextInt(24),z=cz*CELL+12+r.nextInt(24);var c=f.column(x,z);
+        if(c.zone!=WorldTreeField.Zone.DEPTHS||c.floor>f.seaLevel-32||c.kind(c.floor+1)!=WorldTreeField.Kind.WATER)return;
+        Builder b=new Builder(Type.CORAL_REEF,new BlockPos(x,c.floor+1,z),r.nextLong());
+        coralReef(b);b.finish().filter(p->p.blocks.size()>=600&&p.bounds.getXSpan()>=45&&p.bounds.getZSpan()>=35).ifPresent(result::add);
     }
     private final class Builder {
         final Type type;final BlockPos origin;final Random r;final long seed;final double co,si;
@@ -182,6 +206,31 @@ public final class WorldTreeEcology {
                 put(x,y,z,state.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF,DoubleBlockHalf.LOWER),Mode.PLANT);
                 put(x,y+1,z,state.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF,DoubleBlockHalf.UPPER),Mode.PLANT);
             }else put(x,y,z,state,Mode.PLANT);
+        }
+        BlockState reefState(BlockPos p){
+            if(p.getY()<=WorldTreeField.MIN_Y||p.getY()>=f.seaLevel-2||Math.abs(p.getX()-origin.getX())>REACH||Math.abs(p.getZ()-origin.getZ())>REACH)return Blocks.STONE.defaultBlockState();
+            var col=f.column(p.getX(),p.getZ());
+            if(col.zone!=WorldTreeField.Zone.DEPTHS)return Blocks.STONE.defaultBlockState();
+            var planned=blocks.get(p);
+            return planned!=null?planned.state:col.kind(p.getY())==WorldTreeField.Kind.WATER?Blocks.WATER.defaultBlockState():Blocks.STONE.defaultBlockState();
+        }
+        /** Vanilla coral placement rules, applied to a plan rather than a world. */
+        boolean vanillaCoralBlock(RandomSource random,BlockPos p,BlockState state){
+            BlockState old=reefState(p);
+            if(!(old.is(Blocks.WATER)||old.is(BlockTags.CORALS))||!reefState(p.above()).is(Blocks.WATER))return false;
+            put(p.getX(),p.getY(),p.getZ(),state,Mode.OPEN);
+            if(!blocks.containsKey(p)||!blocks.get(p).state.is(state.getBlock()))return false;
+            BlockPos above=p.above();
+            if(random.nextFloat()<.25F){
+                BuiltInRegistries.BLOCK.getTag(BlockTags.CORALS).flatMap(tag->tag.getRandomElement(random)).ifPresent(coral->plant(above.getX(),above.getY(),above.getZ(),coral.value().defaultBlockState()));
+            }else if(random.nextFloat()<.05F){
+                plant(above.getX(),above.getY(),above.getZ(),Blocks.SEA_PICKLE.defaultBlockState().setValue(BlockStateProperties.PICKLES,1+random.nextInt(4)));
+            }
+            for(Direction side:Direction.Plane.HORIZONTAL)if(random.nextFloat()<.2F){
+                BlockPos beside=p.relative(side);
+                if(reefState(beside).is(Blocks.WATER))BuiltInRegistries.BLOCK.getTag(BlockTags.WALL_CORALS).flatMap(tag->tag.getRandomElement(random)).ifPresent(coral->plant(beside.getX(),beside.getY(),beside.getZ(),coral.value().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING,side)));
+            }
+            return true;
         }
         void greenery(int x,int y,int z,boolean wet){
             int h=(int)Math.floorMod(hash(x,y,z),100);
@@ -357,6 +406,76 @@ public final class WorldTreeEcology {
             if((h&7)==0&&crystals<5){b.put(x,c.floor+height+1,z,crystal,Mode.OPEN);crystals++;}
         }
     }
+    private void coralReef(Builder b){
+        int core=25+b.r.nextInt(8),fringe=10,radius=Math.min(REACH,core+fringe+2);
+        Set<BlockPos> solid=new LinkedHashSet<>();Map<BlockPos,Integer> tops=new LinkedHashMap<>();
+        for(int dz=-radius;dz<=radius;dz++)for(int dx=-radius;dx<=radius;dx++){
+            double w=b.cover(dx,dz,core,core*.80,fringe);if(w<=0)continue;
+            int x=b.origin.getX()+dx,z=b.origin.getZ()+dz;var c=f.column(x,z);
+            if(c.zone!=WorldTreeField.Zone.DEPTHS||c.floor>f.seaLevel-24||c.kind(c.floor+1)!=WorldTreeField.Kind.WATER)continue;
+            double heads=b.patchNoise(x*.16,z*.16,331);
+            if(heads<.36||b.unit(x,z,337)>w*.94){
+                if(b.unit(x,z,347)<w*.48)b.plant(x,c.floor+1,z,Blocks.SEAGRASS.defaultBlockState());
+                continue;
+            }
+            int height=1+(int)((heads-.36)*7+w*2),top=c.floor;
+            for(int y=c.floor+1;y<=c.floor+Math.min(height,6)&&y<f.seaLevel-3;y++){
+                if(c.kind(y)!=WorldTreeField.Kind.WATER)break;
+                solid.add(new BlockPos(x,y,z));top=y;
+            }
+            if(top>c.floor)tops.put(new BlockPos(x,top,z),Math.min(4,(int)(b.patchNoise(x*.075,z*.075,353)*5)));
+        }
+        for(BlockPos p:solid){
+            // Every living block keeps its own water column above it. Side-only
+            // exposure can be closed by a neighboring mound or an older feature.
+            boolean wet=!solid.contains(p.above())&&f.column(p.getX(),p.getZ()).kind(p.getY()+1)==WorldTreeField.Kind.WATER;
+            int color=Math.min(4,(int)(b.patchNoise(p.getX()*.075,p.getZ()*.075,353)*5));
+            // Live coral forms only the water-exposed tops. Stone in the interior
+            // prevents enclosed living blocks from dying when their ticks run.
+            BlockState state=wet?palette().coral[color]:(b.hash(p.getX(),p.getY(),p.getZ())&3)==0?Blocks.TUFF.defaultBlockState():Blocks.CALCITE.defaultBlockState();
+            b.put(p.getX(),p.getY(),p.getZ(),state,Mode.OPEN);
+        }
+        for(var entry:tops.entrySet()){
+            BlockPos p=entry.getKey().above();int color=entry.getValue();
+            if(f.column(p.getX(),p.getZ()).kind(p.getY())!=WorldTreeField.Kind.WATER)continue;
+            double cover=b.unit(p.getX(),p.getZ(),359);
+            if(cover<.32)b.plant(p.getX(),p.getY(),p.getZ(),palette().coralFans[color]);
+            else if(cover<.51)b.plant(p.getX(),p.getY(),p.getZ(),palette().coralPlants[color]);
+            else if(cover<.57)b.plant(p.getX(),p.getY(),p.getZ(),Blocks.SEA_PICKLE.defaultBlockState().setValue(BlockStateProperties.PICKLES,1+(int)Math.floorMod(b.hash(p.getX(),367,p.getZ()),4)));
+        }
+        // Add native branching forms to the original, irregular reef bed. Keep
+        // the amount bounded and the random stream independent of older groups.
+        List<BlockPos> anchors=new ArrayList<>(tops.keySet()),used=new ArrayList<>();
+        RandomSource random=RandomSource.create(b.seed^0x6c0a1f0aL);
+        ReefForm[] forms={new CoralTreePlan(b),new CoralClawPlan(b),new CoralMushroomPlan(b)};
+        for(int attempt=0;attempt<96&&used.size()<16&&!anchors.isEmpty();attempt++){
+            BlockPos p=anchors.get(random.nextInt(anchors.size())).above();
+            if(used.stream().anyMatch(other->other.distToCenterSqr(p.getX()+.5,other.getY()+.5,p.getZ()+.5)<81))continue;
+            if(forms[used.size()%forms.length].grow(random,p,palette().coral[random.nextInt(5)]))used.add(p);
+        }
+    }
+    private interface ReefForm { boolean grow(RandomSource random,BlockPos pos,BlockState state); }
+    // These native shape algorithms access the world only via placeCoralBlock.
+    // Overriding that hook keeps all writes in the clipped, deterministic plan;
+    // the unused LevelAccessor never loads or updates neighboring chunks.
+    private static final class CoralTreePlan extends CoralTreeFeature implements ReefForm {
+        private final Builder b;
+        CoralTreePlan(Builder b){super(NoneFeatureConfiguration.CODEC);this.b=b;}
+        public boolean grow(RandomSource r,BlockPos p,BlockState s){return placeFeature(null,r,p,s);}
+        protected boolean placeCoralBlock(LevelAccessor unused,RandomSource r,BlockPos p,BlockState s){return b.vanillaCoralBlock(r,p,s);}
+    }
+    private static final class CoralClawPlan extends CoralClawFeature implements ReefForm {
+        private final Builder b;
+        CoralClawPlan(Builder b){super(NoneFeatureConfiguration.CODEC);this.b=b;}
+        public boolean grow(RandomSource r,BlockPos p,BlockState s){return placeFeature(null,r,p,s);}
+        protected boolean placeCoralBlock(LevelAccessor unused,RandomSource r,BlockPos p,BlockState s){return b.vanillaCoralBlock(r,p,s);}
+    }
+    private static final class CoralMushroomPlan extends CoralMushroomFeature implements ReefForm {
+        private final Builder b;
+        CoralMushroomPlan(Builder b){super(NoneFeatureConfiguration.CODEC);this.b=b;}
+        public boolean grow(RandomSource r,BlockPos p,BlockState s){return placeFeature(null,r,p,s);}
+        protected boolean placeCoralBlock(LevelAccessor unused,RandomSource r,BlockPos p,BlockState s){return b.vanillaCoralBlock(r,p,s);}
+    }
     private void fungi(Builder b){
         if(f.column(b.origin.getX(),b.origin.getZ()).kind(b.origin.getY()+1)==WorldTreeField.Kind.WOOD){trunkFungi(b);return;}
         for(int n=0;n<3+b.r.nextInt(3);n++){
@@ -457,7 +576,7 @@ public final class WorldTreeEcology {
         return true;
     }
     static boolean area(Type type){
-        return switch(type){case HUMUS_MAT,BRANCH_GARDEN,ROOT_RAFT,LILY_COLONY,SEAGRASS_MEADOW,MOSS_ROOT_STEPS,ROOT_DETRITUS->true;default->false;};
+        return switch(type){case HUMUS_MAT,BRANCH_GARDEN,ROOT_RAFT,LILY_COLONY,SEAGRASS_MEADOW,MOSS_ROOT_STEPS,ROOT_DETRITUS,CORAL_REEF->true;default->false;};
     }
     static boolean allowedVoxel(Voxel v,List<BoundingBox> boxes){
         if(boxes.isEmpty())return true;
@@ -492,7 +611,7 @@ public final class WorldTreeEcology {
                 if(start!=null&&start.isValid()&&seen.add(start))protectedBoxes.add(start.getBoundingBox().inflatedBy(12));
             }
         }
-        Set<BlockPos> changed=new HashSet<>();
+        Set<BlockPos> changed=new HashSet<>(),reefCoral=new HashSet<>();
         for(Plan plan:plans){
             boolean overlay=area(plan.type);
             if(!overlay&&!allowed(plan,protectedBoxes))continue;
@@ -507,7 +626,9 @@ public final class WorldTreeEcology {
                 if(v.mode==Mode.EARTH){if(!(old.is(BlockTags.DIRT)||old.is(Blocks.MUD)||old.is(Blocks.GRAVEL)||old.is(Blocks.CLAY)||old.is(Blocks.DEEPSLATE)))continue;}
                 else if(!replaceable)continue;
                 if(v.mode==Mode.PLANT&&!v.state.canSurvive(level,p))continue;
-                chunk.setBlockState(p,v.state,false);
+                BlockState placed=v.state;
+                chunk.setBlockState(p,placed,false);
+                if(plan.type==Type.CORAL_REEF&&placed.getBlock() instanceof net.minecraft.world.level.block.CoralBlock)reefCoral.add(p);
                 changed.add(p);changed.add(p.above());changed.add(p.above(2));
             }
         }
@@ -519,5 +640,17 @@ public final class WorldTreeEcology {
             if((s.getBlock() instanceof net.minecraft.world.level.block.BushBlock||s.getBlock() instanceof net.minecraft.world.level.block.GrowingPlantBlock)&&!s.canSurvive(level,p))
                 chunk.setBlockState(p,s.getFluidState().createLegacyBlock(),false);
         }
+        // Native coral branches can be wet at the sides rather than the top.
+        // Recheck after every group; rely only on water inside the owning chunk
+        // so later neighbor generation cannot strand a living coral block.
+        for(BlockPos p:reefCoral)if(chunk.getBlockState(p).getBlock() instanceof net.minecraft.world.level.block.CoralBlock&&!localReefWater(chunk,cp,p))
+            chunk.setBlockState(p,Blocks.CALCITE.defaultBlockState(),false);
+    }
+    private static boolean localReefWater(ChunkAccess chunk,ChunkPos cp,BlockPos p){
+        for(Direction side:Direction.values()){
+            BlockPos q=p.relative(side);
+            if((q.getX()>>4)==cp.x&&(q.getZ()>>4)==cp.z&&chunk.getFluidState(q).is(FluidTags.WATER))return true;
+        }
+        return false;
     }
 }

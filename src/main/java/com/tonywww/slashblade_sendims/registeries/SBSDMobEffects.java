@@ -2,6 +2,7 @@ package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.effect.StormPenetrationEffect;
+import com.tonywww.slashblade_sendims.effect.ManaBurstEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,6 +20,9 @@ public class SBSDMobEffects {
     /** 风暴穿透：每级 +5 魔法穿透，由无名王者系列 SE「风暴」赋予 */
     public static final RegistryObject<MobEffect> STORM_PENETRATION =
             MOB_EFFECTS.register("storm_penetration", StormPenetrationEffect::new);
+
+    public static final RegistryObject<MobEffect> MANA_BURST =
+            MOB_EFFECTS.register("mana_burst", ManaBurstEffect::new);
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

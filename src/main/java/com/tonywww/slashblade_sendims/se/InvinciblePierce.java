@@ -1,5 +1,6 @@
 package com.tonywww.slashblade_sendims.se;
 
+import com.tonywww.slashblade_sendims.utils.TrueDamage;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.util.AttackManager;
 import net.minecraft.nbt.CompoundTag;
@@ -33,7 +34,7 @@ public class InvinciblePierce extends SpecialEffect {
             if (ManaItemHandler.instance().requestManaExactForTool(BotaniaItems.terraSword.getDefaultInstance(), player, manaCost, true)) {
                 Level level = target.level();
                 if (isMagic) {
-                    AttackManager.doAttackWith(player.damageSources().sonicBoom(player), extraDamage, target, true, false);
+                    AttackManager.doAttackWith(TrueDamage.source(player), extraDamage, target, true, false);
                     if (level instanceof ServerLevel serverLevel) {
                         serverLevel.sendParticles(ParticleTypes.SOUL, target.getX(), target.getY() + target.getBbHeight() / 2.0, target.getZ(), 8, 0.5, 0.5, 0.5, 0.05);
                     }

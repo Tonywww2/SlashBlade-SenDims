@@ -1,15 +1,10 @@
 package com.tonywww.slashblade_sendims.se;
 
-import com.tonywww.slashblade_sendims.SenDims;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,8 +31,6 @@ public final class NamelessSeries {
     public static final String SOVEREIGNTY_TARGETS = "sbsd.se.nameless.targets";
     /** 「王威」：当前积攒的充能层数 */
     public static final String SOVEREIGNTY_CHARGE = "sbsd.se.nameless.charge";
-    /** 真伤重入保护标志 */
-    public static final String TRUE_DAMAGE_FLAG = "sbsd.se.nameless.true_damage";
 
     // ------------------------------------------------------------------
     // 数值配置
@@ -70,10 +63,6 @@ public final class NamelessSeries {
     /** 「王权压制」对精英/Boss 附加的真实伤害比例 */
     public static final float SUPPRESSION_TRUE_DAMAGE_RATIO = 0.075f;
 
-    /** 自定义真实伤害类型 */
-    public static final ResourceKey<DamageType> TRUE_DAMAGE_TYPE =
-            ResourceKey.create(Registries.DAMAGE_TYPE, SenDims.prefix("true_damage"));
-
     private NamelessSeries() {
     }
 
@@ -86,36 +75,6 @@ public final class NamelessSeries {
             return null;
         }
         return stack.getCapability(ItemSlashBlade.BLADESTATE).orElse(null);
-    }
-
-    /**
-     * 造成无视护甲、附魔、药水与抗性的真实伤害。
-     * <p>
-     * 带重入保护，避免 {@code LivingHurtEvent} 递归触发。
-     */
-    public static void dealTrueDamage(ServerPlayer player, LivingEntity target, float amount) {
-        if (amount <= 0f || target == player || !target.isAlive()) {
-            return;
-        }
-
-        CompoundTag data = player.getPersistentData();
-        if (data.getBoolean(TRUE_DAMAGE_FLAG)) {
-            return;
-        }
-
-        data.putBoolean(TRUE_DAMAGE_FLAG, true);
-        try {
-            DamageSource source = new DamageSource(
-                    player.level().registryAccess()
-                            .registryOrThrow(Registries.DAMAGE_TYPE)
-                            .getHolderOrThrow(TRUE_DAMAGE_TYPE),
-                    player
-            );
-            target.invulnerableTime = 0;
-            target.hurt(source, amount);
-        } finally {
-            data.putBoolean(TRUE_DAMAGE_FLAG, false);
-        }
     }
 
     /**
