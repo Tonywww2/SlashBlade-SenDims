@@ -40,6 +40,7 @@
     "legendreliclib.ArmorPiercingUtilMixin",
     "legendreliclib.TheGreatRipMixin",
     "lsp.MixinBloodAccumulationEvent",
+    "startup.ServerInteractionStackBoundsMixin",
     "minecraft.DamageSourceMixin",
     "minecraft.EntityFluidAllocationMixin",
     "minecraft.EmptyHeightmapMixin",
@@ -92,6 +93,10 @@
     "slashblade.UntouchableMixin",
     "terraentity.GameEntityEventMixin",
     "terraentity.TEAttributeModifierConfigMixin",
+    "terracurio.LivingEntityArmorPassMixin",
+    "terracurio.ModAttributesMixin",
+    "terracurio.WormScarfMixin",
+    "terracurio.FrozenTurtleShellMixin",
     "tetra.MaterialDataMixin",
     "tetra.MaterialDataMixin$DeserializerMixin",
     "tetra.MaterialOutcomeDefinitionMixin",
@@ -113,7 +118,9 @@
     "minecraft.YakumanStunMixin",
     "minecraft.YakumanStunMixin$Ai",
     "minecraft.YakumanStunMixin$Movement",
-    "slashblade.YakumanSlashMixin"
+    "slashblade.YakumanSlashMixin",
+    "lsp.MixinBleedingCutting",
+    "lsp.MixinDualBladeMain"
   ],
   "client": [
     "neat.NeatHealthBarRendererMixin",

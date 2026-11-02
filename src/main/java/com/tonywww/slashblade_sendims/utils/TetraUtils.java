@@ -8,7 +8,7 @@ import se.mickelus.tetra.items.modular.IModularItem;
 public class TetraUtils {
 
     public static int getEffectLvl(ItemStack stack, IModularItem modularItem, ItemEffect effect) {
-        return modularItem.getEffectData(stack).getLevel(effect);
+        return modularItem.getEffectDataCached(stack).getLevel(effect);
     }
 
     /**

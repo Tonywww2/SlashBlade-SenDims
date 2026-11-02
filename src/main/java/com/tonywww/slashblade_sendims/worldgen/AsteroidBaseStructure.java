@@ -2,6 +2,7 @@ package com.tonywww.slashblade_sendims.worldgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import earth.terrarium.adastra.common.blocks.pipes.PipeBlock;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
@@ -108,7 +109,14 @@ public final class AsteroidBaseStructure extends Structure {
             if(body.type==AsteroidBeltField.Type.GARDEN&&body.maxY()>=b.minY()&&body.minY()<=b.maxY())return false;}
         return true;
     }
-    private static StructurePlaceSettings settings(Rotation rotation){return new StructurePlaceSettings().setRotation(rotation).setIgnoreEntities(true).setKeepLiquids(false).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);}
+    private static StructurePlaceSettings settings(Rotation rotation){
+        // The templates already author cable ports, stairs, rails and door states.
+        // Recomputing boundary shapes calls Ad Astra PipeBlock.updateShape, which
+        // casts WorldGenRegion to Level and crashes during natural generation.
+        // Keep authored shapes; pipe entities initialize their networks on first tick.
+        return new StructurePlaceSettings().setRotation(rotation).setIgnoreEntities(true).setKeepLiquids(false)
+            .setKnownShape(true).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
+    }
     public static final class Piece extends TemplateStructurePiece {
         private final Set<BlockPos> open=new HashSet<>();
         private final Map<BlockPos,Integer> piles=new HashMap<>();
@@ -174,6 +182,7 @@ public final class AsteroidBaseStructure extends Structure {
         }
         @Override public void postProcess(WorldGenLevel level,StructureManager manager,ChunkGenerator generator,RandomSource random,BoundingBox clip,ChunkPos chunk,BlockPos pivot){
             super.postProcess(level,manager,generator,random,clip,chunk,pivot);
+            rotateCablePorts(level,clip);
             if(galleryLength>0)placeGallery(level,clip);
             for(var port:ports())if(!open.contains(port.pos())){
                 Direction side=JigsawBlock.getFrontFacing(port.state()).getClockWise();
@@ -182,6 +191,20 @@ public final class AsteroidBaseStructure extends Structure {
                 }
             }
             extendBounds();
+        }
+        private void rotateCablePorts(WorldGenLevel level,BoundingBox clip){
+            Rotation rotation=getRotation();if(rotation==Rotation.NONE)return;
+            // Ad Astra's PipeBlock has no rotate override. Its authored port
+            // modes must follow the module without invoking live-world updates.
+            Block cable=BuiltInRegistries.BLOCK.get(new ResourceLocation("ad_astra:steel_cable"));
+            for(var info:template.filterBlocks(templatePosition,placeSettings.copy().setBoundingBox(clip),cable)){
+                if(!clip.isInside(info.pos())||!(info.state().getBlock() instanceof PipeBlock))continue;
+                BlockState original=info.state(),rotated=original;
+                for(Direction side:Direction.Plane.HORIZONTAL)rotated=rotated.setValue(
+                    PipeBlock.DIRECTION_TO_CONNECTION.get(rotation.rotate(side)),
+                    original.getValue(PipeBlock.DIRECTION_TO_CONNECTION.get(side)));
+                level.setBlock(info.pos(),rotated,2);
+            }
         }
         private static BlockState plate(){return BuiltInRegistries.BLOCK.get(new ResourceLocation("ad_astra:steel_plating")).defaultBlockState();}
         private static BlockState block(String name){return BuiltInRegistries.BLOCK.get(new ResourceLocation(name)).defaultBlockState();}

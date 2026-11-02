@@ -85,7 +85,8 @@ public class LeaderEventListener {
     }
 
     private static void gainAPbyHit(ServerPlayer serverPlayer, ItemStack soul, double ratio) {
-        double gain = SBSDValues.HIT_LEADER_AP * ratio;
+        double gain = (SBSDValues.HIT_LEADER_AP
+                + UmaSoulUtils.getMaxActionPoint(soul) * SBSDValues.HIT_LEADER_AP_PERC) * ratio;
         AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_GAIN_PERCENTAGE.get());
         if (attributeInstance != null) gain *= attributeInstance.getValue();
         UmaSoulUtils.addActionPoint(soul, (int) gain);

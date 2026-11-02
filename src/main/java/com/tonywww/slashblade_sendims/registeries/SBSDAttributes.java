@@ -49,6 +49,10 @@ public class SBSDAttributes {
     public static final RegistryObject<Attribute> MAGIC_PENETRATION = ATTRIBUTES.register("magic_penetration",
             () -> new RangedAttribute("attribute.name.sbsd.magic_penetration", 0.0d, 0.0d, 100.0d).setSyncable(true));
 
+    // 玩家造成击退的倍率：1 为原样，0.2 即击退 -80%。
+    public static final RegistryObject<Attribute> KNOCKBACK_DEALT = ATTRIBUTES.register("knockback_dealt",
+            () -> new PercentBasedAttribute("attribute.name.sbsd.knockback_dealt", 1.0d, 0.0d, 10.0d).setSyncable(true));
+
     @SubscribeEvent
     public static void onEntityAttributeModificationEvent(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, SPRINT_CD.get());
@@ -58,6 +62,7 @@ public class SBSDAttributes {
         event.add(EntityType.PLAYER, AP_GAIN_PERCENTAGE.get());
 
         event.add(EntityType.PLAYER, FRENZY_DAMAGE.get());
+        event.add(EntityType.PLAYER, KNOCKBACK_DEALT.get());
 
         event.getTypes().forEach(type -> {
             event.add(type, MADNESS_REDUCE.get());

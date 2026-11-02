@@ -29,11 +29,14 @@ public class SBSDValues {
     public static final double SPRINT_COST_PERC = 0.05;
     /** 闪避成功恢复的无敌时间 */
     public static final int UNTOUCHABLE_TICK = 10;
-    /** 闪避成功恢复的行动力 */
-    public static final int SPRINT_SUCCESS_AP = 200;
+    /** 闪避成功恢复的行动力：固定值 + 最大行动力 × SPRINT_SUCCESS_AP_PERC */
+    public static final int SPRINT_SUCCESS_AP = 50;
+    public static final double SPRINT_SUCCESS_AP_PERC = 0.05;
 
     // HIT
-    public static final double HIT_LEADER_AP = 48d;
+    /** 命中首领恢复的行动力：固定值 + 最大行动力 × HIT_LEADER_AP_PERC；命中普通敌人按比例折算 */
+    public static final double HIT_LEADER_AP = 15d;
+    public static final double HIT_LEADER_AP_PERC = 0.005;
     public static final Map<ResourceLocation, Integer> COMBO_COST_MAP = new HashMap<>();
 
     static {

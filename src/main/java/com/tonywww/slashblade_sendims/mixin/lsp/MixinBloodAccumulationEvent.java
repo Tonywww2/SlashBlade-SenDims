@@ -29,10 +29,12 @@ public class MixinBloodAccumulationEvent {
         if (event.getEntity() instanceof LivingEntity && !event.getEntity().level().isClientSide()) {
             LivingEntity entity = event.getEntity();
             entity.getCapability(ModCapabilities.BLOOD_ACCUMULATION_CAPABILITY).ifPresent((bloodAccum) -> {
-                if (bloodAccum.getAccumulation() >= 120 && entity.invulnerableTime == 0) {
+                int limit = Math.max(1, (int) Math.floor(entity.getMaxHealth()));
+                if (bloodAccum.getAccumulation() > limit) bloodAccum.setAccumulation(limit);
+                if (bloodAccum.getAccumulation() >= limit && entity.invulnerableTime == 0) {
                     float maxHealth = entity.getMaxHealth();
                     float currHealth = entity.getHealth();
-                    float bleedDamage = (maxHealth - currHealth) * 0.2F + 8.0F;
+                    float bleedDamage = (maxHealth - currHealth) * 0.15F + 8.0F;
                     UUID lastAttackerUUID = bloodAccum.getLastAttackerUUID();
                     Entity lastAttacker = null;
                     if (lastAttackerUUID != null) {

@@ -44,6 +44,7 @@ public final class SenDimsMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+        com.tonywww.slashblade_sendims.compat.InteractionStackBounds.prepare(targetClassName, targetClass, mixinClassName);
     }
 
     @Override

@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +43,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,7 +59,10 @@ public class StructureQuill extends Item {
     public static final String TAG_IS_SEARCHING = "isSearching";
     public static final String TAG_SOURCE_X = "sourceX";
     public static final String TAG_SOURCE_Z = "sourceZ";
+    public static final String TAG_SEARCH_ID = "searchId";
     private static final ExecutorService EXECUTORS = Executors.newFixedThreadPool(2);
+    /** 进行中的搜索 ID；不在其中的 isSearching 标记视为残留（如服务端重启、羽毛笔在搜索中离开背包）。 */
+    private static final Set<UUID> ACTIVE_SEARCHES = ConcurrentHashMap.newKeySet();
 
     public StructureQuill(Properties properties) {
         super(properties);
@@ -117,9 +122,13 @@ public class StructureQuill extends Item {
         if (level instanceof ServerLevel serverLevel) {
             CompoundTag tag = stack.getOrCreateTag();
 
-            // 如果正在搜索，返回
+            // 如果正在搜索，返回；搜索已不存在时清除残留标记，重新搜索
             if (tag.getBoolean(TAG_IS_SEARCHING)) {
-                return InteractionResultHolder.pass(stack);
+                if (tag.hasUUID(TAG_SEARCH_ID) && ACTIVE_SEARCHES.contains(tag.getUUID(TAG_SEARCH_ID))) {
+                    return InteractionResultHolder.pass(stack);
+                }
+                tag.putBoolean(TAG_IS_SEARCHING, false);
+                tag.remove(TAG_SEARCH_ID);
             }
 
             // 如果没有目标结构，随机选择一个
@@ -151,7 +160,11 @@ public class StructureQuill extends Item {
             return InteractionResultHolder.fail(stack);
         }
 
+        // 用搜索 ID 标记这支羽毛笔，搜索结束后按 ID 在背包中找回它，而不是替换玩家当时手里的物品
+        UUID searchId = UUID.randomUUID();
         tag.putBoolean(TAG_IS_SEARCHING, true);
+        tag.putUUID(TAG_SEARCH_ID, searchId);
+        ACTIVE_SEARCHES.add(searchId);
         BlockPos startPos = getOrCreateStartPos(tag, player);
         int searchRadius = getSearchRadius(tag);
         boolean skipKnown = getSkipKnown(tag);
@@ -163,34 +176,81 @@ public class StructureQuill extends Item {
 
                 // 在主线程中处理结果
                 level.getServer().execute(() -> {
-                    tag.putBoolean(TAG_IS_SEARCHING, false);
+                    ACTIVE_SEARCHES.remove(searchId);
+                    Player owner = currentPlayer(level, player);
+                    int slot = findSearchingQuill(owner, searchId);
 
                     if (result != null && result.getResult() == InteractionResult.SUCCESS) {
-                        BlockPos foundPos = result.getObject();
-                        ItemStack mapStack = createMap(level, foundPos, structureKey, stack);
-
-                        // 替换物品
-                        if (hand == InteractionHand.MAIN_HAND) {
-                            player.setItemInHand(InteractionHand.MAIN_HAND, mapStack);
-                        } else {
-                            player.setItemInHand(InteractionHand.OFF_HAND, mapStack);
+                        if (slot < 0) {
+                            // 羽毛笔已不在玩家背包中（丢弃、放入容器或玩家离线），不生成地图
+                            if (owner != null) {
+                                owner.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.lost"), true);
+                            }
+                            return;
                         }
+                        BlockPos foundPos = result.getObject();
+                        Inventory inventory = owner.getInventory();
+                        ItemStack mapStack = createMap(level, foundPos, structureKey, inventory.getItem(slot));
 
-                        player.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.success"), true);
+                        // 只替换这支羽毛笔所在的格子
+                        inventory.setItem(slot, mapStack);
+
+                        owner.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.success"), true);
                     } else {
-                        player.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.failed"), true);
+                        clearSearchState(owner, slot);
+                        if (owner != null) {
+                            owner.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.failed"), true);
+                        }
                     }
                 });
             } catch (Exception e) {
                 level.getServer().execute(() -> {
-                    tag.putBoolean(TAG_IS_SEARCHING, false);
-                    player.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.error"), true);
+                    ACTIVE_SEARCHES.remove(searchId);
+                    Player owner = currentPlayer(level, player);
+                    clearSearchState(owner, findSearchingQuill(owner, searchId));
+                    if (owner != null) {
+                        owner.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.error"), true);
+                    }
                 });
             }
         });
 
         player.displayClientMessage(Component.translatable("message.slashblade_sendims.structure_quill.start_search"), true);
         return InteractionResultHolder.success(stack);
+    }
+
+    /** 按 UUID 取当前在线的玩家：玩家重生后会换成新的玩家对象，离线时返回 null。 */
+    @Nullable
+    private static Player currentPlayer(ServerLevel level, Player player) {
+        return level.getServer().getPlayerList().getPlayer(player.getUUID());
+    }
+
+    /** 在玩家背包（含盔甲栏与副手）中查找带有该搜索 ID 的羽毛笔，返回格子编号，找不到返回 -1。 */
+    private static int findSearchingQuill(@Nullable Player owner, UUID searchId) {
+        if (owner == null) {
+            return -1;
+        }
+        Inventory inventory = owner.getInventory();
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack candidate = inventory.getItem(i);
+            CompoundTag candidateTag = candidate.getTag();
+            if (candidate.getItem() instanceof StructureQuill && candidateTag != null
+                    && candidateTag.hasUUID(TAG_SEARCH_ID) && searchId.equals(candidateTag.getUUID(TAG_SEARCH_ID))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static void clearSearchState(@Nullable Player owner, int slot) {
+        if (owner == null || slot < 0) {
+            return;
+        }
+        CompoundTag quillTag = owner.getInventory().getItem(slot).getTag();
+        if (quillTag != null) {
+            quillTag.putBoolean(TAG_IS_SEARCHING, false);
+            quillTag.remove(TAG_SEARCH_ID);
+        }
     }
 
     @Nullable

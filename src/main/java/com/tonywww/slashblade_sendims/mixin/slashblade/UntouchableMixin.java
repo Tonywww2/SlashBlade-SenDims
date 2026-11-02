@@ -33,10 +33,11 @@ public class UntouchableMixin {
                 if (persistentData.contains(SBSDValues.SPRINT_SUCCESSED_PATH) &&
                         persistentData.getBoolean(SBSDValues.SPRINT_SUCCESSED_PATH)) return;
 
-                int gain = SBSDValues.SPRINT_SUCCESS_AP;
+                double gain = SBSDValues.SPRINT_SUCCESS_AP
+                        + UmaSoulUtils.getMaxActionPoint(soul) * SBSDValues.SPRINT_SUCCESS_AP_PERC;
                 AttributeInstance attributeInstance = serverPlayer.getAttribute(SBSDAttributes.AP_GAIN_PERCENTAGE.get());
-                if (attributeInstance != null) gain = (int) (gain * attributeInstance.getValue());
-                UmaSoulUtils.addActionPoint(soul, gain);
+                if (attributeInstance != null) gain *= attributeInstance.getValue();
+                UmaSoulUtils.addActionPoint(soul, (int) gain);
                 persistentData.putBoolean(SBSDValues.SPRINT_SUCCESSED_PATH, true);
                 double scale = SBSDAttributes.getAttributeValue(serverPlayer, SBSDAttributes.SPRINT_CD_RETURN.get());
                 persistentData.putInt(SBSDValues.SPRINT_CD_PATH, (int) (persistentData.getInt(SBSDValues.SPRINT_CD_PATH) * scale));
