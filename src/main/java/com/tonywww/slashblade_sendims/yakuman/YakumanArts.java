@@ -7,11 +7,9 @@ import com.tonywww.slashblade_sendims.registeries.SBSDEntities;
 import com.tonywww.slashblade_sendims.events.SuperSlashArtsReleaseEvent;
 import com.tonywww.slashblade_sendims.sa.AmmoSA;
 import com.tonywww.slashblade_sendims.se.NamelessSeries;
+import com.tonywww.slashblade_sendims.utils.PositionedSlashes;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
-import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.util.KnockBacks;
-import net.minecraft.world.entity.Entity;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.server.level.ServerLevel;
@@ -47,27 +45,13 @@ public final class YakumanArts {
     public static final String NATIVE_SLASH="sbsd.yakuman.native_slash";
     // Native rendering masks the high color byte. Reuse it as a synchronized series marker.
     public static final int NATIVE_COLOR_MARKER=0x59000000;
-    private record NativeCut(Cast cast,Vec3 point,double radius,double ratio,YakumanCombat.Kind kind) {}
-    private static final Map<EntitySlashEffect,NativeCut> CUTS=new IdentityHashMap<>();
-    /** Native slashes must use the same physical/magic damage and recursion rules as other arts. */
-    public static List<Entity> nativeSlashDamage(EntitySlashEffect slash) {
-        var cut=CUTS.remove(slash);
-        if(cut==null || !cut.cast.valid())return List.of();
-        List<Entity> hit=new ArrayList<>();
-        for(var target:nearby(cut.cast.user,cut.point,cut.radius)) {
-            cut.cast.hit(target,cut.ratio,cut.kind);hit.add(target);
-        }
-        return hit;
-    }
-    private static EntitySlashEffect nativeSlash(Cast c,Vec3 point,Vec3 facing,double radius,int rgb,int life) {
-        var slash=new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect,c.level);
-        slash.setPos(point);slash.setOwner(c.user);slash.setIndirect(true);slash.setCycleHit(false);
-        slash.setDamage(0);slash.setBaseSize((float)(radius/4));
-        slash.setYRot((float)Math.toDegrees(Math.atan2(-facing.x,facing.z)));
-        slash.setRotationRoll(12);slash.setColor(NATIVE_COLOR_MARKER|(rgb&0xffffff));slash.setMute(true);
-        slash.setLifetime(life);
-        slash.getPersistentData().putBoolean(NATIVE_SLASH,true);
-        c.level.addFreshEntity(slash);return slash;
+    /** Cuts are native slashes: every enemy around the slash takes native melee damage once. */
+    private static void nativeSlash(Cast c,Vec3 point,Vec3 facing,double radius,double ratio,int rgb,int life) {
+        PositionedSlashes.at(c.user,point).yaw((float)Math.toDegrees(Math.atan2(-facing.x,facing.z)))
+                .roll(12).size((float)(radius/4)).radius(radius).color(NATIVE_COLOR_MARKER|(rgb&0xffffff))
+                .lifetime(life).ratio(ratio).tag(NATIVE_SLASH)
+                // Secondary scope: yakuman/SE hit hooks must not count these as ordinary swings.
+                .scope(YakumanCombat::secondary).valid(c::valid).spawn();
     }
     /** Mahjong cards retain their separate throwing speed; all sword/light projectiles double. */
     public static double projectileSpeed(YakumanVisualPacket.Shape shape,double speed) {
@@ -127,9 +111,8 @@ public final class YakumanArts {
         void flash(YakumanVisualPacket.Shape shape,Vec3 pos,Vec3 dir,int life,float scale,int rgb,int tile) {
             visual(nextId(),shape,pos,dir,life,scale,rgb,tile);
         }
-        void cut(Vec3 point,double radius,double ratio,YakumanCombat.Kind kind,int rgb) {
-            var slash=nativeSlash(this,point,forward,radius,rgb,spec==YakumanSpec.SUUSHI_JIKOKU?20:10);
-            CUTS.put(slash,new NativeCut(this,point,radius,ratio,kind));
+        void cut(Vec3 point,double radius,double ratio,int rgb) {
+            nativeSlash(this,point,forward,radius,ratio,rgb,spec==YakumanSpec.SUUSHI_JIKOKU?20:10);
         }
         Shot shot(Vec3 pos,Vec3 dir,LivingEntity target,double velocity,double damage,YakumanCombat.Kind kind,
                   YakumanVisualPacket.Shape shape,int color,int tile,boolean blocks,boolean pierce) {
@@ -435,13 +418,13 @@ public final class YakumanArts {
         c.level.playSound(null,anchor.x,anchor.y,anchor.z,SoundEvents.ENDERMAN_TELEPORT,SoundSource.PLAYERS,.8F,.8F);
     }
     private static void areaTarget(Cast c,double ratio,int rgb) {
-        var t=c.target(false);c.cut(t==null?c.user.position():center(t),2,ratio,PHYSICAL,rgb);
+        var t=c.target(false);c.cut(t==null?c.user.position():center(t),2,ratio,rgb);
     }
     private static void shadowCut(Cast c,int n,double ratio) {
         var t=c.target(false);Vec3 point=t==null?c.user.position():center(t);
         Vec3 side=new Vec3(Math.cos(n*Math.PI/2),.15,Math.sin(n*Math.PI/2));
         c.flash(SHADOW,point.add(side.scale(2)),side.scale(-1),9,1,0x171321,0);
-        c.cut(point,2,ratio,PHYSICAL,0xbeb2d1);
+        c.cut(point,2,ratio,0xbeb2d1);
     }
     private static void forwardBlade(Cast c,double ratio,YakumanVisualPacket.Shape shape,boolean pierce) {
         var t=c.target(false);Vec3 dir=t==null?c.user.getLookAngle():center(t).subtract(c.user.getEyePosition()).normalize();
@@ -572,7 +555,7 @@ public final class YakumanArts {
                 if(c.spec==YakumanSpec.SUUSHI_JIKOKU) {
                     shot.shared=c.initialHits;
                     shot.impact=(target,point)->{c.hit(target,6,PHYSICAL);for(int j=0;j<4;j++)c.later(j*2,
-                            ()->c.cut(enemy(c.user,target)?center(target):point,2,2,PHYSICAL,0xe7defb));};
+                            ()->c.cut(enemy(c.user,target)?center(target):point,2,2,0xe7defb));};
                 }
             });
         }
@@ -586,9 +569,8 @@ public final class YakumanArts {
             c.advance();
             if(c.actions.isEmpty()&&c.shots.isEmpty()&&c.added.isEmpty())it.remove();
         }
-        CUTS.keySet().removeIf(Entity::isRemoved);
         YakumanStun.tick();
         YakumanVisualPacket.flush();
     }
-    @SubscribeEvent public static void stop(ServerStoppedEvent e){ACTIVE.clear();PENDING.clear();CUTS.clear();YakumanVisualPacket.clear();YakumanStun.clear();}
+    @SubscribeEvent public static void stop(ServerStoppedEvent e){ACTIVE.clear();PENDING.clear();YakumanVisualPacket.clear();YakumanStun.clear();}
 }

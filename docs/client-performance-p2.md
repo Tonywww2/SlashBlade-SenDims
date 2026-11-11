@@ -21,7 +21,6 @@ Prism `instance.cfg` 已设置最小堆 6 GiB、最大堆 12 GiB、`-XX:SoftMaxH
 | `performance.rendering.draconicGrinderGeometry` | 磨粉机剑模型几何缓存与统一提交 |
 | `performance.rendering.grinderCacheMiB` | 几何数组预算，当前 2 MiB；0 强制回退，范围 0–16 |
 | `performance.rendering.slashbladeObjSubmission` | SlashBlade Face 数学临时对象复用 |
-| `performance.hud.minimapIconFilters` | 小地图图标重复纹理过滤状态写入去重 |
 | `performance.hud.questBackgroundBatching` | UIQuest 背景渐变切片批量提交 |
 | `performance.hud.questTrimmedTextCache` | UIQuest 不可变裁剪文本缓存 |
 | `performance.buffers.immediatelyFastFixedBufferViews` | ImmediatelyFast 固定缓冲单元素集合视图复用 |
@@ -30,7 +29,7 @@ Prism `instance.cfg` 已设置最小堆 6 GiB、最大堆 12 GiB、`-XX:SoftMaxH
 
 **SlashBlade：**每线程复用一个法线矩阵与向量，法线矩阵由每顶点构造改为每个面准备一次，默认 alpha 省去 `Vector4f` 和装箱回调。读取实时面顶点、法线、UV 操作、颜色与光照；保留 `RenderOverrideEvent`、渲染类型、发光层与 glint。自定义 alpha、Face 子类或重入时回退。没有缓存可变刀状态，也不改变模型覆盖事件。
 
-**小地图：**在一次 FTB HUD 绘制范围内，只跳过相邻同一纹理的重复 min/mag 过滤写入，不改变图标顺序或透明合成。外部 GL 参数写入、纹理切换、新帧和退出作用域都会使备忘失效，不跨帧假设 GL 状态。
+**小地图：**（2026-11-11 已删除：FTB Chunks 不再绘制小地图，改用 Xaero 地图，此项优化及配置项 `performance.hud.minimapIconFilters` 一并移除。）原实现：在一次 FTB HUD 绘制范围内，只跳过相邻同一纹理的重复 min/mag 过滤写入，不改变图标顺序或透明合成。外部 GL 参数写入、纹理切换、新帧和退出作用域都会使备忘失效，不跨帧假设 GL 状态。
 
 **任务 HUD：**原有 60 个背景切片仍按原顺序、顶点和颜色绘制，改为在边框／文字前统一刷新；任务状态、数量与进度每帧读取。文本缓存固定 128 槽，以内容、裁剪宽度、字体对象和资源代次区分；超长文本不保留，碰撞直接替换。资源重载和退出世界时清理。
 

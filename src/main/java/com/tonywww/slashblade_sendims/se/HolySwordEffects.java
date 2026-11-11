@@ -99,9 +99,16 @@ public final class HolySwordEffects {
                 * HolySwordRules.damageMultiplier(effect.getAmplifier())));
     }
 
+    /**
+     * Native right-click swings also start "using" the blade, so the first ticks of a
+     * tap look exactly like a charge. Only a hold of at least this long counts.
+     */
+    public static final int CHARGE_MIN_TICKS = 5;
+
     public static boolean charging(LivingEntity user, ISlashBladeState state) {
         if (state == null || !user.isUsingItem() || user.getUsedItemHand() != InteractionHand.MAIN_HAND
-                || user.getUseItem() != user.getMainHandItem() || state.isBroken() || state.isSealed()) return false;
+                || user.getUseItem() != user.getMainHandItem() || state.isBroken() || state.isSealed()
+                || user.getTicksUsingItem() < CHARGE_MIN_TICKS) return false;
         return user.getUseItem().getItem() instanceof ItemSlashBlade
                 && SwordType.from(user.getUseItem()).contains(SwordType.ENCHANTED);
     }

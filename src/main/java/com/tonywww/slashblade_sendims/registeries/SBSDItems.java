@@ -2,8 +2,10 @@ package com.tonywww.slashblade_sendims.registeries;
 
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.items.BlessingPetals;
+import com.tonywww.slashblade_sendims.items.TofuAccessory;
 import com.tonywww.slashblade_sendims.items.TheNectarQuest;
 import com.tonywww.slashblade_sendims.items.BloodJade;
+import com.tonywww.slashblade_sendims.items.BloodMarrow;
 import com.tonywww.slashblade_sendims.items.DeepRealmCertificate;
 import com.tonywww.slashblade_sendims.items.EstusFlask;
 import com.tonywww.slashblade_sendims.items.IntegralComponent;
@@ -49,6 +51,11 @@ public class SBSDItems {
                     .rarity(Rarity.EPIC)
             ));
 
+    public static final RegistryObject<Item> TOFU_MINER_LANTERN = ITEMS.register("tofu_miner_lantern",
+            () -> new TofuAccessory(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> TOFU_HUNTER_KNIFE = ITEMS.register("tofu_hunter_knife",
+            () -> new TofuAccessory(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+
     public static final RegistryObject<Item> STRUCTURE_QUILL = ITEMS.register("structure_quill",
             () -> new StructureQuill(new Item.Properties()
                     .stacksTo(1)
@@ -57,6 +64,12 @@ public class SBSDItems {
             ));
     public static final RegistryObject<Item> BLOOD_JADE = ITEMS.register("blood_jade",
             () -> new BloodJade(new Item.Properties()
+                    .stacksTo(64)
+                    .fireResistant()
+                    .rarity(Rarity.RARE)
+            ));
+    public static final RegistryObject<Item> BLOOD_MARROW = ITEMS.register("blood_marrow",
+            () -> new BloodMarrow(new Item.Properties()
                     .stacksTo(64)
                     .fireResistant()
                     .rarity(Rarity.RARE)

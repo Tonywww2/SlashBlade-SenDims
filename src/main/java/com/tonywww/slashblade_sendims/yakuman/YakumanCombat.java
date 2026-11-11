@@ -21,6 +21,11 @@ public final class YakumanCombat {
     public enum Kind { PHYSICAL, MAGIC, LIGHTNING, TRUE }
     private static final ThreadLocal<Integer> DEPTH=ThreadLocal.withInitial(()->0);
     public static boolean secondary() {return DEPTH.get()>0;}
+    /** Runs native damage as a secondary hit: yakuman counters, ammo and re-entry stay closed. */
+    public static void secondary(Runnable action) {
+        DEPTH.set(DEPTH.get()+1);
+        try {action.run();} finally {DEPTH.set(DEPTH.get()-1);}
+    }
     public static boolean enemy(LivingEntity user,LivingEntity target) {
         return SukunaCombat.enemy(user,target) && target.level()==user.level()
                 && (!(user instanceof Player p && target instanceof Player t) || p.canHarmPlayer(t));

@@ -1,5 +1,6 @@
 package com.tonywww.slashblade_sendims.mixin.lsp;
 
+import com.tonywww.slashblade_sendims.compat.lsp.BleedRules;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,9 +24,9 @@ public class MixinBleedingCutting {
         if (!SpecialEffect.isEffective(SERegistry.BLEEDING_CUTTING.get(), player.experienceLevel)) return;
 
         LivingEntity target = event.getTarget();
-        int amount = (int) Math.floor(player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0D);
+        int amount = BleedRules.perHit(player.getAttributeValue(Attributes.ATTACK_DAMAGE));
         if (amount <= 0) return;
-        int limit = Math.max(1, (int) Math.floor(target.getMaxHealth()));
+        int limit = BleedRules.limit(target);
         target.invulnerableTime = 0;
         target.getCapability(ModCapabilities.BLOOD_ACCUMULATION_CAPABILITY).ifPresent(blood -> {
             blood.setAccumulation((int) Math.min(limit, (long) blood.getAccumulation() + amount));

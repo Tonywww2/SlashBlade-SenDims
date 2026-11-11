@@ -1,6 +1,7 @@
 package com.tonywww.slashblade_sendims.mixin.slashblade;
 
 import com.tonywww.slashblade_sendims.items.BloodJade;
+import com.tonywww.slashblade_sendims.items.BloodMarrow;
 import com.tonywww.slashblade_sendims.utils.SlashBladeUtil;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -46,15 +47,20 @@ public abstract class ItemSlashBladeMixin extends SwordItem {
     @Override
     public boolean overrideOtherStackedOnMe(@NotNull ItemStack me, @NotNull ItemStack other, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, @NotNull SlotAccess slotAccess) {
         if (action != ClickAction.SECONDARY) return false;
-        CompoundTag data = other.getOrCreateTag();
-        if (!data.contains(BloodJade.KILL_COUNT_PATH)) return false;
-        int countToIncrease = data.getInt(BloodJade.KILL_COUNT_PATH);
-        ISlashBladeState bladeState = SlashBladeUtil.getState(me);
-        if (bladeState == null) return false;
-        int newCount = bladeState.getKillCount() + countToIncrease;
-        if (me.getTag() == null) return false;
-        me.getTag().getCompound("bladeState").putInt("killCount", newCount);
-        bladeState.setKillCount(newCount);
+        // 用 getTag：右键任意物品时不给它加空 NBT（空 NBT 会让它无法与同类物品堆叠）
+        CompoundTag data = other.getTag();
+        if (data == null) return false;
+        if (data.contains(BloodJade.KILL_COUNT_PATH)) {
+            int countToIncrease = data.getInt(BloodJade.KILL_COUNT_PATH);
+            ISlashBladeState bladeState = SlashBladeUtil.getState(me);
+            if (bladeState == null) return false;
+            int newCount = bladeState.getKillCount() + countToIncrease;
+            if (me.getTag() == null) return false;
+            me.getTag().getCompound("bladeState").putInt("killCount", newCount);
+            bladeState.setKillCount(newCount);
+        } else if (!BloodMarrow.addProudSoul(me, other)) {
+            return false;
+        }
 
         other.shrink(1);
         player.playSound(SoundEvents.PLAYER_LEVELUP);

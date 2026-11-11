@@ -1,59 +1,27 @@
 package com.tonywww.slashblade_sendims.effect;
 
-import com.tonywww.slashblade_sendims.registeries.SBSDAttributes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-
-import java.util.UUID;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
  * 风暴穿透 (Storm Penetration)
  * <p>
  * 无名王者系列 SE「风暴」在释放 SA 时赋予自身的增益。
- * 每一级提供 5 点魔法穿透（{@link SBSDAttributes#MAGIC_PENETRATION}）。
- * <p>
- * 由于魔法穿透数值需要随效果等级线性增长，这里使用
- * {@link #addAttributeModifiers}/{@link #removeAttributeModifiers} 手动挂载修饰符，
- * 而不是依赖固定的属性修饰符列表。
+ * 每一级提高 5% 攻击力，乘区为 {@link AttributeModifier.Operation#MULTIPLY_TOTAL}。
+ * 原版效果机制会把修饰值乘以（等级 + 1），因此这里只登记单级数值。
  */
 public class StormPenetrationEffect extends MobEffect {
 
-    /** 每级提供的魔法穿透数值 */
-    public static final double PENETRATION_PER_LEVEL = 5.0d;
+    /** 每级提供的攻击力比例（MULTIPLY_TOTAL） */
+    public static final double ATTACK_PER_LEVEL = 0.05d;
 
-    private static final UUID MODIFIER_UUID = UUID.fromString("9f2c1a44-7b3e-4d21-9a86-5d0f1e7b3c10");
-    private static final String MODIFIER_NAME = "effect.slashblade_sendims.storm_penetration";
+    private static final String MODIFIER_UUID = "9f2c1a44-7b3e-4d21-9a86-5d0f1e7b3c10";
 
     public StormPenetrationEffect() {
         super(MobEffectCategory.BENEFICIAL, 0x4FC3FF);
-    }
-
-    @Override
-    public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-        AttributeInstance instance = attributeMap.getInstance(SBSDAttributes.MAGIC_PENETRATION.get());
-        if (instance == null) {
-            return;
-        }
-
-        // 等级变化时会重复调用，先移除旧修饰符保证幂等
-        instance.removeModifier(MODIFIER_UUID);
-        instance.addTransientModifier(new AttributeModifier(
-                MODIFIER_UUID,
-                MODIFIER_NAME,
-                PENETRATION_PER_LEVEL * (amplifier + 1),
-                AttributeModifier.Operation.ADDITION
-        ));
-    }
-
-    @Override
-    public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-        AttributeInstance instance = attributeMap.getInstance(SBSDAttributes.MAGIC_PENETRATION.get());
-        if (instance != null) {
-            instance.removeModifier(MODIFIER_UUID);
-        }
+        addAttributeModifier(Attributes.ATTACK_DAMAGE, MODIFIER_UUID, ATTACK_PER_LEVEL,
+                AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 }

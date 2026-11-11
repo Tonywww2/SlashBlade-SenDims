@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "slashblade_sendims:item/tofu_hunter_knife"
+  }
+}

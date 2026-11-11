@@ -13,7 +13,6 @@ public final class ClientPerformanceConfig {
     public static final ForgeConfigSpec.BooleanValue GRINDER_GEOMETRY = SenDimsConfig.GRINDER_GEOMETRY;
     public static final ForgeConfigSpec.IntValue GRINDER_CACHE_MIB = SenDimsConfig.GRINDER_CACHE_MIB;
     public static final ForgeConfigSpec.BooleanValue SLASHBLADE_OBJ = SenDimsConfig.SLASHBLADE_OBJ;
-    public static final ForgeConfigSpec.BooleanValue MINIMAP_FILTERS = SenDimsConfig.MINIMAP_FILTERS;
     public static final ForgeConfigSpec.BooleanValue QUEST_BACKGROUND = SenDimsConfig.QUEST_BACKGROUND;
     public static final ForgeConfigSpec.BooleanValue QUEST_TEXT = SenDimsConfig.QUEST_TEXT;
     public static final ForgeConfigSpec.BooleanValue FIXED_BUFFER_VIEWS = SenDimsConfig.FIXED_BUFFER_VIEWS;

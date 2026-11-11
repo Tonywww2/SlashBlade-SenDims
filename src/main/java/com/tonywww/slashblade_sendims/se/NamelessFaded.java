@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundSource;
  * <p>
  * 无名系列最初的代价：王者舍弃了自己的名字，刀也因此无法被完整地持守。
  * 若 5 秒内未斩击命中任何敌人，下一次命中会强行修正刀的耐久——
- * 高于 70% 则降至 70%，低于 30% 则抬升至 30%。
+ * 高于 90% 则降至 90%，低于 50% 则抬升至 50%。
  */
 public class NamelessFaded extends SpecialEffect {
 

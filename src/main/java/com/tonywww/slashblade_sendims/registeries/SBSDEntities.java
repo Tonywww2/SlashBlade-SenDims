@@ -6,6 +6,7 @@ import com.tonywww.slashblade_sendims.entities.EntityChaoticJudgementCut;
 import com.tonywww.slashblade_sendims.entities.EntityChaoticSlashEffect;
 import com.tonywww.slashblade_sendims.entities.EntityStableDrive;
 import com.tonywww.slashblade_sendims.entities.EntityHolySwordLight;
+import com.tonywww.slashblade_sendims.entities.EntityMapleLeaf;
 import com.tonywww.slashblade_sendims.entities.EntityYakumanDrive;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -23,6 +24,12 @@ public final class SBSDEntities {
                     .<EntityHolySwordLight>of(EntityHolySwordLight::new, MobCategory.MISC)
                     .sized(0.1F, 0.1F).clientTrackingRange(8).updateInterval(20).noSave()
                     .build(SenDims.prefix("holy_sword_light").toString()));
+
+    public static final RegistryObject<EntityType<EntityMapleLeaf>> MAPLE_LEAF =
+            ENTITY_TYPES.register("maple_leaf", () -> EntityType.Builder
+                    .<EntityMapleLeaf>of(EntityMapleLeaf::new, MobCategory.MISC)
+                    .sized(0.4F, 0.4F).clientTrackingRange(8).updateInterval(1).noSave()
+                    .build(SenDims.prefix("maple_leaf").toString()));
 
     public static final RegistryObject<EntityType<EntityChaoticJudgementCut>> CHAOTIC_JUDGEMENT_CUT =
             ENTITY_TYPES.register("chaotic_judgement_cut", () -> EntityType.Builder

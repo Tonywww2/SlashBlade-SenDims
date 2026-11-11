@@ -3,6 +3,7 @@ package com.tonywww.slashblade_sendims.registeries;
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.config.StructureQuillConfig;
 import com.tonywww.slashblade_sendims.items.BloodJade;
+import com.tonywww.slashblade_sendims.items.BloodMarrow;
 import com.tonywww.slashblade_sendims.items.StructureQuill;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -24,6 +25,8 @@ public class SBSDCreativeTabs {
                         pOutput.accept(SBSDItems.BLESSING_PETALS.get());
                         pOutput.accept(SBSDItems.PRINCIPLE_OF_SWORD_ARTS.get());
                         pOutput.accept(SBSDItems.THE_NECTAR_QUEST.get());
+                        pOutput.accept(SBSDItems.TOFU_MINER_LANTERN.get());
+                        pOutput.accept(SBSDItems.TOFU_HUNTER_KNIFE.get());
                         pOutput.accept(SBSDItems.STRUCTURE_QUILL.get());
                         StructureQuillConfig.creativeTabStructures().forEach(structureId ->
                             pOutput.accept(StructureQuill.forStructure(structureId.toString())));
@@ -36,6 +39,15 @@ public class SBSDCreativeTabs {
                         pOutput.accept(BloodJade.withKillCount(1000));
                         pOutput.accept(BloodJade.withKillCount(5000));
                         pOutput.accept(BloodJade.withKillCount(10000));
+
+                        pOutput.accept(SBSDItems.BLOOD_MARROW.get());
+                        pOutput.accept(BloodMarrow.withProudSoul(100));
+                        pOutput.accept(BloodMarrow.withProudSoul(500));
+                        pOutput.accept(BloodMarrow.withProudSoul(1000));
+                        pOutput.accept(BloodMarrow.withProudSoul(5000));
+                        pOutput.accept(BloodMarrow.withProudSoul(10000));
+                        pOutput.accept(BloodMarrow.withProudSoul(50000));
+                        pOutput.accept(BloodMarrow.withProudSoul(100000));
 
                         pOutput.accept(SBSDItems.ESTUS_FLASK_0.get());
                         pOutput.accept(SBSDItems.ESTUS_FLASK_1.get());

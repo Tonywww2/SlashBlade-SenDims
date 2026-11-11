@@ -14,6 +14,11 @@ public class SBSDSpecialEffects {
     public static final RegistryObject<SpecialEffect> MANA_BURST = SE.register("mana_burst", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> KINGS_SELECTION = SE.register("kings_selection", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> INVISIBLE_AIR = SE.register("invisible_air", () -> new SpecialEffect(0));
+    public static final RegistryObject<SpecialEffect> AVALON = SE.register("avalon", () -> new SpecialEffect(0));
+    /** 天云系列：「鸦」斩击命中时放出追踪的红枫叶 */
+    public static final RegistryObject<SpecialEffect> AMAGUMO_CROW = SE.register("amagumo_crow", () -> new SpecialEffect(0));
+    /** 天云「无念」：「风」强化「鸦」 */
+    public static final RegistryObject<SpecialEffect> AMAGUMO_WIND = SE.register("amagumo_wind", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> MAHORAGA_FALSE = SE.register("mahoraga_false", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> SPACE_CUT = SE.register("space_cut", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> REVERSE_CURSED_TECHNIQUE = SE.register("reverse_cursed_technique", () -> new SpecialEffect(0));

@@ -1,5 +1,6 @@
 package com.tonywww.slashblade_sendims.mixin.slashblade;
 
+import com.tonywww.slashblade_sendims.utils.PositionedSlashes;
 import com.tonywww.slashblade_sendims.yakuman.YakumanArts;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.util.AttackManager;
@@ -18,7 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.function.Consumer;
 
-/** Only tagged yakuman slashes use the common damage pipeline; vanilla slashes retain theirs. */
+/**
+ * Yakuman slashes sync their lifetime to the client. Slashes from {@link PositionedSlashes}
+ * (all pack SA slash damage) attack around themselves; other slashes keep the native pipeline.
+ */
 @Mixin(EntitySlashEffect.class)
 public abstract class YakumanSlashMixin {
     @Unique private static final EntityDataAccessor<Integer> yakumanLifetime=
@@ -41,11 +45,11 @@ public abstract class YakumanSlashMixin {
             lifetime=slash.getEntityData().get(yakumanLifetime);
     }
     @Redirect(method="tick",at=@At(value="INVOKE",target="Lmods/flammpfeil/slashblade/util/AttackManager;areaAttack(Lnet/minecraft/world/entity/Entity;Ljava/util/function/Consumer;DZZLjava/util/List;)Ljava/util/List;",remap=false))
-    private List<Entity> yakumanDamage(Entity entity,Consumer<LivingEntity> beforeHit,
+    private List<Entity> positionedDamage(Entity entity,Consumer<LivingEntity> beforeHit,
                                        double reach,boolean force,boolean reset,List<Entity> excluded) {
         var slash=(EntitySlashEffect)entity;
-        if(slash.getPersistentData().getBoolean(YakumanArts.NATIVE_SLASH))
-            return YakumanArts.nativeSlashDamage(slash);
+        if(PositionedSlashes.isPositioned(slash))
+            return PositionedSlashes.damage(slash,beforeHit,force,reset,excluded);
         return AttackManager.areaAttack(slash,beforeHit,reach,force,reset,excluded);
     }
 }

@@ -4,6 +4,7 @@ import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.network.GoldenCruxVisualPacket;
 import com.tonywww.slashblade_sendims.network.GoldenCruxVisualPacket.Stage;
 import com.tonywww.slashblade_sendims.se.NamelessSeries;
+import com.tonywww.slashblade_sendims.utils.PositionedSlashes;
 import mods.flammpfeil.slashblade.SlashBlade.RegistryEvents;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -11,19 +12,16 @@ import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.AttackHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -38,7 +36,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-/** Both arts share the grounded crown; EX retains its native slash damage carriers. */
+/** Both arts share the grounded crown; every hit of both comes from native SlashBlade slashes. */
 @Mod.EventBusSubscriber(modid = SenDims.MOD_ID)
 public final class GoldenCrux {
     public static final ResourceLocation ART = SenDims.prefix("golden_crux");
@@ -62,7 +60,6 @@ public final class GoldenCrux {
         final LivingEntity target;
         final Vec3 aim;
         final long started;
-        final Map<UUID, Double> damage = new HashMap<>();
         Vec3 previous, landing;
         long landedAt = -1;
         boolean diving, stabbed, burst;
@@ -79,10 +76,6 @@ public final class GoldenCrux {
                     && isCombo(state.getComboSeq()) && level.getGameTime() - started <= MAX_TICKS;
         }
 
-        double base(LivingEntity target) {
-            return damage.computeIfAbsent(target.getUUID(), id -> Math.max(0,
-                    AttackHelper.calculateTotalDamage(user, target, 1.0F, false)));
-        }
     }
 
     private static boolean isCombo(ResourceLocation id) {
@@ -169,17 +162,12 @@ public final class GoldenCrux {
     private static void stab(Cast cast, boolean landing) {
         if (cast.stabbed) return;
         Vec3 start = cast.previous.add(0, 0.4, 0), end = cast.user.position().add(0, 0.4, 0);
-        AABB region = new AABB(start, end).inflate(landing ? 1.4 : 0.75, 1.2, landing ? 1.4 : 0.75);
-        var targets = cast.level.getEntitiesOfClass(LivingEntity.class, region,
-                other -> enemy(cast.user, other) && cast.user.hasLineOfSight(other)
-                        && (landing || other.getBoundingBox().inflate(0.75).clip(start, end).isPresent()
-                        || other.getBoundingBox().inflate(0.75).contains(end)));
-        LivingEntity target = targets.contains(cast.target) ? cast.target : targets.stream()
-                .min(Comparator.comparingDouble(cast.user::distanceToSqr)).orElse(null);
-        if (target != null) {
-            cast.stabbed = true;
-            hit(cast, target, PLUNGE_DAMAGE);
-        }
+        // Mid-air, the plunge strikes once the dive meets a body; on landing it always strikes.
+        if (!landing && cast.level.getEntitiesOfClass(LivingEntity.class, new AABB(start, end).inflate(0.75, 1.2, 0.75),
+                other -> enemy(cast.user, other) && (other.getBoundingBox().inflate(0.75).clip(start, end).isPresent()
+                        || other.getBoundingBox().inflate(0.75).contains(end))).isEmpty()) return;
+        cast.stabbed = true;
+        strike(cast, end, landing ? 2.0 : 1.5, PLUNGE_DAMAGE);
     }
 
     private static void land(Cast cast) {
@@ -195,16 +183,16 @@ public final class GoldenCrux {
 
     private static void burst(Cast cast) {
         cast.burst = true;
-        // Each enemy is processed once for the entire crown, never once per rendered barb.
-        for (LivingEntity target : cast.level.getEntitiesOfClass(LivingEntity.class,
-                new AABB(cast.landing, cast.landing).inflate(RING_RADIUS, 3.5, RING_RADIUS),
-                other -> enemy(cast.user, other))) {
-            if (target.position().subtract(cast.landing).horizontalDistanceSqr() <= RING_RADIUS * RING_RADIUS
-                    && Math.abs(target.getY() - cast.landing.y) <= 3.5 && cast.user.hasLineOfSight(target)) {
-                hit(cast, target, BARB_DAMAGE);
-            }
-        }
+        // One native slash under the whole crown: each enemy once, never once per rendered barb.
+        strike(cast, cast.landing.add(0, 0.5, 0), RING_RADIUS, BARB_DAMAGE);
         showCrown(cast.user, cast.started, cast.landing);
+    }
+
+    /** Hidden native slash: the crown is drawn by the client, the damage is SlashBlade's own. */
+    private static void strike(Cast cast, Vec3 point, double radius, float ratio) {
+        PositionedSlashes.at(cast.user, point).hidden().roll(90.0F).size((float) (radius / 3.0))
+                .radius(radius).lifetime(6).ratio(ratio)
+                .onHit(target -> StunManager.setStun(target, 15)).spawn();
     }
 
     /** Visual-only entry shared by normal landing and each EX strike. */
@@ -215,33 +203,6 @@ public final class GoldenCrux {
                 SoundSource.PLAYERS, 1.3F, 0.65F);
         level.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT,
                 SoundSource.PLAYERS, 0.8F, 0.7F);
-    }
-
-    private static void hit(Cast cast, LivingEntity target, float ratio) {
-        ISlashBladeState state = NamelessSeries.getBladeState(cast.user);
-        if (state == null) return;
-        boolean clicked = state.onClick();
-        state.setOnClick(true);
-        try {
-            if (cast.user instanceof Player player && !ForgeHooks.onPlayerAttackTarget(player, target)) return;
-            float amount = (float) (cast.base(target) * ratio);
-            if (amount <= 0) return;
-            AttackHelper.FireAspectResult fire = AttackHelper.handleFireAspect(cast.user, target);
-            DamageSource source = cast.user instanceof Player player ? cast.user.damageSources().playerAttack(player)
-                    : cast.user.damageSources().mobAttack(cast.user);
-            target.invulnerableTime = 0;
-            if (!target.hurt(source, amount)) {
-                AttackHelper.handleFailedAttack(cast.user, target, fire);
-                return;
-            }
-            AttackHelper.playAttackEffects(cast.user, target, false);
-            // The native HitEvent triggers the equipped blade's frenzy and other SE once.
-            AttackHelper.handleEnchantmentsAndDurability(cast.user, target);
-            AttackHelper.handlePostAttackEffects(cast.user, target, fire);
-            StunManager.setStun(target, 15);
-        } finally {
-            state.setOnClick(clicked);
-        }
     }
 
     @SubscribeEvent

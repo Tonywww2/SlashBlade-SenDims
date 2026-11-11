@@ -13,7 +13,6 @@ public final class ClientPerformanceOptions {
     public static volatile boolean diagnostics;
     public static volatile boolean grinderGeometry = true;
     public static volatile boolean slashbladeObj = true;
-    public static volatile boolean minimapFilters = true;
     public static volatile boolean questBackground = true;
     public static volatile boolean questText = true;
     public static volatile boolean fixedBufferViews = true;
@@ -26,7 +25,6 @@ public final class ClientPerformanceOptions {
         if (event.getConfig().getSpec() != ClientPerformanceConfig.SPEC) return;
         grinderGeometry = ClientPerformanceConfig.GRINDER_GEOMETRY.get();
         slashbladeObj = ClientPerformanceConfig.SLASHBLADE_OBJ.get();
-        minimapFilters = ClientPerformanceConfig.MINIMAP_FILTERS.get();
         questBackground = ClientPerformanceConfig.QUEST_BACKGROUND.get();
         questText = ClientPerformanceConfig.QUEST_TEXT.get();
         fixedBufferViews = ClientPerformanceConfig.FIXED_BUFFER_VIEWS.get();

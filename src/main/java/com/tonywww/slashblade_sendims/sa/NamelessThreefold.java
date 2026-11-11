@@ -6,6 +6,7 @@ import com.tonywww.slashblade_sendims.registeries.SBSDSpecialEffects;
 import com.tonywww.slashblade_sendims.se.NamelessSeries;
 import com.tonywww.slashblade_sendims.se.NamelessStorm;
 import com.tonywww.slashblade_sendims.se.SEEventHandlers;
+import com.tonywww.slashblade_sendims.utils.PositionedSlashes;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -30,9 +31,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -46,14 +45,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/** Three opening strikes, a conditional bolt and a returning pursuit share one 12x cast. */
+/**
+ * Three opening strikes, a conditional bolt and a returning pursuit share one 12x cast.
+ * Every strike is a native SlashBlade slash that damages all enemies where it appears;
+ * only the bolt stays on the thrust target.
+ */
 @Mod.EventBusSubscriber(modid = SenDims.MOD_ID)
 public final class NamelessThreefold {
     public static final ResourceLocation ID = SenDims.prefix("nameless_threefold");
     public static final ResourceLocation PURSUIT_ID = SenDims.prefix("nameless_threefold_pursuit");
     public static final int OPENING_TICKS = 34;
     public static final int FINISH_TICKS = 64;
-    private static final float[] RATIOS = {2.0F, 2.0F, 5.0F, 1.0F, 2.0F};
+    private static final float[] RATIOS = {3.0F, 3.0F, 1.0F, 1.0F, 4.0F};
     private static final DustParticleOptions GOLD = new DustParticleOptions(new Vector3f(1.0F, 0.72F, 0.12F), 1.1F);
     private static final Map<UUID, Cast> CASTS = new HashMap<>();
 
@@ -70,6 +73,8 @@ public final class NamelessThreefold {
         boolean pursuitInitialized;
         boolean pursuing;
         UUID thrustTarget;
+        final PositionedSlashes.Group thrust = new PositionedSlashes.Group();
+        Vec3 thrustStart;
 
         Cast(LivingEntity user, ServerLevel level) {
             this.user = user;
@@ -211,19 +216,11 @@ public final class NamelessThreefold {
     private static void sweep(Cast cast, int phase) {
         Vec3 origin = center(cast.user);
         Vec3 forward = forward(cast.user);
-        List<LivingEntity> targets = cast.level.getEntitiesOfClass(LivingEntity.class,
-                cast.user.getBoundingBox().inflate(4.0D, 1.5D, 4.0D), target -> enemy(cast.user, target));
-        for (LivingEntity target : targets) {
-            Vec3 offset = center(target).subtract(origin);
-            if (Math.abs(offset.y) <= 2.5D && offset.horizontalDistanceSqr() <= 16.0D
-                    && offset.dot(forward) >= -target.getBbWidth() * 0.5D && cast.user.hasLineOfSight(target)) {
-                melee(cast, target, RATIOS[phase]);
-            }
-        }
         Vec3 slashPos = origin.add(forward.scale(0.7D));
         float roll = phase == 0 ? 20.0F : -25.0F;
         slashVisual(cast, slashPos, roll, phase == 0 ? 0xEEF5FF : 0xFFD166, 2.1F, 0.0F);
-        slashVisual(cast, slashPos, roll + 8.0F, 0xFFF6CF, 2.4F, 15.0F);
+        // The larger crescent carries the damage, so its whole drawn area hits.
+        strike(cast, slashPos, roll + 8.0F, 0xFFF6CF, 2.4F, 15.0F, RATIOS[phase]).spawn();
         cast.level.playSound(null, cast.user.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP,
                 SoundSource.PLAYERS, 1.2F, phase == 0 ? 0.65F : 0.8F);
         cast.level.sendParticles(phase == 0 ? ParticleTypes.CLOUD : GOLD, origin.x, origin.y, origin.z,
@@ -236,26 +233,38 @@ public final class NamelessThreefold {
         LivingEntity user = cast.user;
         Vec3 direction = forward(user);
         Vec3 start = center(user);
+        cast.thrustStart = start;
         // Vanilla collision clipping preserves walls, entity collisions and the world border.
         move(cast, direction.scale(6.0D));
         Vec3 end = center(user).add(direction.scale(1.25D));
-        AABB bounds = new AABB(start, end).inflate(1.25D, 1.5D, 1.25D);
-        List<LivingEntity> targets = cast.level.getEntitiesOfClass(LivingEntity.class, bounds,
-                target -> enemy(user, target) && distanceToSegmentSqr(center(target), start, end) <= 2.25D
-                        && user.hasLineOfSight(target));
-        targets.sort(Comparator.comparingDouble(target -> target.distanceToSqr(start)));
-        Entity locked = NamelessSeries.getBladeState(user).getTargetEntity(cast.level);
-        for (LivingEntity target : targets) {
-            if (melee(cast, target, RATIOS[2]) && (cast.thrustTarget == null || target == locked)) {
-                cast.thrustTarget = target.getUUID();
-            }
+        // Hidden slashes along the dash keep the pierce; all share one hit list, so every
+        // enemy on the path or inside the closing crescents takes the 5x strike once.
+        int steps = Math.max(1, (int) Math.ceil(start.distanceTo(end) / 1.5D));
+        for (int i = 0; i <= steps; i++) {
+            PositionedSlashes.at(user, start.lerp(end, i / (double) steps)).hidden().size(0.5F).radius(1.5D)
+                    .lifetime(8).ratio(RATIOS[2]).group(cast.thrust).spawn();
         }
-        slashVisual(cast, center(user).add(direction.scale(0.5D)), 90.0F, 0xFFD166, 2.4F, 0.0F);
-        slashVisual(cast, center(user).add(direction.scale(0.5D)), 85.0F, 0xFFF6CF, 2.8F, 12.0F);
+        Vec3 slashPos = center(user).add(direction.scale(0.5D));
+        slashVisual(cast, slashPos, 90.0F, 0xFFD166, 2.4F, 0.0F);
+        strike(cast, slashPos, 85.0F, 0xFFF6CF, 2.8F, 12.0F, RATIOS[2]).group(cast.thrust).spawn();
         cast.level.playSound(null, user.blockPosition(), SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 0.65F);
         trail(cast, start, center(user));
         cast.level.sendParticles(ParticleTypes.FLASH, user.getX(), user.getY() + 1.0D, user.getZ(),
                 1, 0.0D, 0.0D, 0.0D, 0.0D);
+    }
+
+    /** The locked target when the thrust hit it, otherwise the damaged enemy nearest the dash start. */
+    private static LivingEntity thrustTarget(Cast cast) {
+        if (cast.thrustTarget != null) {
+            return cast.level.getEntity(cast.thrustTarget) instanceof LivingEntity target ? target : null;
+        }
+        List<LivingEntity> damaged = cast.thrust.damaged();
+        if (damaged.isEmpty() || cast.thrustStart == null) return null;
+        Entity locked = NamelessSeries.getBladeState(cast.user).getTargetEntity(cast.level);
+        LivingEntity target = locked instanceof LivingEntity living && damaged.contains(living) ? living
+                : damaged.stream().min(Comparator.comparingDouble(e -> e.distanceToSqr(cast.thrustStart))).orElse(null);
+        if (target != null) cast.thrustTarget = target.getUUID();
+        return target;
     }
 
     private static void move(Cast cast, Vec3 offset) {
@@ -284,8 +293,8 @@ public final class NamelessThreefold {
         Cast cast = CASTS.get(user.getUUID());
         if (cast == null || !cast.valid() || cast.pursuitInitialized) return;
         cast.pursuitInitialized = true;
-        Entity entity = cast.thrustTarget == null ? null : cast.level.getEntity(cast.thrustTarget);
-        if (!(entity instanceof LivingEntity target) || !enemy(user, target)
+        LivingEntity target = thrustTarget(cast);
+        if (target == null || !enemy(user, target)
                 || target.distanceToSqr(user) > 64.0D || !user.hasLineOfSight(target)) return;
         cast.pursuing = true;
         Vec3 start = center(user);
@@ -311,15 +320,12 @@ public final class NamelessThreefold {
         float roll = elapsed == 2 ? 35.0F : elapsed == 4 ? -25.0F : 30.0F;
         slashVisual(cast, origin, roll, 0xFFD166, 2.8F, (float) elapsed * 60.0F);
         if (elapsed != 4) return;
-        slashVisual(cast, origin, -roll, 0xFFF6CF, 3.15F, 180.0F);
         if (cast.pursuing && (cast.completed & (1 << 4)) == 0) {
             cast.completed |= 1 << 4;
-            for (LivingEntity target : cast.level.getEntitiesOfClass(LivingEntity.class,
-                    user.getBoundingBox().inflate(3.6D, 1.5D, 3.6D), target -> enemy(user, target))) {
-                Vec3 offset = center(target).subtract(origin);
-                if (Math.abs(offset.y) <= 2.5D && offset.horizontalDistanceSqr() <= 12.96D
-                        && user.hasLineOfSight(target)) melee(cast, target, RATIOS[4]);
-            }
+            // The widest returning crescent hits every enemy inside it.
+            strike(cast, origin, -roll, 0xFFF6CF, 3.15F, 180.0F, RATIOS[4]).spawn();
+        } else {
+            slashVisual(cast, origin, -roll, 0xFFF6CF, 3.15F, 180.0F);
         }
         ring(cast, origin, 3.6D, 32);
         cast.level.sendParticles(ParticleTypes.FLASH, origin.x, origin.y, origin.z, 1, 0, 0, 0, 0);
@@ -339,48 +345,9 @@ public final class NamelessThreefold {
         }
     }
 
-    private static double distanceToSegmentSqr(Vec3 point, Vec3 start, Vec3 end) {
-        Vec3 line = end.subtract(start);
-        double fraction = line.lengthSqr() < 1.0E-6D ? 0.0D
-                : Math.max(0.0D, Math.min(1.0D, point.subtract(start).dot(line) / line.lengthSqr()));
-        return point.distanceToSqr(start.add(line.scale(fraction)));
-    }
-
-    private static boolean melee(Cast cast, LivingEntity target, float ratio) {
-        LivingEntity user = cast.user;
-        ISlashBladeState state = NamelessSeries.getBladeState(user);
-        if (state == null) return false;
-        boolean clicked = state.onClick();
-        state.setOnClick(true);
-        try {
-            // Match native doMeleeAttack: the item hook must see an internal attack,
-            // otherwise onLeftClickEntity consumes it as a new combo input.
-            if (user instanceof Player player && !ForgeHooks.onPlayerAttackTarget(player, target)) return false;
-            float damage = (float) (cast.base(target) * ratio);
-            if (damage <= 0.0F) return false;
-            AttackHelper.FireAspectResult fire = AttackHelper.handleFireAspect(user, target);
-            target.invulnerableTime = 0;
-            DamageSource source = user instanceof Player player ? user.damageSources().playerAttack(player)
-                    : user.damageSources().mobAttack(user);
-            if (!target.hurt(source, damage)) {
-                AttackHelper.handleFailedAttack(user, target, fire);
-                return false;
-            }
-            // Native durability/HitEvent handling retains kills, proud souls and series SE.
-            AttackHelper.playAttackEffects(user, target, false);
-            AttackHelper.handleEnchantmentsAndDurability(user, target);
-            AttackHelper.handlePostAttackEffects(user, target, fire);
-            return true;
-        } finally {
-            state.setOnClick(clicked);
-        }
-    }
-
     private static void lightning(Cast cast) {
-        if (cast.thrustTarget == null) return;
-        Entity entity = cast.level.getEntity(cast.thrustTarget);
-        if (!(entity instanceof LivingEntity target) || !enemy(cast.user, target)
-                || target.distanceToSqr(cast.user) > 256.0D) return;
+        LivingEntity target = thrustTarget(cast);
+        if (target == null || !enemy(cast.user, target) || target.distanceToSqr(cast.user) > 256.0D) return;
         float damage = (float) (cast.base(target) * RATIOS[3]);
         if (damage <= 0.0F) return;
         NamelessSeries.spawnLightningVisual(cast.level, target.position());
@@ -395,6 +362,13 @@ public final class NamelessThreefold {
         cast.level.sendParticles(ParticleTypes.EXPLOSION, origin.x, origin.y, origin.z, 1, 0, 0, 0, 0);
         cast.level.sendParticles(ParticleTypes.ELECTRIC_SPARK, origin.x, origin.y, origin.z,
                 32, 0.8D, 1.2D, 0.8D, 0.08D);
+    }
+
+    /** A visible native slash that deals native melee damage to every enemy inside its crescent. */
+    private static PositionedSlashes.Builder strike(Cast cast, Vec3 position, float roll, int color, float size,
+                                                    float offset, float ratio) {
+        return PositionedSlashes.at(cast.user, position).roll(roll).offset(offset).color(color).size(size)
+                .rank(IConcentrationRank.ConcentrationRanks.S.level).lifetime(8).ratio(ratio);
     }
 
     private static void slashVisual(Cast cast, Vec3 position, float roll, int color, float size, float offset) {
@@ -414,7 +388,8 @@ public final class NamelessThreefold {
         visual.setDamage(0.0D);
         visual.setMute(true);
         // Intentionally ownerless: native slash entities with an owner cause another area attack,
-        // even at zero damage, because they can add rank bonus. This entity is visual only.
+        // even at zero damage, because they can add rank bonus. This entity is visual only;
+        // strike() makes the damaging slashes.
         cast.level.addFreshEntity(visual);
     }
 

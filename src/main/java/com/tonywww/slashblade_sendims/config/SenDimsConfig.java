@@ -23,7 +23,6 @@ public final class SenDimsConfig {
     public static final ForgeConfigSpec.BooleanValue GRINDER_GEOMETRY;
     public static final ForgeConfigSpec.IntValue GRINDER_CACHE_MIB;
     public static final ForgeConfigSpec.BooleanValue SLASHBLADE_OBJ;
-    public static final ForgeConfigSpec.BooleanValue MINIMAP_FILTERS;
     public static final ForgeConfigSpec.BooleanValue QUEST_BACKGROUND;
     public static final ForgeConfigSpec.BooleanValue QUEST_TEXT;
     public static final ForgeConfigSpec.BooleanValue FIXED_BUFFER_VIEWS;
@@ -50,8 +49,6 @@ public final class SenDimsConfig {
                 .define("slashbladeObjSubmission", true);
         builder.pop();
         builder.push("hud");
-        MINIMAP_FILTERS = builder.comment("Reuse consecutive identical FTB entity-icon texture filter writes inside one HUD pass.")
-                .define("minimapIconFilters", true);
         QUEST_BACKGROUND = builder.comment("Batch UIQuest background slices; preserve the original stepped gradient and text/item ordering.")
                 .define("questBackgroundBatching", true);
         QUEST_TEXT = builder.comment("Cache immutable trimmed quest text by font, resource generation and width. Quest progress is never cached.")

@@ -1,5 +1,7 @@
 package com.tonywww.slashblade_sendims.mixin.lsp;
 
+import com.tonywww.slashblade_sendims.compat.lsp.BleedRules;
+import com.tonywww.slashblade_sendims.mixin.minecraft.LivingEntityStateAccessor;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,12 +31,9 @@ public class MixinBloodAccumulationEvent {
         if (event.getEntity() instanceof LivingEntity && !event.getEntity().level().isClientSide()) {
             LivingEntity entity = event.getEntity();
             entity.getCapability(ModCapabilities.BLOOD_ACCUMULATION_CAPABILITY).ifPresent((bloodAccum) -> {
-                int limit = Math.max(1, (int) Math.floor(entity.getMaxHealth()));
+                int limit = BleedRules.limit(entity);
                 if (bloodAccum.getAccumulation() > limit) bloodAccum.setAccumulation(limit);
                 if (bloodAccum.getAccumulation() >= limit && entity.invulnerableTime == 0) {
-                    float maxHealth = entity.getMaxHealth();
-                    float currHealth = entity.getHealth();
-                    float bleedDamage = (maxHealth - currHealth) * 0.15F + 8.0F;
                     UUID lastAttackerUUID = bloodAccum.getLastAttackerUUID();
                     Entity lastAttacker = null;
                     if (lastAttackerUUID != null) {
@@ -44,6 +43,7 @@ public class MixinBloodAccumulationEvent {
                             lastAttacker = serverLevel.getEntity(lastAttackerUUID);
                         }
                     }
+                    float bleedDamage = BleedRules.burstDamage(entity.getMaxHealth(), entity.getHealth(), BleedRules.attackOf(lastAttacker));
                     DamageSource source;
                     if (lastAttacker instanceof LivingEntity livingEntity) {
                         source = livingEntity.damageSources().mobAttack(livingEntity);
@@ -52,8 +52,8 @@ public class MixinBloodAccumulationEvent {
                         source = entity.damageSources().mobAttack(entity);
                     }
 
-                    for (int i = 0; i < 4; i++) {
-                        entity.hurt(source, bleedDamage / 4);
+                    for (int i = 0; i < BleedRules.BURST_HITS; i++) {
+                        entity.hurt(source, bleedDamage / BleedRules.BURST_HITS);
                         entity.invulnerableTime = 0;
 
                     }
@@ -73,9 +73,12 @@ public class MixinBloodAccumulationEvent {
                     bloodAccum.clearAccumulation();
                 }
 
-                int decayRate = 1;
-                if (entity.tickCount % 5 == 0 && bloodAccum.getAccumulation() > 0) {
-                    bloodAccum.addAccumulation(-decayRate);
+                if (bloodAccum.getAccumulation() > 0) {
+                    long unhurt = entity.level().getGameTime() - ((LivingEntityStateAccessor) entity).sendims$getLastDamageStamp();
+                    int decay = BleedRules.decayAmount(limit, unhurt);
+                    if (decay > 0) {
+                        bloodAccum.setAccumulation(Math.max(0, bloodAccum.getAccumulation() - decay));
+                    }
                 }
 
             });

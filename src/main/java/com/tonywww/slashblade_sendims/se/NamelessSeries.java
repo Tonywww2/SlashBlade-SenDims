@@ -38,9 +38,9 @@ public final class NamelessSeries {
     /** 「褪名」触发所需的空闲时长（tick） */
     public static final int FADED_IDLE_TICKS = 100;
     /** 「褪名」耐久上限钳制比例 */
-    public static final float FADED_HIGH_RATIO = 0.70f;
+    public static final float FADED_HIGH_RATIO = 0.90f;
     /** 「褪名」耐久下限钳制比例 */
-    public static final float FADED_LOW_RATIO = 0.30f;
+    public static final float FADED_LOW_RATIO = 0.50f;
 
     /** 「王威」充能结算间隔（tick） */
     public static final int SOVEREIGNTY_INTERVAL = 5;

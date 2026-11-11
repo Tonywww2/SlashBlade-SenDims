@@ -5,6 +5,7 @@ import com.tonywww.slashblade_sendims.network.HolySwordVisualPacket.Stage;
 import com.tonywww.slashblade_sendims.events.SuperSlashArtsReleaseEvent;
 import com.tonywww.slashblade_sendims.se.HolySwordRules;
 import com.tonywww.slashblade_sendims.se.NamelessSeries;
+import com.tonywww.slashblade_sendims.utils.PositionedSlashes;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -14,6 +15,7 @@ import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import mods.flammpfeil.slashblade.util.AttackHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -35,11 +37,17 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/** Caliburn: 3+10 physical. Excalibur: (2+2)+(2+2)+(3+3), physical+magic. */
+/**
+ * Caliburn: 3+10 physical. Excalibur: (2+2)+(2+2)+(3+3), physical+magic.
+ * The Caliburn opening is a native slash (group damage where its crescent appears). Both beams
+ * hit 2 blocks around their centreline horizontally and 6 blocks above and below it.
+ */
 @Mod.EventBusSubscriber(modid = SenDims.MOD_ID)
 public final class HolySwordArts {
     public static final ResourceLocation CALIBURN = SenDims.prefix("caliburn");
@@ -47,6 +55,8 @@ public final class HolySwordArts {
     public static final ResourceLocation EXCALIBUR = SenDims.prefix("excalibur");
     public static final int CALIBURN_CHARGE_TICKS = 9;
     public static final int EXCALIBUR_CHARGE_TICKS = 18;
+    public static final double BEAM_RADIUS = 2.0D;
+    public static final double BEAM_HALF_HEIGHT = 6.0D;
     private static final Map<UUID, Cast> CASTS = new HashMap<>();
 
     private HolySwordArts() {}
@@ -164,35 +174,26 @@ public final class HolySwordArts {
         if (cast == null || !cast.valid() || cast.finished) return;
         cast.finished = true;
         Vec3 end = clippedEnd(cast, 10.0D);
-        for (LivingEntity target : cast.level.getEntitiesOfClass(LivingEntity.class,
-                new AABB(cast.origin, end).inflate(2.0D, 2.0D, 2.0D), other -> enemy(cast.user, other))) {
-            if (insideBeam(cast, target, end, 2.0D) && visible(cast, target)) {
-                damage(cast, target, HolySwordRules.CALIBURN_FINISH, 0.0F);
-            }
+        for (LivingEntity target : beamTargets(cast, end)) {
+            damage(cast, target, HolySwordRules.CALIBURN_FINISH, 0.0F);
         }
         HolySwordVisuals.phase(user, cast.started, false, Stage.FINISH, cast.origin, end);
         sound(cast, SoundEvents.PLAYER_ATTACK_STRONG, 1.3F, 0.65F);
         sound(cast, SoundEvents.TRIDENT_RIPTIDE_2, 0.9F, 1.1F);
     }
 
+    /** Hidden native slash under the drawn crescent: every enemy inside it takes the 3x cut. */
     private static void opening(Cast cast) {
-        for (LivingEntity target : cast.level.getEntitiesOfClass(LivingEntity.class,
-                cast.user.getBoundingBox().inflate(4.0D, 2.0D, 4.0D), other -> enemy(cast.user, other))) {
-            Vec3 offset = center(target).subtract(cast.origin);
-            if (offset.horizontalDistanceSqr() <= 16.0D && Math.abs(offset.y) <= 2.5D
-                    && offset.dot(cast.direction) >= 0 && visible(cast, target)) {
-                damage(cast, target, HolySwordRules.CALIBURN_OPENING, 0.0F);
-            }
-        }
+        PositionedSlashes.at(cast.user, cast.origin.add(cast.direction.scale(1.5D))).hidden()
+                .yaw((float) Math.toDegrees(Math.atan2(-cast.direction.x, cast.direction.z)))
+                .size(1.5F).radius(4.5D).lifetime(8).ratio(HolySwordRules.CALIBURN_OPENING)
+                .spawn();
     }
 
     private static void beamPulse(Cast cast, int phase) {
         Vec3 end = clippedEnd(cast, 36.0D);
-        for (LivingEntity target : cast.level.getEntitiesOfClass(LivingEntity.class,
-                new AABB(cast.origin, end).inflate(2.0D), other -> enemy(cast.user, other))) {
-            if (insideBeam(cast, target, end, 2.0D) && visible(cast, target)) {
-                damage(cast, target, HolySwordRules.excaliburPhysical(phase), HolySwordRules.excaliburMagic(phase));
-            }
+        for (LivingEntity target : beamTargets(cast, end)) {
+            damage(cast, target, HolySwordRules.excaliburPhysical(phase), HolySwordRules.excaliburMagic(phase));
         }
         HolySwordVisuals.phase(cast.user, cast.started, true,
                 phase == 0 ? Stage.PULSE_0 : phase == 1 ? Stage.PULSE_1 : Stage.PULSE_2, cast.origin, end);
@@ -215,14 +216,54 @@ public final class HolySwordArts {
         return cast.level.clip(new ClipContext(cast.origin, end, ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE, cast.user)).getLocation();
     }
-    private static boolean visible(Cast cast, LivingEntity target) {
-        return cast.level.clip(new ClipContext(cast.origin, center(target), ClipContext.Block.COLLIDER,
+    private static boolean visible(Cast cast, Vec3 from, LivingEntity target) {
+        return cast.level.clip(new ClipContext(from, center(target), ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE, cast.user)).getType() == HitResult.Type.MISS;
     }
-    private static boolean insideBeam(Cast cast, LivingEntity target, Vec3 end, double radius) {
-        return center(target).subtract(cast.origin).dot(cast.direction) >= 0
-                && (target.getBoundingBox().inflate(radius).contains(cast.origin)
-                || target.getBoundingBox().inflate(radius).clip(cast.origin, end).isPresent());
+
+    private static List<LivingEntity> beamTargets(Cast cast, Vec3 end) {
+        List<LivingEntity> targets = new ArrayList<>();
+        for (LivingEntity target : cast.level.getEntitiesOfClass(LivingEntity.class,
+                new AABB(cast.origin, end).inflate(BEAM_RADIUS, BEAM_HALF_HEIGHT, BEAM_RADIUS),
+                other -> enemy(cast.user, other))) {
+            Vec3 contact = beamContact(cast.origin, end, cast.direction, target.getBoundingBox());
+            // Seen from the caster or from the beam itself: walls and floors still block the light.
+            if (contact != null && (visible(cast, contact, target) || visible(cast, cast.origin, target))) {
+                targets.add(target);
+            }
+        }
+        return targets;
+    }
+
+    /**
+     * The beam point beside a body, or null when the body is outside the hit volume: within
+     * {@link #BEAM_RADIUS} of the centreline horizontally and {@link #BEAM_HALF_HEIGHT} vertically.
+     */
+    public static Vec3 beamContact(Vec3 origin, Vec3 end, Vec3 direction, AABB box) {
+        Vec3 center = box.getCenter();
+        if (center.subtract(origin).dot(direction) < 0) return null;
+        Vec3 line = end.subtract(origin);
+        double reach = BEAM_RADIUS + (box.getXsize() + box.getZsize()) * 0.25D;
+        double ax = origin.x - center.x, az = origin.z - center.z;
+        double bb = line.x * line.x + line.z * line.z, ab = ax * line.x + az * line.z;
+        double aa = ax * ax + az * az - reach * reach;
+        double t0, t1, closest;
+        if (bb < 1.0E-6D) {
+            // Vertical aim: the column itself, full length.
+            if (aa > 0) return null;
+            t0 = 0.0D; t1 = 1.0D; closest = Mth.clamp((center.y - origin.y) / (line.y == 0 ? 1 : line.y), 0, 1);
+        } else {
+            double disc = ab * ab - bb * aa;
+            if (disc < 0) return null;
+            double root = Math.sqrt(disc);
+            t0 = Math.max(0.0D, (-ab - root) / bb);
+            t1 = Math.min(1.0D, (-ab + root) / bb);
+            if (t0 > t1) return null;
+            closest = Mth.clamp(-ab / bb, t0, t1);
+        }
+        double y0 = origin.y + line.y * t0, y1 = origin.y + line.y * t1;
+        if (box.maxY < Math.min(y0, y1) - BEAM_HALF_HEIGHT || box.minY > Math.max(y0, y1) + BEAM_HALF_HEIGHT) return null;
+        return origin.add(line.scale(closest));
     }
 
     private static void damage(Cast cast, LivingEntity target, float physicalRatio, float magicRatio) {

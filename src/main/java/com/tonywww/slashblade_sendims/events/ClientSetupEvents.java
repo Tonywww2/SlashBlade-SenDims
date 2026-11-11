@@ -21,6 +21,7 @@ public class ClientSetupEvents {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(SBSDEntities.HOLY_SWORD_LIGHT.get(), HolySwordLightRenderer::new);
+        event.registerEntityRenderer(SBSDEntities.MAPLE_LEAF.get(), com.tonywww.slashblade_sendims.client.renderer.entity.MapleLeafRenderer::new);
         event.registerEntityRenderer(SBSDEntities.YAKUMAN_DRIVE.get(), YakumanDriveRenderer::new);
         event.registerEntityRenderer(
                 SBSDEntities.CHAOTIC_JUDGEMENT_CUT.get(),

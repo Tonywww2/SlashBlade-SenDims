@@ -15,6 +15,8 @@ public class SBSDTags {
     }
 
     public static class EntityTypes {
+        public static final TagKey<EntityType<?>> NON_LIVING_SLASH_TARGETS = TagKey.create(
+                Registries.ENTITY_TYPE, SenDims.prefix("non_living_slash_targets"));
         public static final TagKey<EntityType<?>> REFLECT_WHITELIST = TagKey.create(Registries.ENTITY_TYPE, SenDims.prefix("slashblade_reflect_whitelist"));
     }
 

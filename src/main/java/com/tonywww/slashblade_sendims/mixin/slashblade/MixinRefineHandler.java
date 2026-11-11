@@ -29,14 +29,16 @@ public abstract class MixinRefineHandler {
     }
 
     @Unique
-    private int slashBlade_SenDims$getRefineProudsoulCount(int level, ISlashBladeState state, RefineSettlementEvent e2) {
-        int refineDiff = e2.getRefineResult() - state.getRefine();
-        return refineDiff * level * 5;
+    private long slashBlade_SenDims$getRefineProudsoulCount(int level, ISlashBladeState state, RefineSettlementEvent e2) {
+        int rewardLevel = Math.max(0, Math.min(200, level));
+        long refineDiff = (long) e2.getRefineResult() - state.getRefine();
+        return refineDiff * rewardLevel * 5L;
 
     }
     @Unique
-    private int slashBlade_SenDims$getBaseProudsoulCount(int level, ISlashBladeState state, RefineSettlementEvent e2) {
-        return e2.getMaterialCost() * 75;
+    private void slashBlade_SenDims$addRefineProudSoul(ISlashBladeState state, long amount) {
+        long total = state.getProudSoulCount() + amount;
+        state.setProudSoulCount((int) Math.max(0L, Math.min(Integer.MAX_VALUE, total)));
 
     }
 
@@ -96,10 +98,10 @@ public abstract class MixinRefineHandler {
                                         } else if (state.getRefine() < 200) {
                                             state.setMaxDamage(state.getMaxDamage() + Math.min(state.getRefine() + e2.getRefineResult(), 200) - state.getRefine());
                                         }
-                                        state.setProudSoulCount(state.getProudSoulCount() + slashBlade_SenDims$getRefineProudsoulCount(level, state, e2));
+                                        slashBlade_SenDims$addRefineProudSoul(state, slashBlade_SenDims$getRefineProudsoulCount(level, state, e2));
                                         state.setRefine(e2.getRefineResult());
                                     }
-                                    state.setProudSoulCount(state.getProudSoulCount() + slashBlade_SenDims$getBaseProudsoulCount(level, state, e2));
+                                    slashBlade_SenDims$addRefineProudSoul(state, materialCost * 75L);
 
                                     result.setDamageValue(result.getDamageValue() - Math.max(result.getDamageValue(), materialCost * Math.max(1, level / 2)));
                                     result.getOrCreateTag().put("bladeState", state.serializeNBT());
