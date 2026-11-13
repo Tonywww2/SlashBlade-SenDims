@@ -18,6 +18,9 @@ public class SBSDTags {
         public static final TagKey<EntityType<?>> NON_LIVING_SLASH_TARGETS = TagKey.create(
                 Registries.ENTITY_TYPE, SenDims.prefix("non_living_slash_targets"));
         public static final TagKey<EntityType<?>> REFLECT_WHITELIST = TagKey.create(Registries.ENTITY_TYPE, SenDims.prefix("slashblade_reflect_whitelist"));
+        /** 完全不受拔刀剑击退影响（含挑空、下压）的实体。 */
+        public static final TagKey<EntityType<?>> BLADE_KNOCKBACK_IMMUNE = TagKey.create(
+                Registries.ENTITY_TYPE, SenDims.prefix("blade_knockback_immune"));
     }
 
     public static class Items {

@@ -20,6 +20,10 @@ public final class SenDimsMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (mixinClassName.endsWith("ServerTrailMixin")
+                && !net.minecraftforge.fml.loading.FMLLoader.getDist().isDedicatedServer()) {
+            return false;
+        }
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (mixinClassName.contains(".draconicevolution.")
                 && classLoader.getResource("com/brandon3055/draconicevolution/DraconicEvolution.class") == null) {

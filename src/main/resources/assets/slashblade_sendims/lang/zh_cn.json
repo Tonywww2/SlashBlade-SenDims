@@ -293,5 +293,11 @@
   "se.slashblade_sendims.amagumo_crow.desc": "斩击命中时，放出两片红枫，追踪附近最近的敌人并造成魔法伤害。每次挥刀或每段SA只放出一次。\n移动速度越快，红枫造成的伤害越高。",
   "se.slashblade_sendims.amagumo_wind": "§b风",
   "se.slashblade_sendims.amagumo_wind.desc": "提高§c鸦§r的红枫伤害随移动速度增长的上限与幅度。",
-  "entity.slashblade_sendims.maple_leaf": "红枫"
+  "entity.slashblade_sendims.maple_leaf": "红枫",
+  "entity.slashblade_sendims.twilight_blade_warden": "暮刃守卫",
+  "item.slashblade_sendims.twilight_blade_warden_spawn_egg": "暮刃守卫刷怪蛋",
+  "message.slashblade_sendims.parry_tutorial.blue": "不可招架：闪避或拉开距离",
+  "message.slashblade_sendims.parry_tutorial.red": "可招架：头顶出现「危」时用迅冲斩或上斩命中它",
+  "message.slashblade_sendims.parry_tutorial.disabled": "已关闭招架教程提示。用钻石右键首领可重新开启。",
+  "message.slashblade_sendims.parry_tutorial.enabled": "已重新开启招架教程提示。用石英右键首领可再次关闭。"
 }

@@ -90,7 +90,17 @@ public final class LeaderStatusCharacterRenderer {
 
     @SubscribeEvent
     public static void onRenderLiving(RenderLivingEvent.Post<?, ?> event) {
-        LivingEntity entity = event.getEntity();
+        renderStatusCharacter(event.getEntity(), event.getPartialTick(),
+                event.getPoseStack(), event.getMultiBufferSource());
+    }
+
+    /**
+     * 在 Leader 头顶绘制「危」或「晕」，poseStack 需位于实体原点。
+     * LivingEntityRenderer 渲染的实体由 RenderLivingEvent 自动调用；自定义 EntityRenderer
+     * （例如暮刃守卫）不会触发该事件，要在自己的 render 末尾调用本方法。
+     */
+    public static void renderStatusCharacter(LivingEntity entity, float partialTick,
+                                             PoseStack poseStack, MultiBufferSource buffers) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null
                 || minecraft.player.distanceToSqr(entity) > MAX_RENDER_DISTANCE_SQUARED) {
@@ -115,15 +125,15 @@ public final class LeaderStatusCharacterRenderer {
                 ? LeaderIndicatorVisuals.dangerArgb((float) dangerProgress.getAsDouble())
                 : LeaderIndicatorVisuals.STUN_COLOR;
         float pulse = danger
-                ? 1.0F + 0.08F * Mth.sin((entity.tickCount + event.getPartialTick()) * 0.45F)
+                ? 1.0F + 0.08F * Mth.sin((entity.tickCount + partialTick) * 0.45F)
                 : 1.0F;
         double bob = danger
                 ? 0.0
-                : 0.08 * Mth.sin((entity.tickCount + event.getPartialTick()) * 0.2F);
+                : 0.08 * Mth.sin((entity.tickCount + partialTick) * 0.2F);
 
         renderCharacter(
-                event.getPoseStack(),
-                event.getMultiBufferSource(),
+                poseStack,
+                buffers,
                 entity,
                 character,
                 color,

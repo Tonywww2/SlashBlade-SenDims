@@ -1,50 +1,29 @@
 package com.tonywww.slashblade_sendims.mixin.twilightforest;
 
 import com.tonywww.slashblade_sendims.leader.SBSDLeader;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import twilightforest.entity.boss.Lich;
 import twilightforest.entity.projectile.LichBolt;
 import twilightforest.entity.projectile.LichBomb;
 import twilightforest.init.TFSounds;
 
-import java.util.Optional;
-
 @Mixin(value = Lich.class, remap = true)
 public abstract class LichMixin extends Monster {
-
-    @Final
-    @Shadow(remap = false)
-    private static EntityDataAccessor<Boolean> IS_CLONE;
-
-    @Final
-    @Shadow(remap = false)
-    private static EntityDataAccessor<Integer> SHIELD_STRENGTH;
-
-    @Final
-    @Shadow(remap = false)
-    private static EntityDataAccessor<Integer> MINIONS_LEFT;
-
-    @Final
-    @Shadow(remap = false)
-    private static EntityDataAccessor<Integer> ATTACK_TYPE;
-
-    @Final
-    @Shadow(remap = false)
-    private static EntityDataAccessor<Optional<GlobalPos>> HOME_POINT;
 
     @Final
     @Shadow(remap = false)
@@ -66,15 +45,21 @@ public abstract class LichMixin extends Monster {
         super(pEntityType, pLevel);
     }
 
-    @Inject(method = "defineSynchedData()V", at = @At("HEAD"), cancellable = true)
-    private void injectDefineSynchedData(CallbackInfo ci) {
-        super.defineSynchedData();
-        this.getEntityData().define(IS_CLONE, false);
-        this.getEntityData().define(SHIELD_STRENGTH, INITIAL_SHIELD_STRENGTH);
-        this.getEntityData().define(MINIONS_LEFT, Lich.INITIAL_MINIONS_TO_SUMMON);
-        this.getEntityData().define(ATTACK_TYPE, 0);
-        this.getEntityData().define(HOME_POINT, Optional.empty());
-        ci.cancel();
+    // 只替换护盾初值，不取消原方法，其他模组在 defineSynchedData 里定义的同步数据才能保留。
+    @ModifyArg(
+            method = "defineSynchedData()V",
+            slice = @Slice(from = @At(
+                    value = "FIELD",
+                    target = "Ltwilightforest/entity/boss/Lich;SHIELD_STRENGTH:Lnet/minecraft/network/syncher/EntityDataAccessor;",
+                    opcode = Opcodes.GETSTATIC,
+                    remap = false)),
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/network/syncher/SynchedEntityData;define(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;)V",
+                    ordinal = 0),
+            index = 1)
+    private Object modifyInitialShieldStrength(Object value) {
+        return INITIAL_SHIELD_STRENGTH;
     }
 
     @Redirect(

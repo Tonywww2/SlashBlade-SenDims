@@ -293,5 +293,11 @@
   "se.slashblade_sendims.amagumo_crow.desc": "When a slash hits, release two red maple leaves that home in on the nearest enemy and deal magic damage. Released at most once per swing or Slash Art segment.\nThe faster you move, the more damage the leaves deal.",
   "se.slashblade_sendims.amagumo_wind": "§bWind",
   "se.slashblade_sendims.amagumo_wind.desc": "Raises the cap and growth rate of §cCrow§r's leaf damage from movement speed.",
-  "entity.slashblade_sendims.maple_leaf": "Red Maple Leaf"
+  "entity.slashblade_sendims.maple_leaf": "Red Maple Leaf",
+  "entity.slashblade_sendims.twilight_blade_warden": "Twilight Blade Warden",
+  "item.slashblade_sendims.twilight_blade_warden_spawn_egg": "Twilight Blade Warden Spawn Egg",
+  "message.slashblade_sendims.parry_tutorial.blue": "Unparryable: dodge or back off",
+  "message.slashblade_sendims.parry_tutorial.red": "Parryable: hit it with Rapid Slash or Upper Slash when \"危\" appears",
+  "message.slashblade_sendims.parry_tutorial.disabled": "Parry tutorial hints disabled. Right-click the boss with a diamond to enable them again.",
+  "message.slashblade_sendims.parry_tutorial.enabled": "Parry tutorial hints enabled. Right-click the boss with quartz to disable them."
 }

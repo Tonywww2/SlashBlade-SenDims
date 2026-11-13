@@ -8,6 +8,7 @@ import com.tonywww.slashblade_sendims.entities.EntityStableDrive;
 import com.tonywww.slashblade_sendims.entities.EntityHolySwordLight;
 import com.tonywww.slashblade_sendims.entities.EntityMapleLeaf;
 import com.tonywww.slashblade_sendims.entities.EntityYakumanDrive;
+import com.tonywww.slashblade_sendims.entities.boss.TwilightBladeWarden;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -68,6 +69,12 @@ public final class SBSDEntities {
                     .<EntityYakumanDrive>of(EntityYakumanDrive::new, MobCategory.MISC)
                     .sized(0.2F, 0.2F).clientTrackingRange(6).updateInterval(3).noSave()
                     .build(SenDims.prefix("yakuman_drive").toString()));
+
+    public static final RegistryObject<EntityType<TwilightBladeWarden>> TWILIGHT_BLADE_WARDEN =
+            ENTITY_TYPES.register("twilight_blade_warden", () -> EntityType.Builder
+                    .<TwilightBladeWarden>of(TwilightBladeWarden::new, MobCategory.MONSTER)
+                    .sized(1.6F, 2.8F).fireImmune().clientTrackingRange(10).updateInterval(2)
+                    .build(SenDims.prefix("twilight_blade_warden").toString()));
 
     private SBSDEntities() {
     }

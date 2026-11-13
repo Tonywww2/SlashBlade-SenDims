@@ -22,6 +22,7 @@ public class SBSDCreativeTabs {
                     .title(Component.translatable("creativetab.slashblade_sendims_tab"))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(SBSDItems.DEEPREALM_CERTIFICATE.get());
+                        pOutput.accept(SBSDItems.TWILIGHT_BLADE_WARDEN_SPAWN_EGG.get());
                         pOutput.accept(SBSDItems.BLESSING_PETALS.get());
                         pOutput.accept(SBSDItems.PRINCIPLE_OF_SWORD_ARTS.get());
                         pOutput.accept(SBSDItems.THE_NECTAR_QUEST.get());

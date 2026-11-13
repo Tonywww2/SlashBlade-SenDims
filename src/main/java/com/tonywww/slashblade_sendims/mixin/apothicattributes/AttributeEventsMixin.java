@@ -26,6 +26,13 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(value = AttributeEvents.class, remap = false)
 public class AttributeEventsMixin {
 
+    /** 攻击冷却为 0 时元素伤害的倍率。 */
+    @Unique
+    private static final float SENDIMS$MIN_ELEMENTAL_SCALE = 0.2F;
+    /** 攻击冷却达到该比例时元素伤害为满额。 */
+    @Unique
+    private static final float SENDIMS$FULL_ELEMENTAL_COOLDOWN = 0.6F;
+
     @Shadow
     private static boolean noRecurse;
 
@@ -55,14 +62,16 @@ public class AttributeEventsMixin {
             if (hpDmg > 0.001 && AttributesLib.localAtkStrength >= 0.85F) {
                 target.hurt(src(ALObjects.DamageTypes.CURRENT_HP_DAMAGE, attacker), AttributesLib.localAtkStrength * hpDmg * target.getHealth());
             }
+            // 元素伤害不设攻击冷却门槛，按冷却缩放：冷却 0% 时 20%，60% 及以上 100%，中间线性。
+            float elementScale = sendims$elementalCooldownScale(AttributesLib.localAtkStrength);
             target.invulnerableTime = 0;
-            if (fireDmg > 0.001 && AttributesLib.localAtkStrength >= 0.55F) {
-                target.hurt(src(ALObjects.DamageTypes.FIRE_DAMAGE, attacker), AttributesLib.localAtkStrength * fireDmg);
+            if (fireDmg > 0.001) {
+                target.hurt(src(ALObjects.DamageTypes.FIRE_DAMAGE, attacker), elementScale * fireDmg);
                 target.setRemainingFireTicks(Math.min(Math.max(400, target.getRemainingFireTicks()), target.getRemainingFireTicks() + (int) (4 * fireDmg)));
             }
             target.invulnerableTime = 0;
-            if (coldDmg > 0.001 && AttributesLib.localAtkStrength >= 0.55F) {
-                target.hurt(src(ALObjects.DamageTypes.COLD_DAMAGE, attacker), AttributesLib.localAtkStrength * coldDmg);
+            if (coldDmg > 0.001) {
+                target.hurt(src(ALObjects.DamageTypes.COLD_DAMAGE, attacker), elementScale * coldDmg);
                 target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Math.min(100, (int) (2 * coldDmg)), Math.min(3, Mth.floor(coldDmg / 25))));
             }
             target.invulnerableTime = time;
@@ -72,6 +81,12 @@ public class AttributeEventsMixin {
         }
         noRecurse = false;
         ci.cancel();
+    }
+
+    @Unique
+    private static float sendims$elementalCooldownScale(float attackStrength) {
+        float progress = Mth.clamp(attackStrength / SENDIMS$FULL_ELEMENTAL_COOLDOWN, 0.0F, 1.0F);
+        return SENDIMS$MIN_ELEMENTAL_SCALE + (1.0F - SENDIMS$MIN_ELEMENTAL_SCALE) * progress;
     }
 
     @Inject(method = "lifeStealOverheal", at = @At("HEAD"), cancellable = true)

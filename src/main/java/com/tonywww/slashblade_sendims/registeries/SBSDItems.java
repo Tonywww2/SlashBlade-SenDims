@@ -11,6 +11,7 @@ import com.tonywww.slashblade_sendims.items.EstusFlask;
 import com.tonywww.slashblade_sendims.items.IntegralComponent;
 import com.tonywww.slashblade_sendims.items.StructureQuill;
 import net.minecraft.world.item.BlockItem;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -22,6 +23,9 @@ import com.tonywww.slashblade_sendims.items.PrincipleOfSwordArts;
 public class SBSDItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SenDims.MOD_ID);
+
+    public static final RegistryObject<Item> TWILIGHT_BLADE_WARDEN_SPAWN_EGG = ITEMS.register("twilight_blade_warden_spawn_egg",
+            () -> new ForgeSpawnEggItem(SBSDEntities.TWILIGHT_BLADE_WARDEN, 0x2B2440, 0x6FD3FF, new Item.Properties()));
 
     public static final RegistryObject<Item> DEEPREALM_CERTIFICATE = ITEMS.register("deeprealm_certificate",
             () -> new DeepRealmCertificate(new Item.Properties()

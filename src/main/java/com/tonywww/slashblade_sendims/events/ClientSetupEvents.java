@@ -4,6 +4,7 @@ import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.client.renderer.entity.ChaoticBlisteringSwordsRenderer;
 import com.tonywww.slashblade_sendims.client.renderer.entity.ChaoticJudgementCutRenderer;
 import com.tonywww.slashblade_sendims.client.renderer.entity.HolySwordLightRenderer;
+import com.tonywww.slashblade_sendims.client.renderer.entity.TwilightBladeWardenRenderer;
 import com.tonywww.slashblade_sendims.client.renderer.entity.YakumanDriveRenderer;
 import com.tonywww.slashblade_sendims.client.overlay.MadnessOverlay;
 import com.tonywww.slashblade_sendims.registeries.SBSDEntities;
@@ -39,6 +40,7 @@ public class ClientSetupEvents {
             SBSDEntities.STABLE_DRIVE.get(),
             DriveRenderer::new
         );
+        event.registerEntityRenderer(SBSDEntities.TWILIGHT_BLADE_WARDEN.get(), TwilightBladeWardenRenderer::new);
     }
 
     @SubscribeEvent

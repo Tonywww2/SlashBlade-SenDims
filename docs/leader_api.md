@@ -99,6 +99,40 @@ ClientLeaderIndicatorApi.registerExternalWarningProvider(entity -> {
 
 当可招架前摇首次进入可见状态时，核心会在 Leader 位置播放一次原版钟声；该反馈同时覆盖 `MANAGED` 和已提供可见进度的 `EXTERNAL` Leader。
 
+## 标准前摇特效与调用位置
+
+Leader 的前摇、招架窗口与破防反馈由以下几部分组成。表中"剩余 tick"指距离特殊攻击的 tick 数（`SBSDLeader.tickNormal` 里的 `diff`），计时常量都在 `SBSDValues`：`PRE_N_ATTACK_TICK = 60`、`PRE_PARRY_TICK = 40`、`PARRY_TICK = 20`、`END_PARRIED_TICK = 180`、`MIN/MAX_SPECIAL_ATTACK_TICK = 100/200`。
+
+### MANAGED Leader 的完整时间线
+
+| 阶段 | 剩余 tick | 服务端（`leader/SBSDLeader.java`） | 客户端（`client/leader/LeaderStatusCharacterRenderer.java`） |
+| --- | --- | --- | --- |
+| 预警 | 60 ~ 41 | `doLeaderPreAttackIndicator`：在实体半高处、半径 2 格画 16 个点的灵魂火焰（`SOUL_FIRE_FLAME`）粒子环，每 tick 一次 | 无 |
+| 普通攻击 | 40 | `doLeaderAttack`：两段交叉斩击（5 tick 间隔） | 无 |
+| 间隙 | 39 ~ 21 | 无指示，`setManagedParryable(false)` | 无 |
+| 招架窗口 | 20 ~ -1 | `doLeaderParryIndicator`：同位置 16 点 `DustColorTransitionOptions` 粒子环，颜色按剩余 tick 由白渐变为暗红（`LeaderIndicatorVisuals.dangerColor`）；`LeaderManager.setManagedParryable(true)`（`LeaderTiming.isManagedParryWindowOpen`） | 头顶「危」：白→暗红渐变、`1 + 0.08·sin` 脉冲、半透明底、满亮度，高度为碰撞箱顶部 + 1.05 格；窗口首次可见时在实体处播放一次 `NOTE_BLOCK_BELL` |
+| 特殊攻击 | 0 后 | `doLeaderSA`：从 `SBSDValues.ALL_LEADER_SA` 随机一招，并给 6 格内玩家重伤效果 | 无 |
+| 破防 | `PARRIED` 期间 | `tickParried` → `doLeaderParriedIndicator`：头顶上方 0.75 格愤怒村民粒子；招架成功时 `LeaderCombatHandler.applyParriedReaction` 调 `StunManager.setStun` | 头顶「晕」：金色 `0xFFFFC83D`，上下浮动 |
+
+客户端只为 96 格以内的 Leader 绘制。头顶的「危」「晕」挂在 `RenderLivingEvent.Post` 上，只有 `LivingEntityRenderer` 渲染的实体会自动显示；使用自定义 `EntityRenderer` 的 SenDimS 内部实体（例如暮刃守卫）要在 `render` 末尾调用 `LeaderStatusCharacterRenderer.renderStatusCharacter`。
+
+### EXTERNAL Leader
+
+- 招架窗口由接入方调用 `LeaderApi.openParryWindow` 打开。窗口内的「危」、粒子环与钟声由核心在客户端完成：`LeaderStatusCharacterRenderer.onClientTick` 对 `EXTERNAL/PARRYABLE` 且提供器返回有效进度的实体，每 tick 生成 16 点 × 2 的粒子环（半径 2、实体半高、颜色 `dangerColor(progress)`、寿命 2 tick，下一 tick 清除重画），首次可见时响钟；`onRenderLiving` 用同一进度绘制「危」。
+- 窗口前的灵魂火预警环不会自动出现。SenDimS 内部实体需要同样的预警时，在服务端前摇期间每 tick 调用 `SBSDLeader.doLeaderPreAttackIndicator(entity, level, ticksBeforeAttack)`；外部项目只能使用公开 API，不应调用该方法。
+- 破防阶段与 MANAGED 相同：`ExternalLeaderController.tick` 在 `PARRIED` 时调用 `SBSDLeader.tickParried`（愤怒村民粒子与恢复计时），客户端显示「晕」。
+
+### 招架判定与反馈
+
+- 玩家用 `SBSDValues.PARRY_COMBOS` 中的招式（迅冲斩 `RAPID_SLASH`、上斩 `UPPERSLASH`）命中 `PARRYABLE` 的 Leader 时，由 `LeaderEventListener.HtiEventListener` → `LeaderCombatHandler.handleSlashBladeParry` 提交招架。当前要求玩家装备赛马娘魂，否则直接返回。
+- 招架被接受后：玩家打出一次反击斩（`AttackManager.doSlash`，颜色 `0x6CF243`），回复 `slashblade_sendims:parry_heal_amount` + 20% 最大生命，并获得行动力。
+- 破防期间受到的伤害乘以 `SBSDValues.PARRIED_DAMAGE_SCALE`（5），见 `LeaderCombatHandler.scaleIncomingDamage`。默认破防 180 tick、眩晕 80 tick，可在 `LeaderParryAttemptEvent` 中改写。
+- MANAGED Leader 初始化（`SBSDLeader.initializeLeader`）：最大生命加 `sbsd.leader.health` 修饰（`MULTIPLY_TOTAL`，`LEADER_HP_SCALE = 5.0`，泰拉生物用其平方根取整），回满血，并加入 `sbsd_leaders` 队伍（队内不互伤）。
+
+### 参考实现
+
+`entities/boss/TwilightBladeWarden.java`（暮刃守卫）是同时使用以上全部部分的 EXTERNAL Leader：蓝刀（不可招架）前摇期间调用 `doLeaderPreAttackIndicator`，红刀不显示该蓝火环，在出招前 `PARRY_TICK` 调用 `openParryWindow(entity, PARRY_TICK + 2)`（与 MANAGED 的 20 ~ -1 一致），通过 `ClientLeaderIndicatorApi` 提供窗口内进度，并在首个服务端 tick 调用 `initializeLeader` 获得相同的血量修饰与队伍。
+
 ## 触发招架
 
 其他战斗系统可以绕过 SlashBlade combo 判定，提交一次标准招架：
