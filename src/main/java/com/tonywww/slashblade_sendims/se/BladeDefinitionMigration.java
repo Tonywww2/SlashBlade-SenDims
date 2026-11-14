@@ -6,8 +6,11 @@ import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.Map;
@@ -22,12 +25,23 @@ public final class BladeDefinitionMigration {
     public static final String REVISION_TAG = "sbsd_def_rev";
     public static final int REVISION = 1;
 
-    public record Rule(List<ResourceLocation> addEffects, int maxDamageDelta) {}
+    /**
+     * addEffects：缺少就补上的 SE；maxDamageDelta：耐久上限的增量；
+     * minMaxDamage：耐久上限至少补到这个值（0 表示不检查）；minEnchantments：附魔至少补到对应等级。
+     */
+    public record Rule(List<ResourceLocation> addEffects, int maxDamageDelta, int minMaxDamage,
+                       Map<ResourceLocation, Integer> minEnchantments) {
+        public Rule(List<ResourceLocation> addEffects, int maxDamageDelta) {
+            this(addEffects, maxDamageDelta, 0, Map.of());
+        }
+    }
 
     private static final ResourceLocation AVALON = SenDims.prefix("avalon");
     private static final ResourceLocation CROW = SenDims.prefix("amagumo_crow");
     private static final ResourceLocation WIND = SenDims.prefix("amagumo_wind");
     private static final ResourceLocation BLEEDING = new ResourceLocation("slashblade", "bleeding_cutting");
+    private static final ResourceLocation BLESSING_AND_BANE = SenDims.prefix("blessing_and_bane");
+    private static final ResourceLocation FORTUNE = new ResourceLocation("minecraft", "fortune");
 
     public static final Map<String, Rule> RULES = Map.ofEntries(
             Map.entry("item.slashblade_sendims.caliburn", new Rule(List.of(), 120)),
@@ -39,7 +53,12 @@ public final class BladeDefinitionMigration {
             Map.entry("item.last_smith.roukanken_nether", new Rule(List.of(BLEEDING), 0)),
             Map.entry("item.slashblade_addon.nihilul", new Rule(List.of(BLEEDING), 0)),
             Map.entry("item.slashblade_addon.nihilbx", new Rule(List.of(BLEEDING), 0)),
-            Map.entry("item.sjap_adder.nihilulex", new Rule(List.of(BLEEDING), 0))
+            Map.entry("item.sjap_adder.nihilulex", new Rule(List.of(BLEEDING), 0)),
+            // 天顶剑（整合包定义）：研究刀后来补了 SE、耐久或换了研究刀，已经合成的天顶剑按当前定义补齐
+            Map.entry("item.slashblade_sendims.zenith_false_kingship",
+                    new Rule(List.of(AVALON, CROW, WIND), 0, 160, Map.of())),
+            Map.entry("item.slashblade_sendims.zenith_false_black_crown",
+                    new Rule(List.of(BLESSING_AND_BANE), 0, 0, Map.of(FORTUNE, 7)))
     );
 
     private BladeDefinitionMigration() {}
@@ -62,6 +81,20 @@ public final class BladeDefinitionMigration {
         }
         if (rule.maxDamageDelta() != 0) {
             state.setMaxDamage(Math.max(1, state.getMaxDamage() + rule.maxDamageDelta()));
+        }
+        if (rule.minMaxDamage() > 0 && state.getMaxDamage() < rule.minMaxDamage()) {
+            state.setMaxDamage(rule.minMaxDamage());
+        }
+        if (!rule.minEnchantments().isEmpty()) {
+            Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(blade);
+            boolean changed = false;
+            for (Map.Entry<ResourceLocation, Integer> entry : rule.minEnchantments().entrySet()) {
+                Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(entry.getKey());
+                if (enchantment == null || enchantments.getOrDefault(enchantment, 0) >= entry.getValue()) continue;
+                enchantments.put(enchantment, entry.getValue());
+                changed = true;
+            }
+            if (changed) EnchantmentHelper.setEnchantments(enchantments, blade);
         }
         blade.getOrCreateTag().putInt(REVISION_TAG, REVISION);
         return true;

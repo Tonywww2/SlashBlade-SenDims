@@ -150,6 +150,7 @@
     "derenderpatcher.CompatModsMixin",
     "minecraft.ModelPartTraversalMixin",
     "minecraft.StonecutterScreenSaMixin",
+    "minecraft.GameRendererRitualScreenMixin",
     "apotheosis.GemCuttingScreenMixin",
     "apotheosis.SalvageItemMixin",
     "sbtetra.MixinSlashBladeModularItem",

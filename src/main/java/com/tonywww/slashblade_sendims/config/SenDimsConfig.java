@@ -17,6 +17,12 @@ public final class SenDimsConfig {
     public static final ForgeConfigSpec.DoubleValue HOLY_SWORD_INTENSITY;
     public static final ForgeConfigSpec.IntValue HOLY_SWORD_MOTE_BUDGET;
     public static final ForgeConfigSpec.IntValue HOLY_SWORD_DETAIL_DISTANCE;
+    public static final ForgeConfigSpec.BooleanValue RITUAL_ENABLED;
+    public static final ForgeConfigSpec.BooleanValue RITUAL_SCREEN_EFFECTS;
+    public static final ForgeConfigSpec.DoubleValue RITUAL_INTENSITY;
+    public static final ForgeConfigSpec.DoubleValue RITUAL_SHADER_PACK_GLOW;
+    public static final ForgeConfigSpec.IntValue RITUAL_MAX_DISTANCE;
+    public static final ForgeConfigSpec.IntValue RITUAL_CANVAS_RESOLUTION;
     public static final ForgeConfigSpec.EnumValue<ClientPerformanceConfig.HealthBars> HEALTH_BARS;
     public static final ForgeConfigSpec.BooleanValue COMPACT_HEALTH_TEXT;
     public static final ForgeConfigSpec.BooleanValue ATTRIBUTE_ICONS;
@@ -68,6 +74,21 @@ public final class SenDimsConfig {
                 .defineInRange("moteBudget", 768, 0, 768);
         HOLY_SWORD_DETAIL_DISTANCE = builder.comment("Beyond this distance render only the main light silhouettes.")
                 .defineInRange("detailDistance", 48, 16, 96);
+        builder.pop();
+
+        builder.push("ritualVisuals");
+        RITUAL_ENABLED = builder.comment("Shader visuals for summoning, portal, map teleport and bedrock breaker rituals. Client visuals only.")
+                .define("enabled", true);
+        RITUAL_SCREEN_EFFECTS = builder.comment("Screen effects: teleport vortex, arrival flash and summon ripple.")
+                .define("screenEffects", true);
+        RITUAL_INTENSITY = builder.comment("Overall brightness of ritual visuals.")
+                .defineInRange("intensity", 1.0, 0.25, 1.5);
+        RITUAL_SHADER_PACK_GLOW = builder.comment("Baked halo strength while an Oculus shader pack is active; lower it if a shader pack's bloom overexposes the effects.")
+                .defineInRange("shaderPackGlow", 1.0, 0.0, 1.0);
+        RITUAL_MAX_DISTANCE = builder.comment("Maximum distance for ritual visuals. Summon sky beams are visible up to 160 blocks.")
+                .defineInRange("maxDistance", 128, 32, 256);
+        RITUAL_CANVAS_RESOLUTION = builder.comment("Edge length of the magic circle canvas: 512, 1024 or 2048.")
+                .defineInRange("canvasResolution", 1024, 512, 2048);
         builder.pop();
 
         builder.push("structureQuill");

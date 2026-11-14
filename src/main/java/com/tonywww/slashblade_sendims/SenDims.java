@@ -33,7 +33,7 @@ public class SenDims {
 
     public static ServerScheduler serverScheduler;
 
-    private static final String PROTOCOL_VERSION = "7";
+    private static final String PROTOCOL_VERSION = "8";
     public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(
             prefix("main"),
             () -> PROTOCOL_VERSION,
@@ -86,6 +86,12 @@ public class SenDims {
                 com.tonywww.slashblade_sendims.network.SukunaVisualPacket::encode,
                 com.tonywww.slashblade_sendims.network.SukunaVisualPacket::decode,
                 com.tonywww.slashblade_sendims.network.SukunaVisualPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        // 0-3 above, 4 and 5 in the static block; ritual visuals use 6.
+        NETWORK.registerMessage(6, com.tonywww.slashblade_sendims.network.RitualVisualPacket.class,
+                com.tonywww.slashblade_sendims.network.RitualVisualPacket::encode,
+                com.tonywww.slashblade_sendims.network.RitualVisualPacket::decode,
+                com.tonywww.slashblade_sendims.network.RitualVisualPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
