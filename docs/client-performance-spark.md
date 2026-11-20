@@ -27,7 +27,12 @@ Prism `instance.cfg` 已设置最小堆 6 GiB、最大堆 12 GiB、`-XX:SoftMaxH
 | `performance.rendering.slashbladeObjSubmission` | SlashBlade Face 数学临时对象复用 |
 | `performance.hud.questBackgroundBatching` | UIQuest 背景渐变切片批量提交 |
 | `performance.hud.questTrimmedTextCache` | UIQuest 不可变裁剪文本缓存 |
-| `performance.buffers.immediatelyFastFixedBufferViews` | ImmediatelyFast 固定缓冲单元素集合视图复用 |
+| `performance.rendering.draconicEnergyCoreBounds` | 能量核心有限渲染范围（建造指引保持无限） |
+| `performance.rendering.draconicTransparentPass` | Brandon's Core 透明通道先判渲染器类型再算范围 |
+| `performance.rendering.draconicModelGeometry` | 能量核心／稳定器／能量塔 CCL 网格直写，能量塔外壳渲染类型复用 |
+| `performance.rendering.integratedDynamicsCableLight` | 集成动力线缆亮度单次读取 |
+| `performance.rendering.integratedDynamicsCableOverlay` | 没有覆盖层部件的线缆跳过方块实体渲染器 |
+| `performance.rendering.ysmPlayerShadows` | 装 YSM 时光影阴影通道是否绘制玩家，默认 false（不绘制） |
 
 **Draconic：**缓存由渲染器持有，记录原始剑模型及四方向、左右两侧的八种静止姿态；动画起点和终点的零位姿均可命中。缓存数组总负载受 2 MiB 预算约束，不为每台机器建立一份。动画中只合成一次变换，再写入原 `VertexConsumer` 和原共享批缓冲，避免 CCL 每顶点的操作流水线。保留实时位置、法线、纹理、光照、overlay 和 Iris 扩展属性生成。不建立独立 GPU 缓冲或跨方块实例化队列，也不承诺新增 draw-call 合并收益。模型、资源代次或预算变化会失效；未知模型／格式／顶点接收器／额外属性回退原实现。
 
@@ -37,7 +42,13 @@ Prism `instance.cfg` 已设置最小堆 6 GiB、最大堆 12 GiB、`-XX:SoftMaxH
 
 **任务 HUD：**原有 60 个背景切片仍按原顺序、顶点和颜色绘制，改为在边框／文字前统一刷新；任务状态、数量与进度每帧读取。文本缓存固定 128 槽，以内容、裁剪宽度、字体对象和资源代次区分；超长文本不保留，碰撞直接替换。资源重载和退出世界时清理。
 
-**缓冲：**仅复用 ImmediatelyFast 已有固定缓冲的不可变单元素 Set 视图，最多 64 槽。保留 fallback 动态缓冲路径、刷新顺序和原 native buffer 生命周期；资源代次变化、关闭优化和 BufferSource.close 后释放引用。不另建本地缓冲池。
+**缓冲：**（2026-11-18 已删除：spark 复测显示，ImmediatelyFast 最常走的 fallback 路径上也要多分配一次回调、读两次 volatile 并多查一次表，`sdbf$view` 包含时间约 1.65%，高于原方法自身约 0.47%，净收益为负。此项优化及配置项 `performance.buffers.immediatelyFastFixedBufferViews` 一并移除。）原实现：仅复用 ImmediatelyFast 已有固定缓冲的不可变单元素 Set 视图，最多 64 槽。保留 fallback 动态缓冲路径、刷新顺序和原 native buffer 生命周期；资源代次变化、关闭优化和 BufferSource.close 后释放引用。不另建本地缓冲池。
+
+**集成动力线缆（2026-11-18）：**`BlockCable.getLightEmission` 原本对六个方向各取一次方块实体、再按 Pair 键查一次能力表，六个方向的动态光照能力读的都是同一份 lightLevels，结果就是其中的最大值（spark 中约 2.28%）。改为沿用同一个取方块实体的方法只取一次，直接读 lightLevels；不是线缆方块实体或方块实体已移除时回到原实现。`RenderCable` 只为注册了覆盖层渲染器的部件（显示面板、全向连接器）画东西，却每根线缆每帧经 Guava 变换视图遍历部件（约 0.69%）；没有这类部件的线缆在入口跳过，判断实时查同一张注册表，不缓存。
+
+**龙之研究（2026-11-18）：**能量核心原渲染范围无限大，又是全局方块实体，看不见时也每帧完整绘制（核心约 2.72%）。改为有限范围：外壳按 SCALES[等级]×0.7×1.1+1 格，稳定器按最远偏移 +4 格（光束横向最多 2.8 格）；打开建造指引时保持无限范围。Brandon's Core 透明通道（约 1.35%）先按渲染器表判断是否透明渲染器，非透明的不再计算渲染范围（约 0.54%）和取渲染器（约 0.30%），透明的照原顺序处理。核心、外壳、稳定器（含大环）与能量塔的 CCModel 提交照常绑定 CCL 流水线，只把逐顶点部分换成同一组 Matrix4.apply／applyN、同样的 float 转换次序和同样的格式元素顺序，写入同一个顶点接收器；PoseStack 包装的接收器拆开后按它自己的顺序先变换再写入内层。只接受无变换或单个 Matrix4、只有法线／颜色属性的普通 CCModel，其余交回 CCL；不缓存网格。能量塔每帧以相同参数重建外壳渲染类型，改为保留类加载时建好的那一个。开光影时稳定器球体由 DE Render Patcher 自己的渲染器绘制，本项不介入。直写需要读 BufferBuilder 的默认颜色标记和 CCL 包装接收器的变换、内层接收器，这三个字段用反射在类加载时各取一次；最初用 Mixin 访问器读取，访问器让 BufferBuilder 的父类 `DefaultedVertexConsumer` 成为 Mixin 目标，Mixin 随之把 Oculus 对 `BufferVertexConsumer.super.uv2` 的调用改写成非法字节码，一渲染文字就崩溃（2026-11-18 当晚修复）。不要再给 BufferBuilder 的父类加 Mixin。
+
+**YSM 阴影（2026-11-18）：**装有 Yes Steve Model 且正处于光影阴影通道时，`LevelRenderer.renderEntity` 跳过玩家（spark 中 YSM 在阴影通道约 2.85%，主画面约 1.71%），主画面不变。默认 `ysmPlayerShadows=false`；未装 YSM、未开光影时完全不介入。
 
 ### 验证与限制
 
@@ -288,7 +299,8 @@ Lucent 的 `lightRefreshRate=40` 单位是次/秒，对应最多约 25 ms 一次
 | --- | --- | --- | --- |
 | 已实现并启用 | Draconic 磨粉机几何缓存／提交 | 渲染器持有、2 MiB 数组预算，八种朝向／左右静止姿态，动画只合成一次变换；使用原缓冲与 Iris 顶点接收器。 | 上游顶点等价自检和最终普通／固定光影联调。 |
 | 已实现并启用 | SlashBlade OBJ 提交 | 每线程复用法线矩阵与向量；读取实时顶点／UV／光照，保留覆盖事件，自定义 alpha／未知 Face 子类回退。 | 基础刀、现有刀模型、第一／第三人称与真实资源重载。 |
-| 已实现并启用 | 小地图／任务 HUD／缓冲 | 相邻同纹理过滤状态去重；背景切片批量提交；128 槽裁剪文本缓存；64 槽固定缓冲单元素视图，保留动态缓冲路径。 | 显示等价、开关回退和资源／生命周期检查。 |
+| 已实现并启用 | 小地图／任务 HUD／缓冲 | 相邻同纹理过滤状态去重；背景切片批量提交；128 槽裁剪文本缓存；64 槽固定缓冲单元素视图，保留动态缓冲路径（缓冲部分 2026-11-18 已删除）。 | 显示等价、开关回退和资源／生命周期检查。 |
+| 已实现，待实机复测 | 线缆亮度与线缆渲染器入口；能量核心范围、透明通道、CCL 网格直写；YSM 玩家阴影（2026-11-18） | 均有独立开关，关闭即原实现；细节见上文各段。 | 仅完成构建；需进游戏用 spark 复测。 |
 | 已启用 | 动态光源职责去重 | SDL self=false、entities=false、block_entities=true；Lucent 原配置保持。 | 手持／密集生物／普通与固定光影功能复核；不宣称精确 FPS 收益。 |
 | 已启用 | 内存预算 | Xms=6 GiB、Xmx=12 GiB、软目标 10 GiB，无预触碰；非分代 ZGC 保留 Graal 编译器。 | 运行时核验 JVM 标志；长期内存与 GC 收益尚未量测。 |
 | 用户提供 | 实体／BER 遮挡 | Brute Force Culling Revived 2.2.3；不再增加另一套剔除。 | 最终联调一起检查主通道与阴影。 |
@@ -306,3 +318,11 @@ Lucent 的 `lightRefreshRate=40` 单位是次/秒，对应最多约 25 ms 一次
 旧 68 场景采样结束时，测试客户端以退出码 0 正常关闭。其游戏选项、光影／动态光照和 spark 设置按原始哈希还原；当时的 Prism 原 JVM 参数和命令覆盖设置已还原。一次性探针与复制存档已清理，原存档保持不变。
 
 原始采样、截图、临时日志、测试备份及一次性探针工具已按用户要求清理；本报告保留实现说明与测试结论。
+
+## Embeddium 与 SketchRender 的渲染修复（2026-11-19）
+
+两处都只在装了对应模组时生效，目标按类名指定，注入不上不报错，没有配置开关。
+
+- 热力机器有流体时正面变成流体贴图（`mixin/embeddium/BlockRendererPassOrderMixin`）。Embeddium 的「渲染通道优化」（`BlockRenderer.chooseOptimalBuilder`）逐个面挑通道：cutout 层里贴图完全不透明的面改进 solid 通道，translucent 层里没有半透明像素的面改进 cutout_mipped，改过通道的面会比同一方块里先输出的面更早绘制。热力机器（`UnderlayBakedModel`）把正面复制一份、换成流体贴图、放在最前面输出，靠位置完全重合、后画的正面盖住它；机器没工作时正面贴图不透明，被挪进 solid 先画，流体留在 cutout 后画，盖住了正面。开光影时 Embeddium 不做这项优化（`ShaderModBridge.areShadersEnabled`），所以光影下正常。修复：同一方块的同一渲染层内，一旦有面留在原通道，后面的面也留在原通道；前面的面照常优化。
+- 刚进世界、JET 加载 JEI 期间区块里零散缺面（`mixin/sketchrender/*`、`client/performance/SketchIndexCapacity`）。SketchRender 0.1.0a 开启「剔除区块」后接管 Embeddium 的区块绘制，共享四边形索引缓冲只按显卡算出的最大索引数扩容：计算着色器写入、复制到持久映射缓冲后由 CPU 直接读（`PersistentReadSSBO`），映射没有一致性标志、读之前也没有同步，可能长时间停在旧值。容量不够时，面数多的区块里超出容量的面画不出来。修复：区块网格数据写入时（`RegionMeshDataStorage.updateSectionMesh`）在 CPU 上记下各朝向索引数之和的最大值，`IndirectDrawChunkRenderer.render` 扩容前取读回值与它的较大者。剔除区块照常开启。
+- 两处都尚未进游戏实测。

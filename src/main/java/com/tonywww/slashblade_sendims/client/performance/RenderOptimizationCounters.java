@@ -7,12 +7,10 @@ public final class RenderOptimizationCounters {
     public static long objFaces;
     public static long backgroundSlices;
     public static long trimmedTextHits;
-    public static long fixedBufferViews;
 
     private RenderOptimizationCounters() {}
 
     public static long[] snapshot() {
-        return new long[]{grinderIdle, grinderAnimated, objFaces, backgroundSlices,
-                trimmedTextHits, fixedBufferViews};
+        return new long[]{grinderIdle, grinderAnimated, objFaces, backgroundSlices, trimmedTextHits};
     }
 }

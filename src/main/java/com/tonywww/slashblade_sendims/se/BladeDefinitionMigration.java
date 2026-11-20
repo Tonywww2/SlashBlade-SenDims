@@ -42,6 +42,10 @@ public final class BladeDefinitionMigration {
     private static final ResourceLocation BLEEDING = new ResourceLocation("slashblade", "bleeding_cutting");
     private static final ResourceLocation BLESSING_AND_BANE = SenDims.prefix("blessing_and_bane");
     private static final ResourceLocation FORTUNE = new ResourceLocation("minecraft", "fortune");
+    private static final ResourceLocation ZENITH_APEX = SenDims.prefix("zenith_apex");
+    private static final ResourceLocation SKY_RIFT = SenDims.prefix("sky_rift");
+    private static final ResourceLocation SHARPNESS = new ResourceLocation("minecraft", "sharpness");
+    private static final ResourceLocation UNBREAKING = new ResourceLocation("minecraft", "unbreaking");
 
     public static final Map<String, Rule> RULES = Map.ofEntries(
             Map.entry("item.slashblade_sendims.caliburn", new Rule(List.of(), 120)),
@@ -58,7 +62,10 @@ public final class BladeDefinitionMigration {
             Map.entry("item.slashblade_sendims.zenith_false_kingship",
                     new Rule(List.of(AVALON, CROW, WIND), 0, 160, Map.of())),
             Map.entry("item.slashblade_sendims.zenith_false_black_crown",
-                    new Rule(List.of(BLESSING_AND_BANE), 0, 0, Map.of(FORTUNE, 7)))
+                    new Rule(List.of(BLESSING_AND_BANE), 0, 0, Map.of(FORTUNE, 7))),
+            // 天顶·裂空：SE 与附魔是后定的，之前拿到的刀补上
+            Map.entry("item.slashblade_sendims.zenith_final",
+                    new Rule(List.of(ZENITH_APEX, SKY_RIFT), 0, 0, Map.of(SHARPNESS, 10, UNBREAKING, 10)))
     );
 
     private BladeDefinitionMigration() {}

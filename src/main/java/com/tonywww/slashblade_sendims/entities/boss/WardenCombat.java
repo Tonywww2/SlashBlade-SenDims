@@ -26,6 +26,8 @@ final class WardenCombat {
     static final int RED_COLOR = 0xFF3B3B;
     private static final Vector3f BLUE_DUST = new Vector3f(0.25F, 0.66F, 1.0F);
     private static final Vector3f RED_DUST = new Vector3f(1.0F, 0.23F, 0.23F);
+    /** 各阶段每次命中的固定加伤，不乘招式倍率。 */
+    private static final float[] PHASE_BONUS = {0.0F, 1.5F, 2.5F};
 
     private WardenCombat() {
     }
@@ -43,7 +45,8 @@ final class WardenCombat {
     }
 
     static boolean hurt(TwilightBladeWarden warden, LivingEntity target, float multiplier) {
-        float amount = (float) warden.getAttributeValue(Attributes.ATTACK_DAMAGE) * multiplier;
+        float amount = (float) warden.getAttributeValue(Attributes.ATTACK_DAMAGE) * multiplier
+                + PHASE_BONUS[warden.getPhase()];
         return target.hurt(warden.damageSources().mobAttack(warden), amount);
     }
 

@@ -51,8 +51,10 @@ public class TwilightBladeWarden extends Monster {
     static final int LOCK_INVULNERABLE_TICKS = 40;
     /** 锁血线：剩余生命比例，对应损失 30%、60%。 */
     private static final float[] LOCK_RATIOS = {0.7F, 0.4F};
-    /** 各阶段出红刀的概率。 */
-    private static final float[] RED_CHANCE = {0.15F, 0.25F, 0.35F};
+    /** 各阶段一轮里先出的蓝刀（不可招架）次数 {最少, 最多}。 */
+    private static final int[][] BLUE_RUN = {{2, 4}, {2, 3}, {1, 2}};
+    /** 各阶段一轮里蓝刀之后的红刀（可招架）次数 {最少, 最多}。 */
+    private static final int[][] RED_RUN = {{1, 1}, {1, 2}, {1, 2}};
     /** 各阶段两次出招之间的间隔。 */
     private static final int[] ATTACK_INTERVAL = {22, 16, 12};
     private static final BossEvent.BossBarColor[] BAR_COLORS = {
@@ -75,6 +77,10 @@ public class TwilightBladeWarden extends Monster {
     private WardenAttacks.Attack currentAttack;
     @Nullable
     private WardenAttacks.Move lastMove;
+    /** 本轮还要出的蓝刀数，出完后轮到红刀。 */
+    private int bluesLeft;
+    /** 本轮还要出的红刀数，出完后开始下一轮。 */
+    private int redsLeft;
     private int attackCooldown;
     private int invulnerableTicks;
     private boolean phaseChanged;
@@ -196,10 +202,16 @@ public class TwilightBladeWarden extends Monster {
                 (move.red ? reds : blues).add(move);
             }
         }
-        boolean red = !reds.isEmpty() && this.random.nextFloat() < RED_CHANCE[this.getPhase()];
-        List<WardenAttacks.Move> pool = red ? reds : blues;
-        if (pool.isEmpty()) {
-            pool = red ? blues : reds;
+        if (this.bluesLeft <= 0 && this.redsLeft <= 0) {
+            this.startRound();
+        }
+        // 缩地接的圆月、扇返不经过这里，整套只算一次蓝刀。
+        boolean redDue = this.bluesLeft <= 0;
+        List<WardenAttacks.Move> pool = redDue ? reds : blues;
+        // 该出的颜色够不着时先出另一种，不计次数，该出的留到够得着时再出。
+        boolean counted = !pool.isEmpty();
+        if (!counted) {
+            pool = redDue ? blues : reds;
         }
         if (pool.isEmpty()) {
             return null;
@@ -207,7 +219,26 @@ public class TwilightBladeWarden extends Monster {
         if (pool.size() > 1) {
             pool.remove(this.lastMove);
         }
-        return pool.get(this.random.nextInt(pool.size()));
+        WardenAttacks.Move move = pool.get(this.random.nextInt(pool.size()));
+        if (counted) {
+            if (!redDue) {
+                this.bluesLeft--;
+            } else if (--this.redsLeft <= 0) {
+                this.startRound();
+            }
+        }
+        return move;
+    }
+
+    /** 按当前阶段重新决定这一轮的蓝刀数和红刀数。 */
+    private void startRound() {
+        int phase = this.getPhase();
+        this.bluesLeft = this.rollCount(BLUE_RUN[phase]);
+        this.redsLeft = this.rollCount(RED_RUN[phase]);
+    }
+
+    private int rollCount(int[] range) {
+        return range[0] + this.random.nextInt(range[1] - range[0] + 1);
     }
 
     private void approach(LivingEntity target) {
@@ -307,7 +338,7 @@ public class TwilightBladeWarden extends Monster {
     // ===================== 阶段与锁血 =====================
 
     public int getPhase() {
-        return Mth.clamp(this.entityData.get(DATA_PHASE), 0, RED_CHANCE.length - 1);
+        return Mth.clamp(this.entityData.get(DATA_PHASE), 0, BLUE_RUN.length - 1);
     }
 
     @Override
@@ -333,6 +364,7 @@ public class TwilightBladeWarden extends Monster {
         this.abortAttack();
         this.getNavigation().stop();
         this.attackCooldown = Math.max(this.attackCooldown, LOCK_INVULNERABLE_TICKS);
+        this.startRound();
         this.bossEvent.setColor(BAR_COLORS[this.getPhase()]);
         WardenCombat.phaseBurst(this);
     }
@@ -471,6 +503,8 @@ public class TwilightBladeWarden extends Monster {
         super.addAdditionalSaveData(tag);
         tag.putByte("WardenPhase", (byte) this.getPhase());
         tag.putInt("WardenInvulnerable", this.invulnerableTicks);
+        tag.putInt("WardenBluesLeft", this.bluesLeft);
+        tag.putInt("WardenRedsLeft", this.redsLeft);
     }
 
     @Override
@@ -478,6 +512,8 @@ public class TwilightBladeWarden extends Monster {
         // 先恢复阶段，再由父类读取生命值，避免读档时按第一段锁血线误触发锁血。
         this.entityData.set(DATA_PHASE, tag.getByte("WardenPhase"));
         this.invulnerableTicks = tag.getInt("WardenInvulnerable");
+        this.bluesLeft = tag.getInt("WardenBluesLeft");
+        this.redsLeft = tag.getInt("WardenRedsLeft");
         super.readAdditionalSaveData(tag);
         this.bossEvent.setName(this.getDisplayName());
         this.bossEvent.setColor(BAR_COLORS[this.getPhase()]);

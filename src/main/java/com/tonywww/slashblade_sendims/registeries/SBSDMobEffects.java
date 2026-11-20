@@ -3,6 +3,7 @@ package com.tonywww.slashblade_sendims.registeries;
 import com.tonywww.slashblade_sendims.SenDims;
 import com.tonywww.slashblade_sendims.effect.AmplifyEffect;
 import com.tonywww.slashblade_sendims.effect.AvalonEffect;
+import com.tonywww.slashblade_sendims.effect.DimensionStasisEffect;
 import com.tonywww.slashblade_sendims.effect.StormPenetrationEffect;
 import com.tonywww.slashblade_sendims.effect.ManaBurstEffect;
 import net.minecraft.world.effect.MobEffect;
@@ -33,6 +34,10 @@ public class SBSDMobEffects {
     /** 阿瓦隆：誓约胜利之剑 SE 的无敌显示，实际无敌与拔刀剑闪避共用 */
     public static final RegistryObject<MobEffect> AVALON =
             MOB_EFFECTS.register("avalon", AvalonEffect::new);
+
+    /** 次元凝滞：天顶·裂空 SA「真·次元斩」施加，I 级减速 80%（首领和玩家），II 级完全定住 */
+    public static final RegistryObject<MobEffect> DIMENSION_STASIS =
+            MOB_EFFECTS.register("dimension_stasis", DimensionStasisEffect::new);
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

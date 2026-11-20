@@ -15,8 +15,16 @@ public final class ClientPerformanceOptions {
     public static volatile boolean slashbladeObj = true;
     public static volatile boolean questBackground = true;
     public static volatile boolean questText = true;
-    public static volatile boolean fixedBufferViews = true;
+    public static volatile boolean draconicEnergyCoreBounds = true;
+    public static volatile boolean draconicTransparentPass = true;
+    public static volatile boolean draconicModelGeometry = true;
+    public static volatile boolean integratedDynamicsCableLight = true;
+    public static volatile boolean integratedDynamicsCableOverlay = true;
+    public static volatile boolean ysmPlayerShadows = false;
     public static volatile int grinderCacheBytes = 2 * 1024 * 1024;
+    public static volatile int campfireSmokeDistance = 64;
+    public static volatile int spawnerClientTickDistance = 64;
+    public static volatile double xaeroWorldMapWriteRate = 1.0;
 
     private ClientPerformanceOptions() {}
 
@@ -27,7 +35,15 @@ public final class ClientPerformanceOptions {
         slashbladeObj = ClientPerformanceConfig.SLASHBLADE_OBJ.get();
         questBackground = ClientPerformanceConfig.QUEST_BACKGROUND.get();
         questText = ClientPerformanceConfig.QUEST_TEXT.get();
-        fixedBufferViews = ClientPerformanceConfig.FIXED_BUFFER_VIEWS.get();
+        draconicEnergyCoreBounds = ClientPerformanceConfig.DRACONIC_ENERGY_CORE_BOUNDS.get();
+        draconicTransparentPass = ClientPerformanceConfig.DRACONIC_TRANSPARENT_PASS.get();
+        draconicModelGeometry = ClientPerformanceConfig.DRACONIC_MODEL_GEOMETRY.get();
+        integratedDynamicsCableLight = ClientPerformanceConfig.ID_CABLE_LIGHT.get();
+        integratedDynamicsCableOverlay = ClientPerformanceConfig.ID_CABLE_OVERLAY.get();
+        ysmPlayerShadows = ClientPerformanceConfig.YSM_PLAYER_SHADOWS.get();
         grinderCacheBytes = ClientPerformanceConfig.GRINDER_CACHE_MIB.get() * 1024 * 1024;
+        campfireSmokeDistance = ClientPerformanceConfig.CAMPFIRE_SMOKE_DISTANCE.get();
+        spawnerClientTickDistance = ClientPerformanceConfig.SPAWNER_CLIENT_TICK_DISTANCE.get();
+        xaeroWorldMapWriteRate = ClientPerformanceConfig.XAERO_WORLD_MAP_WRITE_RATE.get();
     }
 }

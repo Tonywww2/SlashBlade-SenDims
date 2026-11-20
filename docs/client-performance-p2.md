@@ -23,7 +23,12 @@ Prism `instance.cfg` 已设置最小堆 6 GiB、最大堆 12 GiB、`-XX:SoftMaxH
 | `performance.rendering.slashbladeObjSubmission` | SlashBlade Face 数学临时对象复用 |
 | `performance.hud.questBackgroundBatching` | UIQuest 背景渐变切片批量提交 |
 | `performance.hud.questTrimmedTextCache` | UIQuest 不可变裁剪文本缓存 |
-| `performance.buffers.immediatelyFastFixedBufferViews` | ImmediatelyFast 固定缓冲单元素集合视图复用 |
+| `performance.rendering.draconicEnergyCoreBounds` | 能量核心有限渲染范围（建造指引保持无限） |
+| `performance.rendering.draconicTransparentPass` | Brandon's Core 透明通道先判渲染器类型再算范围 |
+| `performance.rendering.draconicModelGeometry` | 能量核心／稳定器／能量塔 CCL 网格直写，能量塔外壳渲染类型复用 |
+| `performance.rendering.integratedDynamicsCableLight` | 集成动力线缆亮度单次读取 |
+| `performance.rendering.integratedDynamicsCableOverlay` | 没有覆盖层部件的线缆跳过方块实体渲染器 |
+| `performance.rendering.ysmPlayerShadows` | 装 YSM 时光影阴影通道是否绘制玩家，默认 false（不绘制） |
 
 **Draconic：**缓存由渲染器持有，记录原始剑模型及四方向、左右两侧的八种静止姿态；动画起点和终点的零位姿均可命中。缓存数组总负载受 2 MiB 预算约束，不为每台机器建立一份。动画中只合成一次变换，再写入原 `VertexConsumer` 和原共享批缓冲，避免 CCL 每顶点的操作流水线。保留实时位置、法线、纹理、光照、overlay 和 Iris 扩展属性生成。不建立独立 GPU 缓冲或跨方块实例化队列，也不承诺新增 draw-call 合并收益。模型、资源代次或预算变化会失效；未知模型／格式／顶点接收器／额外属性回退原实现。
 
@@ -33,7 +38,7 @@ Prism `instance.cfg` 已设置最小堆 6 GiB、最大堆 12 GiB、`-XX:SoftMaxH
 
 **任务 HUD：**原有 60 个背景切片仍按原顺序、顶点和颜色绘制，改为在边框／文字前统一刷新；任务状态、数量与进度每帧读取。文本缓存固定 128 槽，以内容、裁剪宽度、字体对象和资源代次区分；超长文本不保留，碰撞直接替换。资源重载和退出世界时清理。
 
-**缓冲：**仅复用 ImmediatelyFast 已有固定缓冲的不可变单元素 Set 视图，最多 64 槽。保留 fallback 动态缓冲路径、刷新顺序和原 native buffer 生命周期；资源代次变化、关闭优化和 BufferSource.close 后释放引用。不另建本地缓冲池。
+**缓冲：**（2026-11-18 已删除：spark 复测显示净收益为负，此项优化及配置项 `performance.buffers.immediatelyFastFixedBufferViews` 一并移除；集成动力线缆、龙之研究和 YSM 阴影的新增项见 `client-performance-spark.md`。）原实现：仅复用 ImmediatelyFast 已有固定缓冲的不可变单元素 Set 视图，最多 64 槽。保留 fallback 动态缓冲路径、刷新顺序和原 native buffer 生命周期；资源代次变化、关闭优化和 BufferSource.close 后释放引用。不另建本地缓冲池。
 
 ### 验证与限制
 

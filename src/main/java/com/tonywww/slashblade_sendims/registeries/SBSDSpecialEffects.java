@@ -19,6 +19,9 @@ public class SBSDSpecialEffects {
     public static final RegistryObject<SpecialEffect> AMAGUMO_CROW = SE.register("amagumo_crow", () -> new SpecialEffect(0));
     /** 天云「无念」：「风」强化「鸦」 */
     public static final RegistryObject<SpecialEffect> AMAGUMO_WIND = SE.register("amagumo_wind", () -> new SpecialEffect(0));
+    /** 天顶·裂空：「天顶」「裂空」，见 ZenithRiftEffects */
+    public static final RegistryObject<SpecialEffect> ZENITH_APEX = SE.register("zenith_apex", () -> new SpecialEffect(0));
+    public static final RegistryObject<SpecialEffect> SKY_RIFT = SE.register("sky_rift", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> MAHORAGA_FALSE = SE.register("mahoraga_false", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> SPACE_CUT = SE.register("space_cut", () -> new SpecialEffect(0));
     public static final RegistryObject<SpecialEffect> REVERSE_CURSED_TECHNIQUE = SE.register("reverse_cursed_technique", () -> new SpecialEffect(0));

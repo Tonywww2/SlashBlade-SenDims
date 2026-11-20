@@ -33,7 +33,7 @@ public class SenDims {
 
     public static ServerScheduler serverScheduler;
 
-    private static final String PROTOCOL_VERSION = "8";
+    private static final String PROTOCOL_VERSION = "9";
     public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(
             prefix("main"),
             () -> PROTOCOL_VERSION,
@@ -87,11 +87,16 @@ public class SenDims {
                 com.tonywww.slashblade_sendims.network.SukunaVisualPacket::decode,
                 com.tonywww.slashblade_sendims.network.SukunaVisualPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-        // 0-3 above, 4 and 5 in the static block; ritual visuals use 6.
+        // 0-3 above, 4 and 5 in the static block; ritual visuals use 6, True Judgement Cut uses 7.
         NETWORK.registerMessage(6, com.tonywww.slashblade_sendims.network.RitualVisualPacket.class,
                 com.tonywww.slashblade_sendims.network.RitualVisualPacket::encode,
                 com.tonywww.slashblade_sendims.network.RitualVisualPacket::decode,
                 com.tonywww.slashblade_sendims.network.RitualVisualPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        NETWORK.registerMessage(7, com.tonywww.slashblade_sendims.network.ZenithRiftPacket.class,
+                com.tonywww.slashblade_sendims.network.ZenithRiftPacket::encode,
+                com.tonywww.slashblade_sendims.network.ZenithRiftPacket::decode,
+                com.tonywww.slashblade_sendims.network.ZenithRiftPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 

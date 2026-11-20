@@ -1,0 +1,18 @@
+{
+  "vertex": "slashblade_sendims:ritual_fullscreen",
+  "fragment": "slashblade_sendims:zenith_rift_blade",
+  "attributes": [
+    "Position"
+  ],
+  "samplers": [],
+  "uniforms": [
+    {
+      "name": "Time",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0.0
+      ]
+    }
+  ]
+}

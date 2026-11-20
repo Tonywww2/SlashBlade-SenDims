@@ -286,6 +286,20 @@ public class SBSDComboRegistry {
                     ::build
     );
 
+    /** 天顶·裂空「真·次元斩」：停在次元斩的收招姿势，约第 56 tick 超时进入原生收刀动作；判定和画面由 ZenithRiftArts 驱动。 */
+    public static final RegistryObject<ComboState> TRUE_JUDGEMENT_CUT = COMBO_STATES.register(
+            "true_judgement_cut",
+            ComboState.Builder.newInstance()
+                    .startAndEnd(1923, 1928)
+                    .priority(50)
+                    .timeout(2700)
+                    .next(entity -> SenDims.prefix("true_judgement_cut"))
+                    .nextOfTimeout(entity -> ComboStateRegistry.JUDGEMENT_CUT_SHEATH.getId())
+                    .clickAction(ZenithRiftArts::begin)
+                    .addTickAction(FallHandler::fallDecrease)
+                    ::build
+    );
+
     public static final RegistryObject<ComboState> CHAOTIC_RAPID_BLISTERING_SWORDS = COMBO_STATES.register(
             "chaotic_rapid_blistering_swords",
             ComboState.Builder.newInstance()

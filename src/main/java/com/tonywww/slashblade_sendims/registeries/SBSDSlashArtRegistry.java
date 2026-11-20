@@ -44,6 +44,10 @@ public class SBSDSlashArtRegistry {
                     .setComboStateJust(entity -> SBSDComboRegistry.CHAOTIC_JUDGEMENT_CUT_SLASH_JUST.getId())
                     .setComboStateSuper(entity -> SBSDComboRegistry.CHAOTIC_JUDGEMENT_CUT_END.getId())
     );
+    /** 不做超级 SA：超级版本也走同一个连招状态。 */
+    public static final RegistryObject<SlashArts> TRUE_JUDGEMENT_CUT = SLASH_ARTS.register("true_judgement_cut",
+            () -> new SlashArts(entity -> SBSDComboRegistry.TRUE_JUDGEMENT_CUT.getId())
+                    .setComboStateSuper(entity -> SBSDComboRegistry.TRUE_JUDGEMENT_CUT.getId()));
     public static final RegistryObject<SlashArts> CHAOTIC_RAPID_BLISTERING_SWORDS = register(
             "chaotic_rapid_blistering_swords",
             SBSDComboRegistry.CHAOTIC_RAPID_BLISTERING_SWORDS.getId()
